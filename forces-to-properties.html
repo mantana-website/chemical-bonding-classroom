@@ -1799,7 +1799,7 @@ GAMES['length-to-energy']={
 };
 GAMES['shape-to-polarity']={
  plan:T('แผนการจัดการเรียนรู้ที่ 8 หัวข้อ 3.3.4 รูปร่างโมเลกุล และ 3.3.5 สภาพขั้วของโมเลกุลโคเวเลนต์','Lesson plan 8, topics 3.3.4 molecular shape and 3.3.5 polarity of covalent molecules'),
- role:T('เกมหลักของแผน ใช้ในขั้น T มีเกมเสริมคือ "จากพันธะสู่รูปร่าง" สำหรับฝึกหารูปร่างโมเลกุลด้วยทฤษฎี VSEPR','The main game of the plan, used in stage T. Its supporting game is "Bond to Shape" for VSEPR shape practice'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T','The main game of the plan, used in stage T'),
  flow:T('วางลูกศรขั้วบนทุกพันธะตามค่า EN → หาผลต่าง EN หรือเลือกรูปร่าง → ตัดสินสภาพขั้วของโมเลกุลจากผลรวมลูกศร','Set a dipole arrow on every bond from EN values → find ΔEN or choose the shape → decide the molecule’s polarity from the sum of the arrows'),
  time:T('ด่านละ 4–6 นาที','4–6 minutes per level'),
  book:[T('3.3.5 สภาพขั้วของพันธะ และผลต่างค่า EN','3.3.5 bond polarity and the EN difference'),T('3.3.4–3.3.5 รูปร่างสมมาตรทำให้ไดโพลหักล้างกัน','3.3.4–3.3.5 symmetric shapes cancel the dipoles'),T('3.3.4–3.3.5 คู่โดดเดี่ยวและอะตอมรอบนอกที่ต่างกันทำให้โมเลกุลมีขั้ว','3.3.4–3.3.5 lone pairs and different outer atoms make a molecule polar'),T('3.3.4–3.3.5 อะตอมกลางที่เกินออกเตต','3.3.4–3.3.5 expanded octets')],
@@ -1997,4 +1997,17 @@ window.TGuideGames={engine,lab,GAMES,UI,T,CREDIT,SUGGEST,LO};
 })();
 
 TGuideGames.engine('forces-to-properties').boot();
+</script>
+<script>
+/* ===== ปุ่มกลับหน้ารวมเกม: แสดงเมื่อเปิดจากเว็บที่ฝากชุดเกมไว้ (เช่น Netlify) หรือเปิดจากไฟล์ในโฟลเดอร์เดียวกัน ===== */
+(function(){
+  var h=location.hostname,hosted=/(\.netlify\.app|\.github\.io|\.pages\.dev|\.vercel\.app)$/i.test(h)||/^(localhost|127\.0\.0\.1)$/.test(h);
+  if(!(hosted||location.protocol==='file:'))return;
+  function add(){if(document.getElementById('hubBar'))return;
+    var st=document.createElement('style');st.textContent='#hubBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#16212c;color:#e9eef3;font:600 14px/1.4 "Sarabun","Leelawadee UI",system-ui,sans-serif;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid #000}#hubBar a{color:#ffc85c;text-decoration:none;border:1px solid rgba(255,200,92,.45);border-radius:999px;padding:4px 12px}#hubBar a:hover{background:rgba(255,200,92,.12)}#hubBar a:focus-visible{outline:3px solid #ffb627;outline-offset:2px}#hubBar span{color:#a2b2c1;font-weight:400;font-size:13px}';
+    document.head.appendChild(st);
+    var n=document.createElement('nav');n.id='hubBar';n.setAttribute('aria-label','ชุดเกม');n.innerHTML='<a href="index.html">← หน้ารวมเกม AR พันธะเคมี</a><span>เลือกเกมอื่นในชุดได้จากหน้ารวมเกม</span>';
+    document.body.insertBefore(n,document.body.firstChild)}
+  if(document.body)add();else document.addEventListener('DOMContentLoaded',add);
+})();
 </script>

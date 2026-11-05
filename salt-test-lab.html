@@ -468,7 +468,7 @@ function wire(){
   cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
   cv.addEventListener('wheel',e=>{e.preventDefault();AR.zoom=clampN(AR.zoom*Math.exp(-e.deltaY*.0015),.5,2.8);AR.idle=performance.now()},{passive:false});
   $i('iarShot').onclick=capture;
-  $i('iarSave').onclick=async()=>{if(!AR.shot)return;const blob=await new Promise(r=>AR.shot.cv.toBlob(r,'image/png'));if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=AR.shot.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)};
+  $i('iarSave').onclick=async()=>{if(!AR.shot)return;const blob=await new Promise(r=>AR.shot.cv.toBlob(r,'image/png'));if(blob)saveFile(AR.shot.name,blob)};
   $i('iarBack').onclick=()=>{$i('iarSheet').hidden=true;$i('iarShot').focus()};
   $i('iarSrcBtn').onclick=()=>choose(false);
   $i('iarReset').onclick=()=>{AR.yaw=AR.model&&AR.model.yaw0!=null?AR.model.yaw0:.6;AR.pitch=AR.model&&AR.model.pitch0!=null?AR.model.pitch0:.3;AR.zoom=1.05;if(AR.g)AR.g0={...AR.g};AR.idle=0};
@@ -477,8 +477,13 @@ function wire(){
   $i('iarClose').onclick=()=>$i('iar').close();
   $i('iar').addEventListener('close',()=>{AR.on=false;AR.token++;cancelAnimationFrame(AR.raf);stop();status(null);gStop();$i('iarSheet').hidden=true;$i('iarMsg').hidden=true;const b=document.querySelector('[data-iar]');if(b)try{b.focus({preventScroll:true})}catch(_){}});
 }
+/* save: inside a Claude link use the downloads capability; opened as a file, use a normal download */
+let dlNS=null;const dlReady=(window.claude&&window.claude.use)?window.claude.use('downloads').then(n=>{dlNS=n}).catch(()=>{}):Promise.resolve();
+async function saveFile(name,blob){
+  if(window.claude&&window.claude.use){await dlReady;if(dlNS){try{await dlNS.save({filename:name,data:blob})}catch(e){}return}}
+  try{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-iar]');if(b){e.preventDefault();open(b.dataset.iar)}});
-window.IonicAR={open,
+window.IonicAR={open,save:saveFile,
   homeBtn:()=>`<button type="button" class="iar-h" data-iar="home">${ICON}${S.btn} <small>· ${S.btnSub}</small></button>`,
   stBtn:id=>`<button type="button" class="iar-s" data-iar="${id}">${ICON}${S.btn}</button>`,
   models:id=>{const s=SETS[id];return s?s.list.map(k=>({t:M[k].t,n:M[k].n,e:M[k].e})):[]}};
@@ -1352,7 +1357,7 @@ async function drawCert(id){
 function certModal(id){
   const{root}=modal(`<h2>เกียรติบัตร</h2>${P.student?'':`<div class="field"><label for="cn">ใส่ชื่อนักเรียนก่อนรับเกียรติบัตร</label><input type="text" id="cn" placeholder="ชื่อ–นามสกุล ชั้น/ห้อง"></div><button class="btn primary" id="cg">สร้างเกียรติบัตร</button>`}<div id="ci"></div><div class="row" style="justify-content:flex-end"><button class="btn" data-close>ปิด</button></div>`);
   const make=async()=>{$('#ci',root).innerHTML='<p class="en">กำลังสร้างเกียรติบัตร…</p>';const url=await drawCert(id);
-    $('#ci',root).innerHTML=`<img class="cert" src="${url}" alt="เกียรติบัตร"><p class="en">บันทึกภาพ: แตะค้างที่ภาพ (มือถือ) หรือคลิกขวา › บันทึกรูปภาพ (คอมพิวเตอร์) </p>${location.protocol==='file:'?`<a class="btn primary" href="${url}" download="certificate-${GAME.id}-${id}.png">ดาวน์โหลด PNG</a>`:''}`};
+    $('#ci',root).innerHTML=`<img class="cert" src="${url}" alt="เกียรติบัตร"><p class="en">บันทึกภาพ: แตะค้างที่ภาพ (มือถือ) หรือคลิกขวา › บันทึกรูปภาพ (คอมพิวเตอร์) </p><button class="btn primary" type="button" id="cdl">บันทึกเกียรติบัตร (PNG)</button>`;$('#cdl',root).onclick=async()=>{try{const b=await (await fetch(url)).blob();IonicAR.save(`certificate-${GAME.id}-${id}.png`,b)}catch(e){}}};
   if(P.student)make();else $('#cg',root).onclick=()=>{const v=$('#cn',root).value.trim();if(!v){$('#cn',root).focus();return}P.student=v;saveP();if($('#sn'))$('#sn').value=v;$('#cg',root).remove();$('.field',root).remove();make()};
 }
 function boot(g){
@@ -1414,4 +1419,17 @@ g4:{id:'g4',no:4,file:'ionic-4-salt-test-lab.html',th:'ห้องทดสอ�
 boot(GAMES.g4);
 </script>
 
+<script>
+/* ===== ปุ่มกลับหน้ารวมเกม: แสดงเมื่อเปิดจากเว็บที่ฝากชุดเกมไว้ (เช่น Netlify) หรือเปิดจากไฟล์ในโฟลเดอร์เดียวกัน ===== */
+(function(){
+  var h=location.hostname,hosted=/(\.netlify\.app|\.github\.io|\.pages\.dev|\.vercel\.app)$/i.test(h)||/^(localhost|127\.0\.0\.1)$/.test(h);
+  if(!(hosted||location.protocol==='file:'))return;
+  function add(){if(document.getElementById('hubBar'))return;
+    var st=document.createElement('style');st.textContent='#hubBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#16212c;color:#e9eef3;font:600 14px/1.4 "Sarabun","Leelawadee UI",system-ui,sans-serif;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid #000}#hubBar a{color:#ffc85c;text-decoration:none;border:1px solid rgba(255,200,92,.45);border-radius:999px;padding:4px 12px}#hubBar a:hover{background:rgba(255,200,92,.12)}#hubBar a:focus-visible{outline:3px solid #ffb627;outline-offset:2px}#hubBar span{color:#a2b2c1;font-weight:400;font-size:13px}';
+    document.head.appendChild(st);
+    var n=document.createElement('nav');n.id='hubBar';n.setAttribute('aria-label','ชุดเกม');n.innerHTML='<a href="index.html">← หน้ารวมเกม AR พันธะเคมี</a><span>เลือกเกมอื่นในชุดได้จากหน้ารวมเกม</span>';
+    document.body.insertBefore(n,document.body.firstChild)}
+  if(document.body)add();else document.addEventListener('DOMContentLoaded',add);
+})();
+</script>
 </body></html>
