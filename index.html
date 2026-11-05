@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>หน้ารวมเกม AR พันธะเคมี</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Chakra+Petch:wght@600;700&display=swap">
+<style>
+:root{--bg:#f4f6f7;--card:#fff;--ink:#17212b;--muted:#5a6873;--line:#d6dde2;--soft:#eef2f4;
+  --ion:#b5600b;--cov:#1d6fb8;--met:#7a4fc0;--rev:#2b7d39;--accent:#e89a00;
+  --f:"Sarabun","Leelawadee UI","Thonburi",system-ui,sans-serif;--d:"Chakra Petch","Sarabun",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#10161b;--card:#172028;--ink:#e3eaf0;--muted:#98a8b5;--line:#2b3743;--soft:#1d2833;
+  --ion:#f0a43e;--cov:#6aa7ee;--met:#b99af0;--rev:#5cc46c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f);padding:24px 16px 48px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font:700 clamp(1.6rem,4.5vw,2.3rem)/1.2 var(--d);margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 18px}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:0 0 22px;padding:0;list-style:none}
+.how li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:.93rem}
+.how b{font-family:var(--d)}
+.unit{margin:22px 0 8px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.unit h2{font:700 1.25rem var(--d);margin:0}
+.unit span{color:var(--muted);font-size:.9rem}
+.tw{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.8rem;color:var(--muted);background:var(--soft);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.no{font:700 1.05rem var(--d);white-space:nowrap}
+td.sec{white-space:nowrap;font-weight:600}
+.g a{font:700 1.05rem var(--d);color:var(--ink);text-decoration:none;border-bottom:2px solid var(--accent)}
+.g a:hover{color:var(--accent)}
+.g small{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;padding:1px 8px;border-radius:999px;color:#fff;white-space:nowrap}
+.main{background:var(--accent);color:#1e1400}.extra{background:var(--muted)}
+.ion .no{color:var(--ion)}.cov .no{color:var(--cov)}.met .no{color:var(--met)}.rev .no{color:var(--rev)}
+.on a{color:var(--cov);font-size:.85rem;word-break:break-all}
+.on .old{display:block;font-size:.75rem;color:var(--muted)}
+.none{color:var(--muted);font-size:.85rem}
+.foot{margin-top:24px;font-size:.88rem;color:var(--muted)}
+.foot p{margin:4px 0}
+@media print{body{background:#fff;padding:0;font-size:12px}.how{display:none}.tw{border:0}table{min-width:0}.g a{border:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>หน้ารวมเกม AR พันธะเคมี</h1>
+  <p class="sub">รายวิชาเคมี 1 ว30221 ม.4 · หน่วยที่ 3 พันธะเคมี · เรียงตามลำดับเนื้อหาในหนังสือเรียน สสวท. และแผนการจัดการเรียนรู้ · ผู้ออกแบบและพัฒนาเกม นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม</p>
+  <ol class="how">
+    <li><b>เปิดเกม</b> แตะชื่อเกมในตาราง ไฟล์เกมทุกไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับหน้านี้</li>
+    <li><b>ใช้กล้อง AR</b> เปิดด้วย Chrome หรือ Safari โดยตรง แล้วกดอนุญาตกล้อง</li>
+    <li><b>เกมหลัก</b> ใช้ในชั่วโมงเรียนตามแผน <b>เกมเสริม</b> ใช้ฝึกเพิ่มหรือเป็นการบ้าน</li>
+    <li><b>ตั้งค่าเกียรติบัตร</b> ครูกดปุ่มตั้งค่าในเกมครั้งเดียวก่อนให้นักเรียนเล่นในเครื่องเดียวกัน</li>
+  </ol>
+
+  <div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 8px"><div class="tg-mount"><div><b style="font-family:var(--d);font-size:1.1rem">สำหรับครู</b><p style="color:var(--muted);font-size:.93rem">ภาพรวมการใช้ชุดเกมทั้ง 14 เกมกับแผนการจัดการเรียนรู้ 10 แผน ตามขั้นของรูปแบบ ATOMS รวมทั้งมโนทัศน์ที่คลาดเคลื่อน เกณฑ์คะแนน และการเตรียมก่อนสอน</p></div><button type="button" class="tg-btn pri" id="tgBtn">คู่มือครู · ภาพรวมชุดเกม</button></div></div>
+
+  <div class="unit"><h2>3.2 พันธะไอออนิก</h2><span>แผนที่ 1–4</span></div>
+  <div class="tw"><table class="ion">
+    <thead><tr><th>แผนที่</th><th>หัวข้อในหนังสือเรียน</th><th>เกม</th><th>ด่าน</th><th>ประเภท</th><th>ลิงก์ออนไลน์</th></tr></thead>
+    <tbody>
+      <tr><td class="no">1</td><td class="sec">3.2.1 การเกิดพันธะไอออนิก</td><td class="g"><a href="transfer-to-crystal.html">ถ่ายโอนสู่ผลึก</a><small>ส่งอิเล็กตรอนจากโลหะให้อโลหะ จัดไอออนเป็นผลึก</small></td><td>5</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/72651610-70ad-4265-abea-139499d70c94">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+      <tr><td class="no">2</td><td class="sec">3.2.2 สูตรเคมีและชื่อของสารประกอบไอออนิก</td><td class="g"><a href="salt-label-works.html">โรงติดฉลากเกลือ</a><small>ดุลประจุเขียนสูตร เรียกชื่อ และเลขโรมัน</small></td><td>5</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/2285327e-9136-4c47-a17c-98d12e3d5609">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+      <tr><td class="no">3</td><td class="sec">3.2.3 พลังงานกับการเกิดสารประกอบไอออนิก</td><td class="g"><a href="born-haber-ladder.html">บันไดพลังงานไอออนิก</a><small>วัฏจักรบอร์น–ฮาเบอร์ของ NaCl และพลังงานแลตทิซ</small></td><td>5</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/73ca5db1-ed1f-4044-8733-de7993997383">เปิดลิงก์</a><span class="old">ฉบับเดิม · แชร์แล้ว</span></td></tr>
+      <tr><td class="no">4</td><td class="sec">3.2.4 สมบัติของสารประกอบไอออนิก<br>3.2.5 สมการไอออนิกและสมการไอออนิกสุทธิ</td><td class="g"><a href="salt-test-lab.html">ห้องทดสอบเกลือ</a><small>ความเปราะ การนำไฟฟ้า จุดหลอมเหลว การละลาย การตกตะกอน</small></td><td>6</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/26b8b58e-f3f3-4d2f-8350-ae0d58dea764">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+    </tbody></table></div>
+
+  <div class="unit"><h2>3.3 พันธะโคเวเลนต์</h2><span>แผนที่ 5–9</span></div>
+  <div class="tw"><table class="cov">
+    <thead><tr><th>แผนที่</th><th>หัวข้อในหนังสือเรียน</th><th>เกม</th><th>ด่าน</th><th>ประเภท</th><th>ลิงก์ออนไลน์</th></tr></thead>
+    <tbody>
+      <tr><td class="no">5</td><td class="sec" rowspan="2">3.3.1 การเกิดพันธะโคเวเลนต์</td><td class="g"><a href="electrons-to-bonds.html">จากอิเล็กตรอนสู่พันธะ</a><small>พันธะเดี่ยว คู่ สาม พันธะโคออร์ดิเนต และข้อยกเว้นกฎออกเตต</small></td><td>12</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/11441b84-e132-4c08-a216-37cf88df52c0">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+      <tr><td class="no">5</td><td class="g"><a href="lewis-builder.html">ช่างต่อพันธะลิวอิส</a><small>จับคู่อิเล็กตรอนเองทีละคู่จนครบออกเตต</small></td><td>17</td><td><span class="tag extra">เกมเสริม</span></td><td class="on"><a href="https://claude.ai/code/artifact/a066089a-dd8a-4de2-86ab-11adeb5c2e3f">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+      <tr><td class="no">6</td><td class="sec" rowspan="2">3.3.2 สูตรโมเลกุลและชื่อของสารโคเวเลนต์</td><td class="g"><a href="formula-to-name.html">จากสูตรสู่ชื่อ</a><small>นับอะตอมจากแบบจำลอง ประกอบชื่อด้วยคำบอกจำนวน</small></td><td>12</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/c99ecdfa-3db6-4914-847f-ce0b94ec2499">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+      <tr><td class="no">6</td><td class="g"><a href="covalent-label-lab.html">ฉลากหายในห้องแล็บ</a><small>ล่าป้ายคำบอกจำนวนรอบห้องด้วยกล้อง AR</small></td><td>6</td><td><span class="tag extra">เกมเสริม</span></td><td class="on"><a href="https://claude.ai/code/artifact/01df8581-94b0-4649-9501-ad4d57e199ff">เปิดลิงก์</a><span class="old">ฉบับเดิม · แชร์แล้ว</span></td></tr>
+      <tr><td class="no">7</td><td class="sec">3.3.3 ความยาวพันธะและพลังงานพันธะ (รวมเรโซแนนซ์)</td><td class="g"><a href="length-to-energy.html">จากความยาวสู่พลังงานพันธะ</a><small>หาจุดพลังงานต่ำสุด เปรียบเทียบพันธะ และเรโซแนนซ์</small></td><td>12</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/e3466929-b6ca-4d8c-80b5-45111f4d94c6">เปิดลิงก์</a><span class="old">ฉบับเดิม · ยังไม่ได้แชร์</span></td></tr>
+      <tr><td class="no">8</td><td class="sec" rowspan="2">3.3.4 รูปร่างโมเลกุลโคเวเลนต์<br>3.3.5 สภาพขั้วของโมเลกุลโคเวเลนต์</td><td class="g"><a href="shape-to-polarity.html">จากรูปร่างสู่สภาพขั้ว</a><small>ลูกศรขั้วพันธะ รูปร่าง VSEPR และผลรวมไดโพล</small></td><td>12</td><td><span class="tag main">เกมหลัก</span></td><td class="on"><a href="https://claude.ai/code/artifact/1b75880f-e2af-445e-bb23-59989c32d9fa">เปิดลิงก์</a><span class="old">ฉบับเดิม · แชร์แล้ว</span></td></tr>
+      <tr><td class="no">8</td><td class="g"><a href="bond-to-shape.html">จากพันธะสู่รูปร่าง</a><small>สร้างโครงสร้างจุดและเส้น แล้วต่อยอดสู่รูปร่างสามมิติ</small></td><td>16</td><td><span class="tag extra">เกมเสริม</span></td><td class="on"><a href="https://claude.ai/code/artifact/ac5175a6-4367-4073-bfe8-b2f8c8e62cdb">เปิดลิงก์</a><span class="old">ฉบับเดิม · แชร์แล้ว</span></td></tr>
+      <tr><td class="no">9</td><td class="sec">3.3.6 แรงยึดเหนี่ยวระหว่างโมเลกุลและสมบัติของสารโคเวเลนต์<br>สารโคเวเลนต์โครงผลึกร่างตาข่าย</td><td class="g"><a href="forces-to-properties.html">จากแรงสู่สมบัติของสาร</a><small>แรงลอนดอน แรงระหว่างขั้ว พันธะไฮโดรเจน เพชร แกรไฟต์ SiO₂</small></td><td>12</td><td><span class="tag main">เกมหลัก</span></td><td class="none">ยังไม่มีลิงก์ (เกมใหม่)</td></tr>
+    </tbody></table></div>
+
+  <div class="unit"><h2>3.4–3.5 พันธะโลหะและการใช้ประโยชน์</h2><span>แผนที่ 10</span></div>
+  <div class="tw"><table class="met">
+    <thead><tr><th>แผนที่</th><th>หัวข้อในหนังสือเรียน</th><th>เกม</th><th>ด่าน</th><th>ประเภท</th><th>ลิงก์ออนไลน์</th></tr></thead>
+    <tbody>
+      <tr><td class="no">10</td><td class="sec">3.4.1 การเกิดพันธะโลหะ<br>3.4.2 สมบัติของโลหะ<br>3.5 การใช้ประโยชน์</td><td class="g"><a href="electron-sea.html">ทะเลอิเล็กตรอน: ไขความลับโลหะ</a><small>ไอออนบวกในทะเลอิเล็กตรอน สมบัติ แฟ้มสารปริศนา การเลือกวัสดุ</small></td><td>8</td><td><span class="tag main">เกมหลัก</span></td><td class="none">ยังไม่มีลิงก์ (เกมใหม่)</td></tr>
+    </tbody></table></div>
+
+  <div class="unit"><h2>ทบทวนท้ายหน่วย</h2><span>หลังจบแผนที่ 10</span></div>
+  <div class="tw"><table class="rev">
+    <thead><tr><th>ช่วงเวลา</th><th>หัวข้อในหนังสือเรียน</th><th>เกม</th><th>ด่าน</th><th>ประเภท</th><th>ลิงก์ออนไลน์</th></tr></thead>
+    <tbody>
+      <tr><td class="no">ทบทวน</td><td class="sec">บทที่ 3 ทั้งบท (3.1–3.5)</td><td class="g"><a href="bond-forge.html">โรงหลอมพันธะ</a><small>กฎออกเตต ไอออนิก โคเวเลนต์ โลหะ แฟ้มสารปริศนา และแบบทดสอบรวม</small></td><td>12</td><td><span class="tag extra">ทบทวน</span></td><td class="none">ยังไม่มีลิงก์ (เกมใหม่)</td></tr>
+    </tbody></table></div>
+
+  <div class="foot">
+    <p>รวม 14 เกม: เกมหลัก 10 เกม (1 เกมต่อ 1 แผน) เกมเสริม 3 เกม และเกมทบทวน 1 เกม</p>
+    <p>ลิงก์ออนไลน์เป็นฉบับก่อนปรับเลขหัวข้อให้ตรงกับหนังสือเรียน ลิงก์ที่ยังไม่ได้แชร์ ครูต้องเปิดแชร์จากเมนู Share ก่อนนักเรียนจึงจะเปิดได้</p>
+  </div>
+</div>
+<script>
+/* ===== คู่มือครู (teacher's guide) — shared module ===== */
+(function(){
+"use strict";
+const CSS=`
+#tgBox{position:fixed;inset:0;z-index:2147483000;background:rgba(9,13,17,.74);overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 32px);text-align:left}
+#tgBox[hidden]{display:none!important}
+#tgBox *{box-sizing:border-box}
+.tg-wrap{max-width:880px;margin:0 auto;background:#fbfaf6;color:#1d2427;border-radius:16px;padding:22px 20px 28px;display:grid;gap:22px;font-size:15px;line-height:1.7;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.tg-wrap h2,.tg-wrap h3{color:#1d2427;margin:0;letter-spacing:0;text-transform:none;font-weight:700}
+.tg-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+.tg-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#0f6b5f}
+.tg-head h2{font-size:clamp(20px,4.2vw,25px);line-height:1.3;margin-top:4px}
+.tg-btns{display:flex;flex-wrap:wrap;gap:8px}
+.tg-btn{appearance:none;font:inherit;font-size:15px;font-weight:600;min-height:44px;padding:9px 16px;border-radius:10px;border:1px solid #b9c5c2;background:#fff;color:#1d2427;cursor:pointer}
+.tg-btn:hover{background:#eef3f1}
+.tg-btn.pri{background:#0f6b5f;border-color:#0f6b5f;color:#fff}
+.tg-btn.pri:hover{background:#0c5a50}
+.tg-btn:focus-visible,.tg-nav a:focus-visible,.tg-lv summary:focus-visible{outline:3px solid #e2a62b;outline-offset:2px}
+.tg-nav{display:flex;flex-wrap:wrap;gap:6px}
+.tg-nav a{font-size:13px;font-weight:600;color:#3d4a4d;text-decoration:none;border:1px solid #d4dcda;border-radius:20px;padding:5px 11px;background:#fff}
+.tg-nav a:hover{border-color:#0f6b5f;color:#0f6b5f}
+.tg-sec{display:grid;gap:10px;scroll-margin-top:16px}
+.tg-sec h3{font-size:18px;color:#0f6b5f;line-height:1.4}
+.tg-sec p,.tg-sec li{margin:0;font-size:15px}
+.tg-sec ul{margin:0;padding-left:1.3em;display:grid;gap:5px}
+.tg-sec b{font-weight:700}
+.tg-tbl{overflow-x:auto;border:1px solid #d4dcda;border-radius:10px;background:#fff}
+.tg-tbl table{border-collapse:collapse;width:100%;min-width:540px;font-size:14px}
+.tg-tbl th,.tg-tbl td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid #e4e9e7;line-height:1.6;color:#1d2427}
+.tg-tbl th{font-size:13px;font-weight:700;background:#eef3f1;color:#3d4a4d}
+.tg-tbl tr:last-child td{border-bottom:0}
+.tg-tbl td.n{font-weight:700;color:#0f6b5f;white-space:nowrap}
+.tg-note{font-size:14px!important;color:#3d4a4d;border-left:3px solid #e2a62b;background:#fdf6e6;padding:7px 11px;border-radius:0 8px 8px 0}
+.tg-mut{font-size:13.5px!important;color:#5b6a6c}
+.tg-lv{border:1px solid #d4dcda;border-radius:12px;background:#fff}
+.tg-lv summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:baseline;padding:10px 12px}
+.tg-lv summary::-webkit-details-marker{display:none}
+.tg-lv .no{font-size:12px;font-weight:700;color:#7a8a8c;font-variant-numeric:tabular-nums}
+.tg-lv .fm{font-size:18px;font-weight:700}
+.tg-lv .nm2{font-size:13.5px;color:#5b6a6c}
+.tg-lv .mx{font-size:12.5px;color:#5b6a6c;white-space:nowrap}
+.tg-lv[open] summary{border-bottom:1px solid #e4e9e7}
+.tg-lv dl{margin:0;padding:10px 12px 12px;display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:7px 14px;font-size:14.5px;line-height:1.65}
+.tg-lv dt{color:#5b6a6c;font-weight:600}
+.tg-lv dd{margin:0}
+.tg-lv .ans{color:#0b6b36;font-weight:700}
+.tg-lv .why{display:block;color:#3d4a4d;font-size:13.5px;margin-top:2px}
+.tg-lv sub,.tg-tbl sub{font-size:.75em}
+.tg-credit{font-size:13.5px;color:#5b6a6c;margin:0}
+.tg-mount{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.tg-mount p{margin:0;max-width:62ch}
+@media (max-width:640px){.tg-lv dl{grid-template-columns:1fr;gap:0}.tg-lv dt{margin-top:7px}.tg-wrap{padding:16px 14px 22px}.tg-lv summary{grid-template-columns:auto auto 1fr}.tg-lv .mx{display:none}}
+@media print{
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
+  body>*:not(#tgBox){display:none!important}
+  #tgBox{position:static;background:#fff;padding:0;overflow:visible}
+  .tg-wrap{box-shadow:none;max-width:none;padding:0;background:#fff;color:#000}
+  .tg-noprint{display:none!important}
+  .tg-tbl table{min-width:0}
+  .tg-lv{break-inside:avoid}
+  .tg-sec h3,.tg-tbl td.n,.tg-eyebrow{color:#000}
+}
+@media (prefers-reduced-motion:reduce){#tgBox *{scroll-behavior:auto!important}}`;
+let box=null,lastFocus=null,curSpec=null;
+(function(){if(document.getElementById('tgStyle'))return;const st=document.createElement('style');st.id='tgStyle';st.textContent=CSS;(document.head||document.documentElement).appendChild(st)})();
+function ensure(){
+  if(box)return box;
+  box=document.createElement('div');box.id='tgBox';box.hidden=true;box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','tgTitle');
+  document.body.appendChild(box);
+  box.addEventListener('click',e=>{
+    if(e.target===box){close();return}
+    const a=e.target.closest('[data-tgnav]');if(a){e.preventDefault();const s=box.querySelector('#'+a.dataset.tgnav);if(s)s.scrollIntoView({behavior:'smooth',block:'start'});return}
+    if(e.target.closest('#tgClose'))close();
+    else if(e.target.closest('#tgLang')){if(curSpec&&curSpec.onLang){curSpec.onLang();const b=box.querySelector('#tgLang');if(b)b.focus({preventScroll:true})}}
+    else if(e.target.closest('#tgPrint')){box.querySelectorAll('details').forEach(d=>d.open=true);window.print()}
+  });
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&box&&!box.hidden)close()});
+  addEventListener('beforeprint',()=>{if(box&&!box.hidden)box.querySelectorAll('details').forEach(d=>d.open=true)});
+  return box;
+}
+function render(spec){
+  return `<div class="tg-wrap">
+  <div class="tg-head"><div><div class="tg-eyebrow">${spec.eyebrow}</div><h2 id="tgTitle">${spec.title}</h2></div>
+   <div class="tg-btns tg-noprint">${spec.langLbl?`<button type="button" class="tg-btn" id="tgLang" lang="${spec.langLbl==='EN'?'en':'th'}">${spec.langLbl}</button>`:''}<button type="button" class="tg-btn" id="tgPrint">${spec.printLbl}</button><button type="button" class="tg-btn pri" id="tgClose">${spec.closeLbl}</button></div></div>
+  <nav class="tg-nav tg-noprint" aria-label="${spec.navLbl||''}">${spec.sections.map((s,i)=>`<a href="#tg${i+1}" data-tgnav="tg${i+1}">${i+1} ${s.nav}</a>`).join('')}</nav>
+  ${spec.sections.map((s,i)=>`<section class="tg-sec" id="tg${i+1}"><h3>${i+1}. ${s.h}</h3>${s.html}</section>`).join('')}
+  ${spec.credit?`<p class="tg-credit">${spec.credit}</p>`:''}
+  </div>`;
+}
+function open(spec){
+  ensure();const again=!box.hidden,y=box.scrollTop;curSpec=spec;if(!again)lastFocus=document.activeElement;
+  box.innerHTML=render(spec);box.hidden=false;box.scrollTop=again?y:0;
+  if(!again){const c=box.querySelector('#tgClose');if(c)c.focus({preventScroll:true})}
+}
+function close(){if(!box)return;box.hidden=true;box.innerHTML='';if(lastFocus&&lastFocus.focus)try{lastFocus.focus({preventScroll:true})}catch(_){}}
+const H={
+  table(heads,rows,numCols){numCols=numCols||[];return `<div class="tg-tbl"><table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${numCols.includes(i)?' class="n"':''}>${c==null?'':c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`},
+  list(items){return `<ul>${items.filter(Boolean).map(i=>`<li>${i}</li>`).join('')}</ul>`},
+  note(t){return `<p class="tg-note">${t}</p>`},
+  mut(t){return `<p class="tg-mut tg-noprint">${t}</p>`},
+  card(c){return `<details class="tg-lv"><summary><span class="no">${c.no}</span><span class="fm">${c.f}</span><span class="nm2">${c.name||''}</span><span class="mx">${c.pts||''}</span></summary><dl>${c.rows.filter(Boolean).map(([dt,dd])=>`<dt>${dt}</dt><dd>${dd}</dd>`).join('')}</dl></details>`}
+};
+window.TGuide={open,close,H,isOpen:()=>!!(box&&!box.hidden)};
+})();
+
+/* ===== คู่มือครู — ภาพรวมชุดเกม AR พันธะเคมี (หน้ารวมเกม) ===== */
+(function(){
+"use strict";
+const T=(th,en)=>({th,en});
+let L='th';
+const R=o=>o==null?'':typeof o==='string'?o:(L==='en'?o.en:o.th);
+const UI={
+  eyebrow:T('คู่มือครู · ภาพรวมชุดเกม AR พันธะเคมี','Teacher’s guide · the chemical bonding AR game set'),title:T('ความสอดคล้องกับแผนการสอนและแนวการใช้ชุดเกม','Links to the lesson plans and how to use the set'),
+  print:T('พิมพ์คู่มือ','Print the guide'),close:T('ปิด','Close'),nav:T('หัวข้อในคู่มือ','Guide sections'),lang:T('EN','ไทย'),
+  n1:T('ภาพรวม','Overview'),n2:T('ความสอดคล้อง','Alignment'),n3:T('ใช้ในขั้นใด','Lesson stages'),n4:T('มโนทัศน์ที่คลาดเคลื่อน','Misconceptions'),n5:T('คะแนน','Scoring'),n6:T('AR และการเตรียม','AR and preparation'),
+  h1:T('ภาพรวมของชุดเกม','Overview of the set'),h2:T('ความสอดคล้องกับแผนการจัดการเรียนรู้และหนังสือเรียน','Alignment with the lesson plans and textbook'),h3:T('ใช้ในขั้นใดของรูปแบบ ATOMS','Where the games fit in the ATOMS stages'),h4:T('มโนทัศน์ที่คลาดเคลื่อนหลักของหน่วยและเกมที่ท้าทาย','Key misconceptions of the unit and the games that challenge them'),h5:T('การคิดคะแนนและหลักฐาน','Scoring and evidence'),h6:T('การใช้โหมด AR และการเตรียมก่อนสอน','AR mode and preparation')
+};
+const G={
+  tc:T('ถ่ายโอนสู่ผลึก','Transfer to Crystal'),sl:T('โรงติดฉลากเกลือ','Salt Label Works'),bh:T('บันไดพลังงานไอออนิก','Born–Haber Ladder'),st:T('ห้องทดสอบเกลือ','Salt Test Lab'),
+  eb:T('จากอิเล็กตรอนสู่พันธะ','From Electrons to Bonds'),lw:T('ช่างต่อพันธะลิวอิส','Lewis Bond Builder'),fn:T('จากสูตรสู่ชื่อ','From Formula to Name'),ll:T('ฉลากหายในห้องแล็บ','Lost Labels in the Lab'),
+  le:T('จากความยาวสู่พลังงานพันธะ','From Length to Bond Energy'),sp:T('จากรูปร่างสู่สภาพขั้ว','From Shape to Polarity'),bs:T('จากพันธะสู่รูปร่าง','Bond to Shape'),fp:T('จากแรงสู่สมบัติของสาร','From Forces to Properties'),
+  es:T('ทะเลอิเล็กตรอน: ไขความลับโลหะ','Electron Sea: Secrets of Metals'),bf:T('โรงหลอมพันธะ','Chemical Bond Forge')
+};
+const g=k=>`<b>${R(G[k])}</b>`;
+const PLANS=[
+  ['1',T('3.2.1 การเกิดพันธะไอออนิก','3.2.1 forming ionic bonds'),'tc',null,'5'],
+  ['2',T('3.2.2 สูตรเคมีและชื่อของสารประกอบไอออนิก','3.2.2 formulas and names of ionic compounds'),'sl',null,'5'],
+  ['3',T('3.2.3 พลังงานกับการเกิดสารประกอบไอออนิก','3.2.3 energy and forming ionic compounds'),'bh',null,'5'],
+  ['4',T('3.2.4 สมบัติของสารประกอบไอออนิก และ 3.2.5 สมการไอออนิกและสมการไอออนิกสุทธิ','3.2.4 properties of ionic compounds and 3.2.5 ionic and net ionic equations'),'st',null,'6'],
+  ['5',T('3.3.1 การเกิดพันธะโคเวเลนต์','3.3.1 forming covalent bonds'),'eb','lw','12 + 17'],
+  ['6',T('3.3.2 สูตรโมเลกุลและชื่อของสารโคเวเลนต์','3.3.2 molecular formulas and names of covalent substances'),'fn','ll','12 + 6'],
+  ['7',T('3.3.3 ความยาวพันธะและพลังงานพันธะ (รวมเรโซแนนซ์)','3.3.3 bond length and bond energy (including resonance)'),'le',null,'12'],
+  ['8',T('3.3.4 รูปร่างโมเลกุล และ 3.3.5 สภาพขั้วของโมเลกุลโคเวเลนต์','3.3.4 molecular shape and 3.3.5 polarity of covalent molecules'),'sp','bs','12 + 16'],
+  ['9',T('3.3.6 แรงยึดเหนี่ยวระหว่างโมเลกุลและสมบัติของสารโคเวเลนต์ รวมสารโคเวเลนต์โครงผลึกร่างตาข่าย','3.3.6 intermolecular forces and properties of covalent substances, including network covalent solids'),'fp',null,'12'],
+  ['10',T('3.4.1 การเกิดพันธะโลหะ 3.4.2 สมบัติของโลหะ และ 3.5 การใช้ประโยชน์','3.4.1 forming the metallic bond, 3.4.2 properties of metals and 3.5 uses'),'es',null,'8'],
+  [T('ทบทวน','Review'),T('บทที่ 3 ทั้งบท (3.1–3.5) หลังจบแผนที่ 10','All of chapter 3 (3.1–3.5), after plan 10'),null,'bf','12']];
+function spec(){
+  const H=TGuide.H;
+  const planRows=PLANS.map(([n,topic,main,extra,lv])=>[R(n),R(topic),main?g(main):'—',extra?R(G[extra]):'—',lv]);
+  const stageRows=[
+    ['A',R(T('ด่านแรกของเกมหลักบนจอใหญ่ และด่านที่เลือกจากเกมของแผนก่อนหน้าหรือ "โรงหลอมพันธะ"','The first level of the main game on the big screen, plus levels chosen from earlier plans’ games or "Chemical Bond Forge"')),R(T('ให้นักเรียนทำนายก่อนเล่นแล้วเขียนลงบัตรความคิดก่อนเรียน และใช้ด่านจากแผนก่อนหน้าเป็นการฝึกดึงความรู้แบบเว้นระยะ','Students predict before playing and write it on the pre-lesson idea card; levels from earlier plans give spaced retrieval practice'))],
+    ['T',R(T('เกมหลักของแผน 10 เกม','The 10 main games')),R(T('เล่นเป็นคู่ 1 เครื่องต่อ 2 คน ด่านปูพื้นทุกคู่เล่น แล้วแบ่งด่านที่เหลือให้คู่ ก และคู่ ข เพื่อนำข้อมูลมาแลกกัน','Pairs share one device. Every pair plays the foundation levels, then pair A and pair B split the rest so they have findings to swap'))],
+    ['O',R(T('ด่านที่คู่มือรายเกมระบุว่าเป็น "ข้อมูลท้าทายกฎ"','Levels marked as "rule-challenging data" in each game’s guide')),R(T('กลุ่มสร้างกฎจากข้อมูลที่ได้จากเกมเอง (ข้อมูล → แบบแผน → กฎ → ชื่อเรียก) แล้วปรับกฎเมื่อพบข้อมูลที่ไม่เป็นไปตามกฎเดิม','Groups build rules from their game data (data → pattern → rule → name), then revise them when data breaks the rule'))],
+    ['M',R(T('ด่านถ่ายโยงในเกมหลัก และเกมเสริม 3 เกม','Transfer levels in the main games, and the 3 supporting games')),R(T('ใช้ฝึกให้คล่องและถ่ายโยงสู่สารที่ไม่เคยเห็น เกมเสริมเหมาะกับกลุ่มที่ทำเสร็จก่อนหรือใช้ซ่อมเสริม','Fluency practice and transfer to unseen substances; the supporting games suit groups who finish early or need support'))],
+    ['S',R(T('แบบทดสอบท้ายเกม (เกมไอออนิก) บัตร "สรุปสิ่งที่ได้เรียนรู้" (เกมอื่น) และ "โรงหลอมพันธะ" หลังแผนที่ 10','The checkpoint quiz (ionic games), the "What I learned" cards (other games), and "Chemical Bond Forge" after plan 10')),R(T('สรุปและสะท้อนคิด เขียนบัตรท้ายคาบ และบันทึกเกียรติบัตรเป็นหลักฐาน','Summarise and reflect, write the end-of-lesson card, and save certificates as evidence'))],
+    [R(T('นอกห้อง','Homework')),R(T('ด่านที่คู่มือรายเกมแนะนำ','Levels suggested in each game’s guide')),R(T('ชุดฝึกดึงความรู้แบบเว้นระยะ บันทึกลงภาคผนวก ค.7 (บันทึกการทำงานนอกห้องเรียน)','Spaced retrieval sets, logged in appendix ค.7 (out-of-class log)'))]];
+  const misRows=[
+    [R(T('จำนวนอะตอมของโลหะกับอโลหะในสารประกอบไอออนิกเป็น 1 ต่อ 1 เสมอ','Metal and nonmetal atoms in an ionic compound are always 1 : 1')),`${g('tc')}<br>${R(G.sl)}`],
+    [R(T('สารประกอบไอออนิกเป็นโมเลกุล','Ionic compounds are made of molecules')),`${g('tc')}<br>${R(G.bf)}`],
+    [R(T('การเกิดสารประกอบไอออนิกคายพลังงานทุกขั้น','Every step of forming an ionic compound releases energy')),`${g('bh')}<br>${R(G.bf)}`],
+    [R(T('ของแข็งที่มีไอออนนำไฟฟ้าได้ และการละลายคายพลังงานเสมอ','Solids containing ions conduct, and dissolving always releases energy')),`${g('st')}<br>${R(G.es)}`],
+    [R(T('ทุกอะตอมในโมเลกุลต้องมีอิเล็กตรอนล้อมรอบ 8 ตัวเสมอ','Every atom in a molecule must have 8 electrons around it')),`${g('eb')}<br>${R(G.lw)}`],
+    [R(T('ใช้คำบอกจำนวนในชื่อสารประกอบไอออนิก หรือไม่ใช้ในชื่อสารโคเวเลนต์','Prefixes in ionic names, or none in covalent names')),`${g('fn')}<br>${R(G.sl)} · ${R(G.ll)}`],
+    [R(T('พันธะคู่ยาวกว่าพันธะเดี่ยว และโครงสร้างเรโซแนนซ์สลับไปมา','A double bond is longer than a single bond, and resonance structures flip back and forth')),`${g('le')}`],
+    [R(T('โมเลกุลที่มีพันธะมีขั้วต้องเป็นโมเลกุลมีขั้ว และคู่โดดเดี่ยวไม่มีผลต่อรูปร่าง','A molecule with polar bonds must be polar, and lone pairs do not affect shape')),`${g('sp')}<br>${R(G.bs)}`],
+    [R(T('เมื่อสารโคเวเลนต์เดือด พันธะโคเวเลนต์ในโมเลกุลแตก','When a covalent substance boils, its covalent bonds break')),`${g('fp')}<br>${R(G.bf)}`],
+    [R(T('กระแสไฟฟ้าในโลหะเกิดจากไอออนบวกเคลื่อนที่ และโลหะตีแผ่ได้เพราะพันธะอ่อน','Cations carry current in a metal, and metals bend because the bond is weak')),`${g('es')}`]];
+  const scoreRows=[
+    [R(T('เกมพันธะไอออนิก 4 เกม','The 4 ionic games')),R(T('ด่านละ 100','100 per level')),R(T('ภารกิจลองใหม่ได้จนถูก (ร้อยละ 100 / 70 / 50 / 30 ตามจำนวนครั้ง) แบบทดสอบตอบได้ครั้งเดียว · ทอง 85 ขึ้นไป เงิน 65 ขึ้นไป ทองแดง 40 ขึ้นไป','Tasks can be retried (100 / 70 / 50 / 30% by attempt); the quiz allows one attempt · gold 85+, silver 65+, bronze 40+'))],
+    [R(T('เกมหลักพันธะโคเวเลนต์ 5 เกม ทะเลอิเล็กตรอน และโรงหลอมพันธะ','The 5 covalent main games, Electron Sea and Chemical Bond Forge')),R(T('ด่านละ 100','100 per level')),R(T('ตอบผิดหักราวหนึ่งในสามของคะแนนขั้นนั้น ไม่ต่ำกว่าร้อยละ 30 ตอบผิด 2 ครั้งมีปุ่มดูคำตอบที่ถูกได้ร้อยละ 30 ของขั้น · ดาว 3 ดวงเมื่อได้ 90 ขึ้นไป 2 ดวงเมื่อได้ 70 ขึ้นไป','Each wrong try costs about a third of the step, never below 30%; after 2 wrong tries a show-answer button gives 30% of the step · 3 stars at 90+, 2 stars at 70+'))],
+    [R(G.bs),R(T('ด่านละ 100','100 per level')),R(T('โครงสร้างลิวอิส 50 · กลุ่มอิเล็กตรอน 20 · รูปร่าง 20 · มุมพันธะหรือชนิดพันธะ 10 · ดาวใช้เกณฑ์เดียวกับเกมหลัก','Lewis structure 50 · electron domains 20 · shape 20 · bond angle or bond type 10 · same star rule as the main games'))],
+    [R(G.lw),R(T('ด่านละ 60–70','60–70 per level')),R(T('นับอิเล็กตรอน 10 · อะตอมกลาง 10 (เฉพาะบางด่าน) · สร้างพันธะ 30 · คำถามท้ายด่าน 20 · ดาว 3 ดวงเมื่อได้ร้อยละ 90 ขึ้นไป 2 ดวงเมื่อได้ร้อยละ 70 ขึ้นไป','Counting 10 · central atom 10 (some levels) · building bonds 30 · end question 20 · 3 stars at 90%+, 2 stars at 70%+'))],
+    [R(G.ll),R(T('ตามด่าน','varies by level')),R(T('ตอบถูกครั้งแรกได้เต็ม ครั้งที่สองได้ครึ่งหนึ่ง · ทอง 90 ขึ้นไป เงิน 75 ขึ้นไป ทองแดง 60 ขึ้นไป ได้ตั้งแต่ร้อยละ 60 จึงรับเกียรติบัตร','Full points first time, half on the second try · gold 90+, silver 75+, bronze 60+; a certificate needs at least 60%'))]];
+  const notes=[
+    T('ทุกเกมมีเกียรติบัตร PNG ทุกด่าน และมีเกียรติบัตรรวมเมื่อผ่านครบทุกด่าน นักเรียนเล่นด่านใดก่อนก็ได้','Every game gives a PNG certificate for each level and an overall certificate for completing them all, in any order'),
+    T('ครูตั้งชื่อโรงเรียน ชื่อครู ผู้อำนวยการ และแนบลายเซ็นที่ปุ่มตั้งค่าในแต่ละเกมครั้งเดียวต่อเครื่อง','Set the school, teacher and director names and signatures once per device with each game’s settings button'),
+    T('หลักฐาน: ให้นักเรียนบันทึกเกียรติบัตรหรือแคปหน้าจอผลด่านส่งครู ผลเก็บไว้ในเบราว์เซอร์ของเครื่องที่เล่นเท่านั้น ถ้าใช้เครื่องร่วมกัน ให้ล้างความคืบหน้าในหน้าตั้งค่าก่อนเปลี่ยนคน','Evidence: students save certificates or screenshot results. Progress stays in that browser only; on shared devices clear progress in settings before the next student'),
+    T('รายละเอียดเกณฑ์คะแนนรายขั้นอยู่ในคู่มือครูของแต่ละเกม','Step-by-step scoring is in each game’s own teacher’s guide')];
+  const ar=[
+    T('ทุกเกมในชุดมีห้อง AR ที่แสดงแบบจำลองสามมิติบนภาพจากกล้องหลัง ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย เอียงเครื่องเพื่อมองจากมุมอื่น และกดถ่ายภาพ AR เก็บไว้ได้','Every game in the set has an AR room showing 3D models over the rear-camera view; drag to rotate, pinch to zoom, tilt to see another side and take AR photos'),
+    T('เกมพันธะไอออนิก 4 เกมมีห้อง AR แบบเดียวกัน แสดงผลึกไอออนิก ไอออนกลุ่มอะตอม บันไดพลังงานการเกิด NaCl และไอออนในน้ำ เปิดได้จากหน้าหลักและจากทุกด่าน','The 4 ionic games have the same AR room, showing ionic lattices, polyatomic ions, the NaCl energy ladder and ions in water, opened from the home screen or any level'),
+    T('กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari ถ้าเปิดผ่านลิงก์หรือเปิดกล้องไม่ได้ ห้อง AR จะแสดงแบบจำลองบนฉากหลังจำลองแทน iPhone และ iPad จะขออนุญาตใช้กล้องและเซนเซอร์การเคลื่อนไหว ให้กดอนุญาต','The camera works when the .html file is opened directly in Chrome or Safari; otherwise the AR room uses a simulated backdrop. iPhone and iPad ask for camera and motion permission; tap Allow'),
+    T('ให้นักเรียนนั่งกับที่ขณะใช้กล้อง และจัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน','Keep students seated while using the camera, and plan one device per two students'),
+    T('ไฟล์เกมทุกไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับหน้านี้ ลิงก์ในตารางจึงจะเปิดได้','Keep every game file in the same folder as this page so the links work'),
+    T('ก่อนสอนแต่ละแผน ให้เปิดคู่มือครูของเกมนั้น (ปุ่มอยู่ด้านล่างของหน้าหลักเกม) เพื่อดูด่านที่ใช้ในแต่ละขั้น มโนทัศน์ที่คลาดเคลื่อน และด่านที่ควรลองเล่นเอง','Before each plan, open that game’s own teacher’s guide (button near the bottom of the game’s home screen) for the levels to use in each stage, misconceptions and levels to try yourself')];
+  return {
+    eyebrow:R(UI.eyebrow),title:R(UI.title),printLbl:R(UI.print),closeLbl:R(UI.close),navLbl:R(UI.nav),langLbl:R(UI.lang),onLang:()=>{L=L==='th'?'en':'th';TGuide.open(spec())},
+    sections:[
+      {nav:R(UI.n1),h:R(UI.h1),html:H.list([
+        `<b>${R(T('ใช้กับ','Used with'))}</b> ${R(T('รายวิชาเคมี 1 ว30221 ม.4 หน่วยที่ 3 พันธะเคมี (หนังสือเรียนรายวิชาเพิ่มเติมเคมี สสวท. เล่ม 1 บทที่ 3) แผนการจัดการเรียนรู้ 10 แผน','Chemistry 1 (ว30221), Grade 10, unit 3 chemical bonding (IPST additional chemistry textbook, book 1, chapter 3), 10 lesson plans'))}`,
+        `<b>${R(T('ขนาด','Size'))}</b> ${R(T('14 เกม: เกมหลัก 10 เกม (1 เกมต่อ 1 แผน) เกมเสริม 3 เกม และเกมทบทวนท้ายหน่วย 1 เกม','14 games: 10 main games (one per plan), 3 supporting games and 1 end-of-unit review game'))}`,
+        `<b>${R(T('บทบาท','Roles'))}</b> ${R(T('เกมหลักใช้ในขั้น T ของแผน เกมเสริมใช้ฝึกให้คล่องในขั้น M ซ่อมเสริม หรือนอกห้องเรียน และเกมทบทวนใช้ในขั้น S ของแผนที่ 10','Main games are used in stage T; supporting games give fluency practice in stage M, support or homework; the review game is used in stage S of plan 10'))}`,
+        `<b>${R(T('คู่มือรายเกม','Per-game guides'))}</b> ${R(T('ทุกเกมมีคู่มือครูของตนเองแบบเดียวกับหน้านี้ ระบุแผนที่ใช้ ด่านในแต่ละขั้น มโนทัศน์ที่คลาดเคลื่อน เกณฑ์คะแนน และการเตรียมก่อนสอน','Every game has its own teacher’s guide in this format, giving the plan, levels for each stage, misconceptions, scoring and preparation'))}`])},
+      {nav:R(UI.n2),h:R(UI.h2),html:H.table([R(T('แผนที่','Plan')),R(T('หัวข้อในหนังสือเรียน','Textbook topic')),R(T('เกมหลัก','Main game')),R(T('เกมเสริม / ทบทวน','Supporting / review')),R(T('ด่าน','Levels'))],planRows,[0])+H.note(R(T('ผลการเรียนรู้ให้ใช้ตามเล่มแผน (ผลการเรียนรู้ชุด 13 ข้อของหน่วยพันธะเคมี: ข้อ 1–5 ไอออนิก ข้อ 6–11 โคเวเลนต์ ข้อ 12–13 โลหะ)','Use the learning outcomes as written in the plan book (the 13 outcomes of the bonding unit: 1–5 ionic, 6–11 covalent, 12–13 metallic).')))},
+      {nav:R(UI.n3),h:R(UI.h3),html:H.table([R(T('ขั้น','Stage')),R(T('เกมหรือด่านที่ใช้','Games or levels')),R(T('วิธีใช้','How to use them'))],stageRows,[0])+H.note(R(T('ด่านที่แนะนำรายขั้นเป็นข้อเสนอ ให้ปรับให้ตรงกับภาคผนวก ค.6 (การจัดสรรด่าน) และ ค.7 (บันทึกการทำงานนอกห้องเรียน) ในเล่มแผน','The suggested levels are a starting point. Adjust them to match appendix ค.6 (level allocation) and ค.7 (out-of-class log) in the plan book.')))},
+      {nav:R(UI.n4),h:R(UI.h4),html:H.table([R(T('มโนทัศน์ที่คลาดเคลื่อน','Misconception')),R(T('เกมหลัก / เกมที่ใช้ซ้ำ','Main game / follow-up'))],misRows)+H.note(R(T('หลักฐานในเกมที่ท้าทายแต่ละมโนทัศน์อยู่ในหัวข้อ 4 ของคู่มือรายเกม','The in-game evidence for each misconception is in section 4 of each game’s guide.')))},
+      {nav:R(UI.n5),h:R(UI.h5),html:H.table([R(T('เกม','Games')),R(T('คะแนน','Points')),R(T('เกณฑ์','Rule'))],scoreRows,[1])+H.list(notes.map(R))},
+      {nav:R(UI.n6),h:R(UI.h6),html:H.list(ar.map(R))}],
+    credit:R(T('ออกแบบและพัฒนาเกมโดย นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม','Games designed and developed by Mrs. Manthana Chaiyasong, That Phanom School'))};
+}
+window.SeriesGuide={open:()=>TGuide.open(spec())};
+})();
+document.getElementById('tgBtn').addEventListener('click',()=>SeriesGuide.open());
+</script>
+</body>
+</html>

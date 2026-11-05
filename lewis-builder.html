@@ -1,0 +1,1016 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ช่างต่อพันธะลิวอิส</title>
+<meta name="description" content="เกม AR ให้นักเรียนสร้างโครงสร้างลิวอิสด้วยการจับคู่อิเล็กตรอนเอง 17 ด่าน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#0B1519; --ground2:#0F1E23; --panel:#0F1E23; --panelA:rgba(12,24,29,.84);
+  --line:#23393F; --line2:#2F4B52; --ink:#E6F0EC; --muted:#8FA8A2; --faint:#5E7873;
+  --gold:#FFC857; --goldInk:#1E1604; --ok:#6BE3A4; --warn:#FF8A73; --info:#8CC8FF;
+  --disp:"Chakra Petch","IBM Plex Sans Thai","Sarabun",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai","Sarabun","Leelawadee UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.65 var(--body);overflow:hidden;
+  background-image:radial-gradient(rgba(143,168,162,.10) 1px,transparent 1.2px);background-size:22px 22px}
+button{font:inherit;color:inherit}
+#camVid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none}
+#camShade{position:fixed;inset:0;background:rgba(5,11,13,.42);z-index:0;display:none}
+body.ar #camVid, body.ar #camShade{display:block}
+.screen{position:fixed;inset:0;z-index:1}
+.screen[hidden]{display:none!important}
+
+/* ---------- HOME ---------- */
+#home{overflow:auto;padding-inline:16px;padding-block:calc(env(safe-area-inset-top,0px) + 20px) calc(env(safe-area-inset-bottom,0px) + 40px)}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:28px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:center;padding-top:8px}
+.eyebrow{font:600 12px/1.4 var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+h1{font:700 clamp(34px,7vw,58px)/1.08 var(--disp);margin:.2em 0 .25em;text-wrap:balance;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--gold)}
+.hero p{color:var(--muted);max-width:52ch;margin:0 0 18px}
+.heroArt{width:100%;max-width:360px;justify-self:center}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 16px;border-radius:10px;border:1px solid var(--line2);
+  background:#132A30;cursor:pointer;font:600 15px/1.2 var(--disp);letter-spacing:.01em;transition:background .15s,transform .1s}
+.btn:hover{background:#18343B}.btn:active{transform:translateY(1px)}
+.btn:focus-visible,.tile:focus-visible,.icoBtn:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn.primary{background:var(--gold);color:var(--goldInk);border-color:var(--gold)}
+.btn.primary:hover{background:#FFD57A}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn svg{width:18px;height:18px;flex:none}
+.small{font-size:13px;color:var(--muted)}
+.card{border:1px solid var(--line);background:var(--panelA);border-radius:14px;padding:18px}
+h2{font:700 22px/1.3 var(--disp);margin:0 0 12px;text-wrap:balance}
+h3{font:600 16px/1.35 var(--disp);margin:0 0 4px;color:var(--ink)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.steps .n{font:700 14px/1 var(--mono);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--gold);color:var(--gold)}
+.steps p{margin:0;font-size:14px;color:var(--muted)}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px 18px;margin-top:4px}
+.legend div{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted)}
+.legend b{color:var(--ink);font-weight:600}
+.lg{flex:none;width:44px;height:26px}
+.chapter{display:grid;gap:12px}
+.chHead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.chHead .no{font:600 13px var(--mono);color:var(--gold)}
+.chHead span.d{font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+.tile{position:relative;text-align:left;border:1px solid var(--line);background:var(--ground2);border-radius:12px;padding:12px 12px 10px;cursor:pointer;display:grid;gap:2px;min-height:100px}
+.tile:hover{border-color:var(--line2);background:#132A30}
+.tile .f{font:700 26px/1.1 var(--disp)}
+.tile .nm{font-size:12.5px;color:var(--muted);line-height:1.4}
+.tile .lv{position:absolute;top:10px;right:10px;font:500 11px var(--mono);color:var(--faint)}
+.tile .st{font-size:14px;letter-spacing:2px;color:var(--faint);margin-top:auto}
+.tile .st .on{color:var(--gold)}
+.tile.done{border-color:rgba(255,200,87,.35)}
+.result{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.bigNum{font:700 44px/1 var(--mono);color:var(--gold)}
+.bigNum small{font-size:18px;color:var(--muted)}
+input[type=text]{background:var(--ground);border:1px solid var(--line2);color:var(--ink);border-radius:8px;padding:9px 12px;font:15px var(--body);min-height:42px;width:min(100%,280px)}
+.bar{height:8px;border-radius:5px;background:#1A3036;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:5px}
+
+/* ---------- GAME ---------- */
+#game{display:grid;grid-template-rows:auto 1fr auto;grid-template-columns:minmax(0,1fr);height:100%}
+.top{display:flex;align-items:center;gap:8px;min-width:0;padding-inline:12px;padding-block:calc(env(safe-area-inset-top,0px) + 8px) 8px;background:var(--panelA);border-bottom:1px solid var(--line);z-index:2}
+.top .ttl{flex:1;min-width:0}
+.top .ttl .e{font:600 11px/1.3 var(--disp);letter-spacing:.12em;color:var(--muted);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .ttl .f{font:700 20px/1.2 var(--disp)}
+.top .ttl .f span{font:500 13px var(--body);color:var(--muted);margin-left:6px}
+.icoBtn{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line2);background:#132A30;cursor:pointer;flex:none}
+.icoBtn svg{width:20px;height:20px}
+.icoBtn.on{background:var(--gold);color:var(--goldInk);border-color:var(--gold)}
+.score{font:500 14px var(--mono);padding:6px 10px;border-radius:8px;border:1px solid var(--line2);white-space:nowrap}
+.score b{color:var(--gold)}
+.stage{position:relative;min-height:0;overflow:hidden}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:pointer}
+.panel{background:var(--panelA);border-top:1px solid var(--line);padding-inline:16px;padding-block:12px calc(env(safe-area-inset-bottom,0px) + 14px);max-height:46vh;overflow:auto;z-index:2}
+body.ar .top, body.ar .panel{background:rgba(10,20,24,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.pin{max-width:760px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.phases{display:flex;gap:6px;flex-wrap:wrap}
+.ph{font:600 12px/1 var(--disp);padding:6px 9px;border-radius:20px;border:1px solid var(--line);color:var(--faint);letter-spacing:.02em}
+.ph.cur{border-color:var(--gold);color:var(--gold)}
+.ph.fin{color:var(--ok);border-color:rgba(107,227,164,.4)}
+.lead{margin:0;font-size:15px}
+.q{margin:0;font:600 16px/1.55 var(--body)}
+.choices{display:flex;gap:8px;flex-wrap:wrap}
+.choice{min-width:64px;justify-content:center;font:700 18px var(--mono)}
+.opt{display:block;width:100%;text-align:left;padding:11px 14px;border-radius:10px;border:1px solid var(--line2);background:#132A30;cursor:pointer;font:15px/1.5 var(--body)}
+.opt:hover{background:#18343B}
+.opt.right{border-color:var(--ok);background:rgba(107,227,164,.12)}
+.opt.wrong{border-color:var(--warn);background:rgba(255,138,115,.1)}
+.opts{display:grid;gap:8px}
+.msg{font-size:14.5px;line-height:1.6;padding:9px 12px;border-radius:10px;border-left:3px solid var(--info);background:rgba(140,200,255,.08)}
+.msg:empty{display:none}
+.msg.ok{border-color:var(--ok);background:rgba(107,227,164,.09)}
+.msg.warn{border-color:var(--warn);background:rgba(255,138,115,.09)}
+.msg.gold{border-color:var(--gold);background:rgba(255,200,87,.09)}
+.ledger{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ledger div{border:1px solid var(--line);border-radius:9px;padding:6px 8px;display:grid;gap:0}
+.ledger b{font:500 20px/1.2 var(--mono)}
+.ledger span{font-size:11.5px;color:var(--muted);line-height:1.35}
+.ledger .tot b{color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 12.5px var(--mono);padding:3px 8px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.chip.ok{border-color:rgba(255,200,87,.5);color:var(--gold)}
+.chip.ex{border-color:rgba(140,200,255,.5);color:var(--info)}
+.ctx{font-size:14px;color:var(--muted);margin:0}
+.ctx b{color:var(--ink)}
+.scoreRow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px}
+.scoreRow div{border:1px solid var(--line);border-radius:9px;padding:6px 10px}
+.scoreRow b{font:500 18px var(--mono)}
+.scoreRow span{display:block;font-size:12px;color:var(--muted)}
+.stars{font-size:22px;letter-spacing:4px;color:var(--faint)}.stars .on{color:var(--gold)}
+@media (max-width:640px){
+  .hero{grid-template-columns:1fr}.heroArt{max-width:260px;order:-1}
+  .ledger{grid-template-columns:repeat(2,1fr)}
+  .top .ttl .f span{display:none}
+  .score .lbl{display:none}
+  .icoBtn{width:38px;height:38px}
+  .panel{max-height:48vh}
+}
+.lang{display:inline-flex;margin-top:12px;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.lang button{border:0;background:#132A30;padding:8px 14px;font:600 14px var(--disp);cursor:pointer;min-height:40px}
+.lang button[aria-pressed="true"]{background:var(--gold);color:var(--goldInk)}
+.langBtn{font:700 13px var(--disp)}
+/* ---------- TEACHER GUIDE ---------- */
+.tCard{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+.tCard p{margin:0;color:var(--muted);font-size:14px}
+#guideBox{position:fixed;inset:0;z-index:20;background:rgba(5,11,13,.86);overflow:auto;padding-inline:16px;padding-block:calc(env(safe-area-inset-top,0px) + 16px) calc(env(safe-area-inset-bottom,0px) + 32px)}
+#guideBox[hidden]{display:none!important}
+.gWrap{max-width:860px;margin:0 auto;background:var(--ground2);border:1px solid var(--line2);border-radius:16px;padding:20px 18px 26px;display:grid;gap:20px}
+.gHead{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.gHead h2{margin:4px 0 0;font-size:24px}
+.gNav{display:flex;flex-wrap:wrap;gap:6px}
+.gNav a{font:600 12.5px var(--disp);color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:5px 10px}
+.gNav a:hover{color:var(--ink);border-color:var(--line2)}
+.gSec{display:grid;gap:10px;scroll-margin-top:16px}
+.gSec h3{font:700 18px/1.35 var(--disp);margin:0;color:var(--gold)}
+.gSec p,.gSec li{margin:0;font-size:14.5px;line-height:1.7}
+.gSec ul,.gSec ol{margin:0;padding-left:1.3em;display:grid;gap:4px}
+.gTbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.gTbl table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+.gTbl th,.gTbl td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line);line-height:1.55}
+.gTbl th{font:600 13px var(--disp);color:var(--muted);background:#132A30}
+.gTbl tr:last-child td{border-bottom:0}
+.gTbl td.n{font:500 13px var(--mono);color:var(--gold);white-space:nowrap}
+.gNote{font-size:13.5px;color:var(--muted);border-left:3px solid var(--info);padding:6px 10px;background:rgba(140,200,255,.06);border-radius:0 8px 8px 0}
+.lvK{border:1px solid var(--line);border-radius:12px;background:var(--ground)}
+.lvK summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:baseline;padding:10px 12px}
+.lvK summary::-webkit-details-marker{display:none}
+.lvK summary .no{font:500 12px var(--mono);color:var(--faint)}
+.lvK summary .fm{font:700 18px var(--disp)}
+.lvK summary .nm2{font-size:13px;color:var(--muted)}
+.lvK summary .mx{font:500 12px var(--mono);color:var(--muted)}
+.lvK[open] summary{border-bottom:1px solid var(--line)}
+.lvK dl{margin:0;padding:10px 12px 12px;display:grid;grid-template-columns:minmax(96px,auto) 1fr;gap:6px 14px;font-size:14px;line-height:1.6}
+.lvK dt{color:var(--muted)}
+.lvK dd{margin:0}
+.lvK dd b{color:var(--ok);font-weight:600}
+@media (max-width:640px){.tCard{grid-template-columns:1fr}.lvK dl{grid-template-columns:1fr;gap:0 0}.lvK dt{margin-top:6px}.gWrap{padding:16px 14px 22px}}
+@media print{
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important;color:#000!important}
+  body>*:not(#guideBox){display:none!important}
+  #guideBox{position:static;background:#fff;padding:0;overflow:visible}
+  .gWrap{border:0;background:#fff;color:#000;max-width:none;padding:0}
+  .noPrint{display:none!important}
+  .gSec h3,.gTbl td.n{color:#000}
+  .gSec p,.gSec li,.lvK dd,.gTbl td{color:#000}
+  .gTbl th{background:#eee;color:#000}
+  .gTbl,.gTbl th,.gTbl td,.lvK{border-color:#999}
+  .gTbl table{min-width:0}
+  .lvK{background:#fff;break-inside:avoid}
+  .lvK summary .fm,.lvK summary .nm2,.lvK summary .mx,.lvK dt{color:#000}
+  .lvK dd b{color:#000}
+  .gNote{color:#000;background:#f4f4f4}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<video id="camVid" playsinline muted autoplay></video>
+<div id="camShade"></div>
+
+<!-- ================= HOME ================= -->
+<section id="home" class="screen">
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">เคมี ม.4 · 3.3.1 การเกิดพันธะโคเวเลนต์ · AR</div>
+        <h1>ช่างต่อ<em>พันธะ</em><br>ลิวอิส</h1>
+        <p>ไม่ต้องจำโครงสร้าง — สร้างเองทีละคู่อิเล็กตรอน แตะจุดอิเล็กตรอนของอะตอมหนึ่ง แล้วแตะอีกอะตอม ดูว่าใครให้อิเล็กตรอนตัวไหน จนทุกอะตอมครบออกเตต 17 ด่าน จากพันธะเดี่ยวไปจนถึงข้อยกเว้นกฎออกเตต</p>
+        <div class="row">
+          <button class="btn primary" id="startBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg>เริ่มเล่นแบบ AR</button>
+          <button class="btn ghost" id="startNoCam">เล่นโดยไม่เปิดกล้อง</button>
+        </div>
+        <p class="small" style="margin-top:10px">โหมด AR ใช้กล้องหลังเป็นฉาก และขยับโมเลกุลตามการเอียงเครื่องเล็กน้อย</p>
+        <p class="small credit" style="margin:6px 0 0">ออกแบบและพัฒนาโดย <b style="color:var(--ink)">นางมัณฑนา ไชยสงค์</b> ครูโรงเรียนธาตุพนม</p>
+        <div class="lang" role="group" aria-label="ภาษา"><button type="button" data-lang="th">ไทย</button><button type="button" data-lang="en">EN</button></div>
+      </div>
+      <svg class="heroArt" viewBox="0 0 360 240" role="img" aria-label="ภาพอะตอมไฮโดรเจนสองอะตอมใช้อิเล็กตรอนร่วมกันหนึ่งคู่">
+        <defs><filter id="gl"><feGaussianBlur stdDeviation="3"/></filter></defs>
+        <rect x="8" y="8" width="344" height="224" rx="18" fill="#0F1E23" stroke="#23393F"/>
+        <line x1="130" y1="120" x2="230" y2="120" stroke="#E6F0EC" stroke-opacity=".25" stroke-width="3"/>
+        <g><circle cx="95" cy="120" r="38" fill="#0A1417" stroke="#FF7466" stroke-width="2.5"/>
+        <text x="95" y="132" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="34" fill="#FF7466">O</text></g>
+        <g><circle cx="265" cy="120" r="38" fill="#0A1417" stroke="#FFB0A6" stroke-width="2.5"/>
+        <text x="265" y="132" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="34" fill="#FFB0A6">O</text></g>
+        <g fill="#FF7466"><circle cx="171" cy="108" r="6"/><circle cx="171" cy="132" r="6"/><circle cx="95" cy="62" r="5.5"/><circle cx="83" cy="62" r="5.5"/><circle cx="95" cy="178" r="5.5"/><circle cx="83" cy="178" r="5.5"/></g>
+        <g fill="#FFB0A6"><circle cx="189" cy="108" r="6"/><circle cx="189" cy="132" r="6"/><circle cx="265" cy="62" r="5.5"/><circle cx="277" cy="62" r="5.5"/><circle cx="265" cy="178" r="5.5"/><circle cx="277" cy="178" r="5.5"/></g>
+        <circle cx="180" cy="120" r="30" fill="none" stroke="#FFC857" stroke-width="1.5" stroke-dasharray="4 5"/>
+        <text x="180" y="218" text-anchor="middle" font-family="IBM Plex Sans Thai,sans-serif" font-size="13" fill="#8FA8A2">สีของจุด = อะตอมที่เป็นเจ้าของอิเล็กตรอน</text>
+      </svg>
+    </header>
+
+    <section class="card">
+      <h2>ทุกด่านเดินตาม 4 ขั้นของการเขียนโครงสร้างลิวอิส</h2>
+      <ol class="steps">
+        <li><span class="n">1</span><div><h3>นับอิเล็กตรอนเวเลนซ์รวม</h3><p>รวมทุกอะตอม ไอออนบวกให้ลบตามประจุ ไอออนลบให้บวก</p></div></li>
+        <li><span class="n">2</span><div><h3>เลือกอะตอมกลาง</h3><p>H อยู่ปลายเสมอ อะตอมกลางมักสร้างพันธะได้มากและ EN ต่ำกว่า</p></div></li>
+        <li><span class="n">3</span><div><h3>สร้างพันธะเอง</h3><p>จับคู่อิเล็กตรอนเดี่ยว ใช้พันธะคู่ พันธะสาม หรือให้คู่อิเล็กตรอน จนครบออกเตต</p></div></li>
+        <li><span class="n">4</span><div><h3>ตรวจความเข้าใจ</h3><p>ตอบคำถามหนึ่งข้อจากโครงสร้างที่เพิ่งสร้าง</p></div></li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>วิธีต่อพันธะบนจอ</h2>
+      <div class="legend">
+        <div><svg class="lg" viewBox="0 0 44 26"><circle cx="8" cy="13" r="4.5" fill="#FF7466"/><path d="M15 13h14" stroke="#FFC857" stroke-width="1.6" stroke-dasharray="3 3"/><circle cx="36" cy="13" r="4.5" fill="#E9EEF0"/></svg><span><b>แตะจุดเดี่ยว → แตะอะตอมข้างเคียง</b><br>อิเล็กตรอนเดี่ยวจากสองอะตอมจับคู่ = พันธะโคเวเลนต์</span></div>
+        <div><svg class="lg" viewBox="0 0 44 26"><circle cx="5" cy="9" r="4" fill="#86A5FF"/><circle cx="5" cy="19" r="4" fill="#86A5FF"/><path d="M13 13h18m-5-5 5 5-5 5" stroke="#FFC857" stroke-width="1.6" fill="none"/><circle cx="38" cy="13" r="5" fill="none" stroke="#E9EEF0" stroke-width="1.5"/></svg><span><b>แตะคู่อิเล็กตรอน → แตะอะตอมที่รับ</b><br>ให้คู่ทั้งคู่ = พันธะโคออร์ดิเนตโคเวเลนต์</span></div>
+        <div><svg class="lg" viewBox="0 0 44 26"><path d="M4 13h36" stroke="#E6F0EC" stroke-width="2"/><path d="M17 5l10 16M27 5 17 21" stroke="#FF8A73" stroke-width="2"/></svg><span><b>แตะพันธะ</b><br>สลายพันธะ อิเล็กตรอนกลับสู่เจ้าของเดิม</span></div>
+        <div><svg class="lg" viewBox="0 0 44 26"><circle cx="22" cy="13" r="10" fill="none" stroke="#1F3439" stroke-width="3"/><path d="M22 3a10 10 0 0 1 9.5 13" fill="none" stroke="#FFC857" stroke-width="3"/></svg><span><b>วงขีดรอบอะตอม</b><br>จำนวนอิเล็กตรอนที่ล้อมรอบ ครบแล้วเปลี่ยนเป็นสีทอง</span></div>
+      </div>
+    </section>
+
+    <div id="chapters" style="display:grid;gap:26px"></div>
+
+    <section class="card tCard" id="teacherCard"></section>
+
+    <section class="card" id="resultCard">
+      <h2>ผลการเล่นของฉัน</h2>
+      <div class="result">
+        <div class="bigNum" id="rTotal">0<small> / 0</small></div>
+        <div style="display:grid;gap:8px">
+          <div class="bar"><i id="rBar" style="width:0%"></i></div>
+          <div class="small" id="rText">ยังไม่ได้เล่นด่านใด</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <label for="stuName" class="small">ชื่อ–ชั้น–เลขที่</label>
+        <input type="text" id="stuName" placeholder="เช่น ด.ญ.มณี ม.4/1 เลขที่ 12">
+        <button class="btn ghost" id="resetBtn">ล้างผลทั้งหมด</button>
+      </div>
+      <p class="small" style="margin:10px 0 0">ผลบันทึกไว้ในเครื่องนี้เท่านั้น — ครูสามารถให้นักเรียนแคปหน้าจอส่วนนี้ส่งเป็นหลักฐานได้</p>
+    </section>
+  </div>
+</section>
+
+<!-- ================= GAME ================= -->
+<section id="game" class="screen" hidden>
+  <div class="top">
+    <button class="icoBtn" id="backBtn" aria-label="กลับหน้าเลือกด่าน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="ttl"><div class="e" id="gEye">บทที่ 1</div><div class="f" id="gTitle">H₂</div></div>
+    <div class="score" id="gScore">คะแนน <b>0</b></div>
+    <button class="icoBtn" id="viewBtn" aria-label="สลับการแสดงพันธะแบบจุดหรือเส้น" title="จุด / เส้น"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="2" fill="currentColor"/><circle cx="11" cy="9" r="1.4" fill="currentColor"/><circle cx="11" cy="15" r="1.4" fill="currentColor"/><path d="M14 12h8"/></svg></button>
+    <button class="icoBtn langBtn" id="langBtn" type="button" aria-label="Language"></button>
+    <button class="icoBtn" id="camBtn" aria-label="เปิดหรือปิดกล้อง AR" title="กล้อง AR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+  </div>
+  <div class="stage" id="stage"><canvas id="cv"></canvas></div>
+  <div class="panel"><div class="pin" id="panel"></div></div>
+</section>
+
+<div id="guideBox" role="dialog" aria-modal="true" aria-labelledby="gTitleH" hidden></div>
+
+<script>
+(()=>{
+"use strict";
+const $=s=>document.querySelector(s);
+const LANG=(()=>{try{return localStorage.getItem('lewis-lang')==='en'?'en':'th'}catch(e){return 'th'}})();
+const TT=(a,b)=>LANG==='en'?b:a;
+const EL={
+  H:{V:1,per:1,col:'#E9EEF0',th:TT('ไฮโดรเจน','hydrogen')}, B:{V:3,per:2,col:'#F4A36C',th:TT('โบรอน','boron')},
+  C:{V:4,per:2,col:'#B9C6CC',th:TT('คาร์บอน','carbon')},  N:{V:5,per:2,col:'#86A5FF',th:TT('ไนโตรเจน','nitrogen')},
+  O:{V:6,per:2,col:'#FF7466',th:TT('ออกซิเจน','oxygen')}, F:{V:7,per:2,col:'#96E38F',th:TT('ฟลูออรีน','fluorine')},
+  P:{V:5,per:3,col:'#FFA95A',th:TT('ฟอสฟอรัส','phosphorus')}, S:{V:6,per:3,col:'#F3D65A',th:TT('ซัลเฟอร์','sulfur')},
+  Cl:{V:7,per:3,col:'#5AD6A6',th:TT('คลอรีน','chlorine')}
+};
+const ring=(n,r,start)=>Array.from({length:n},(_,k)=>{const a=(start+k*360/n)*Math.PI/180;return [+(Math.cos(a)*r).toFixed(3),+(Math.sin(a)*r).toFixed(3)]});
+const star=(c,el,pts)=>[[c,0,0],...pts.map(p=>[el,p[0],p[1]])];
+
+/* ---------------- LEVEL DATA ---------------- */
+const CH=[
+ {no:1,t:TT('พันธะเดี่ยว','Single bonds'),d:TT('อิเล็กตรอนเดี่ยวสองตัวจับคู่ = พันธะหนึ่งพันธะ','Two unpaired electrons pair up = one bond')},
+ {no:2,t:TT('พันธะคู่และพันธะสาม','Double and triple bonds'),d:TT('เมื่อพันธะเดียวยังไม่พอให้ครบแปด','When one bond is not enough to reach eight')},
+ {no:3,t:TT('พันธะโคออร์ดิเนตและเรโซแนนซ์','Coordinate bonds and resonance'),d:TT('เมื่ออะตอมหนึ่งให้คู่อิเล็กตรอนทั้งคู่','When one atom gives both electrons of a pair')},
+ {no:4,t:TT('ข้อยกเว้นกฎออกเตต','Exceptions to the octet rule'),d:TT('ออกเตตไม่ครบ และออกเตตขยาย','Incomplete octets and expanded octets')}
+];
+const L=[
+ {id:'h2',ch:1,f:'H₂',nm:TT('แก๊สไฮโดรเจน','hydrogen gas'),atoms:[['H',-.55,0],['H',.55,0]],edges:[[0,1]],targets:[[1]],total:2,choices:[1,2,4],
+  intro:TT('H แต่ละอะตอมมีอิเล็กตรอน 1 ตัว และต้องการ 2 ตัวให้เสถียรเหมือนแก๊สฮีเลียม','Each H atom has 1 electron and needs 2 to be as stable as helium'),
+  hints:[TT('แตะจุดอิเล็กตรอนของ H ตัวซ้าย แล้วแตะจุดของ H ตัวขวา (หรือลากจากจุดหนึ่งไปอีกจุดก็ได้)','Tap an electron dot on the left H, then tap the dot on the right H (or drag from one dot to the other)')],
+  learn:TT('อิเล็กตรอน 1 คู่ที่ใช้ร่วมกัน = <b>พันธะเดี่ยว</b> 1 พันธะ เขียนแทนด้วยเส้น H–H สังเกตสีของจุดในพันธะ: แต่ละอะตอมให้มาคนละ 1 ตัว','One shared pair of electrons = one <b>single bond</b>, drawn as the line H–H. Look at the dot colours in the bond: each atom gave 1 electron'),
+  q:{t:TT('ในโมเลกุล H₂ อะตอม H แต่ละอะตอมมีอิเล็กตรอนล้อมรอบกี่ตัว','In H₂, how many electrons surround each H atom?'),o:[TT('2 ตัว','2'),TT('1 ตัว','1'),TT('4 ตัว','4')],a:0,e:TT('คู่อิเล็กตรอนที่ใช้ร่วมกันนับให้ทั้งสองอะตอม H แต่ละอะตอมจึงมี 2 ตัว ครบตามกฎดูเอต (เหมือน He)','The shared pair counts for both atoms, so each H has 2, satisfying the duet rule (like He)')}},
+ {id:'f2',ch:1,f:'F₂',nm:TT('แก๊สฟลูออรีน','fluorine gas'),atoms:[['F',-.55,0],['F',.55,0]],edges:[[0,1]],targets:[[1]],total:14,choices:[7,14,16],
+  intro:TT('F มีอิเล็กตรอนเวเลนซ์ 7 ตัว — เป็นคู่ 3 คู่ และเดี่ยว 1 ตัว จุดไหนพร้อมสร้างพันธะ?','F has 7 valence electrons: 3 pairs and 1 unpaired electron. Which dot is ready to bond?'),
+  hints:[TT('เฉพาะอิเล็กตรอนเดี่ยว (จุดเดียว) เท่านั้นที่จับคู่กับอะตอมอื่นแบบปกติได้','Only unpaired electrons (single dots) can pair up with another atom in an ordinary bond'),TT('จับอิเล็กตรอนเดี่ยวของ F ทั้งสองอะตอมเข้าด้วยกัน','Join the unpaired electrons of the two F atoms')],
+  learn:TT('คู่อิเล็กตรอนที่ไม่ได้ใช้สร้างพันธะเรียกว่า <b>คู่อิเล็กตรอนโดดเดี่ยว</b> (lone pair) — F แต่ละอะตอมเหลือ 3 คู่','Electron pairs not used in bonding are called <b>lone pairs</b>. Each F keeps 3 of them'),
+  q:{t:TT('F₂ มีคู่อิเล็กตรอนโดดเดี่ยวทั้งโมเลกุลกี่คู่','How many lone pairs are there in the whole F₂ molecule?'),o:[TT('6 คู่','6 pairs'),TT('3 คู่','3 pairs'),TT('7 คู่','7 pairs')],a:0,e:TT('F แต่ละอะตอมมีคู่โดดเดี่ยว 3 คู่ รวม 6 คู่ (12 ตัว) บวกอิเล็กตรอนในพันธะ 2 ตัว = 14 ตัว เท่ากับอิเล็กตรอนเวเลนซ์รวมพอดี','Each F has 3 lone pairs, 6 pairs (12 electrons) in total, plus 2 electrons in the bond = 14, exactly the total number of valence electrons')}},
+ {id:'hcl',ch:1,f:'HCl',nm:TT('ไฮโดรเจนคลอไรด์','hydrogen chloride'),atoms:[['H',-.55,0],['Cl',.55,0]],edges:[[0,1]],targets:[[1]],total:8,choices:[8,7,18],
+  intro:TT('สองอะตอมต่างธาตุกัน แต่ใช้หลักเดิม: อิเล็กตรอนเดี่ยวของแต่ละฝ่ายจับคู่กัน','The two atoms are different elements, but the idea is the same: the unpaired electron of each atom pairs up'),
+  hints:[TT('H มีอิเล็กตรอนเดี่ยว 1 ตัว Cl ก็มีเดี่ยว 1 ตัว — จับคู่กัน','H has 1 unpaired electron and so does Cl: pair them')],
+  learn:TT('H ครบ 2 และ Cl ครบ 8 ด้วยพันธะเดี่ยวพันธะเดียว Cl ยังเหลือคู่โดดเดี่ยว 3 คู่','H reaches 2 and Cl reaches 8 with a single bond. Cl still has 3 lone pairs'),
+  q:{t:TT('ข้อใดถูกต้องเกี่ยวกับโมเลกุล HCl','Which statement about the HCl molecule is correct?'),o:[TT('Cl มีอิเล็กตรอนล้อมรอบ 8 ตัว และมีคู่โดดเดี่ยว 3 คู่','Cl is surrounded by 8 electrons and has 3 lone pairs'),TT('Cl มีอิเล็กตรอนล้อมรอบ 7 ตัว เพราะให้ H ไป 1 ตัว','Cl is surrounded by 7 electrons because it gave 1 to H'),TT('H มีคู่อิเล็กตรอนโดดเดี่ยว 1 คู่','H has 1 lone pair')],a:0,e:TT('อิเล็กตรอนคู่ในพันธะนับให้ทั้งสองอะตอม Cl จึงมี 6 (คู่โดดเดี่ยว) + 2 (ในพันธะ) = 8 ส่วน H มีเพียงคู่ที่อยู่ในพันธะ','The bonding pair counts for both atoms, so Cl has 6 (lone pairs) + 2 (in the bond) = 8, while H has only the pair in the bond')}},
+ {id:'h2o',ch:1,f:'H₂O',nm:TT('น้ำ','water'),atoms:[['O',0,-.15],['H',-.82,.42],['H',.82,.42]],edges:[[0,1],[0,2]],targets:[[1,1]],total:8,choices:[8,10,6],center:0,
+  centerWhy:TT('O มีอิเล็กตรอนเดี่ยว 2 ตัว สร้างพันธะได้ 2 พันธะ ส่วน H สร้างได้เพียง 1 พันธะ จึงต้องอยู่ปลาย','O has 2 unpaired electrons and can form 2 bonds, while H can form only 1 bond, so H must be on the outside'),
+  intro:TT('ออกซิเจนมีอิเล็กตรอนเดี่ยว 2 ตัว — สร้างพันธะได้กี่พันธะ?','Oxygen has 2 unpaired electrons. How many bonds can it form?'),
+  hints:[TT('จับคู่อิเล็กตรอนเดี่ยวของ O กับ H ทีละข้าง','Pair the unpaired electrons of O with each H in turn')],
+  learn:TT('O ใช้อิเล็กตรอนเดี่ยวทั้ง 2 ตัวสร้างพันธะกับ H และเหลือ <b>คู่โดดเดี่ยว 2 คู่</b> ซึ่งผลักให้โมเลกุลน้ำมีรูปร่างมุมงอ','O uses both unpaired electrons to bond with H and keeps <b>2 lone pairs</b>, which push the water molecule into a bent shape'),
+  q:{t:TT('จำนวนพันธะโคเวเลนต์ปกติที่อะตอมหนึ่งสร้างได้ ขึ้นกับอะไรมากที่สุด','What mainly decides how many ordinary covalent bonds an atom forms?'),o:[TT('จำนวนอิเล็กตรอนเดี่ยวของอะตอมนั้น','The number of unpaired electrons on that atom'),TT('จำนวนคู่อิเล็กตรอนโดดเดี่ยว','The number of lone pairs'),TT('เลขอะตอม','The atomic number')],a:0,e:TT('อิเล็กตรอนเดี่ยวแต่ละตัวจับคู่ได้ 1 พันธะ O มีเดี่ยว 2 ตัวจึงสร้าง 2 พันธะ N มี 3 ตัวสร้าง 3 พันธะ C มี 4 ตัวสร้าง 4 พันธะ','Each unpaired electron can form 1 bond: O has 2 and forms 2 bonds, N has 3 and forms 3, C has 4 and forms 4')}},
+ {id:'nh3',ch:1,f:'NH₃',nm:TT('แอมโมเนีย','ammonia'),atoms:[['N',0,-.2],['H',-.9,.25],['H',.9,.25],['H',0,.85]],edges:[[0,1],[0,2],[0,3]],targets:[[1,1,1]],total:8,choices:[8,6,11],center:0,
+  centerWhy:TT('N สร้างพันธะได้ 3 พันธะ ส่วน H สร้างได้เพียง 1 พันธะ','N can form 3 bonds, while H can form only 1'),
+  intro:TT('ไนโตรเจนมีอิเล็กตรอนเดี่ยว 3 ตัว และคู่อีก 1 คู่','Nitrogen has 3 unpaired electrons and one more pair'),
+  hints:[TT('สร้างพันธะ N–H ทีละพันธะด้วยอิเล็กตรอนเดี่ยวของ N','Build the N–H bonds one at a time with the unpaired electrons of N')],
+  learn:TT('N สร้างพันธะกับ H ได้ 3 พันธะ และเหลือคู่โดดเดี่ยว 1 คู่ — คู่นี้จะมีบทบาทสำคัญในบทที่ 3','N forms 3 bonds with H and keeps 1 lone pair. That pair becomes important in chapter 3'),
+  q:{t:TT('NH₃ มีคู่อิเล็กตรอนร่วมพันธะ และคู่อิเล็กตรอนโดดเดี่ยว อย่างละกี่คู่','How many bonding pairs and lone pairs does NH₃ have?'),o:[TT('3 คู่ และ 1 คู่','3 bonding pairs and 1 lone pair'),TT('3 คู่ และ 0 คู่','3 bonding pairs and 0 lone pairs'),TT('4 คู่ และ 1 คู่','4 bonding pairs and 1 lone pair')],a:0,e:TT('N–H 3 พันธะ = 3 คู่ร่วมพันธะ บวกคู่โดดเดี่ยวบน N 1 คู่ รวม 4 คู่ = 8 ตัว','3 N–H bonds = 3 bonding pairs, plus 1 lone pair on N: 4 pairs = 8 electrons')}},
+ {id:'ch4',ch:1,f:'CH₄',nm:TT('มีเทน','methane'),atoms:star('C','H',[[0,-1],[1,0],[0,1],[-1,0]]),edges:[[0,1],[0,2],[0,3],[0,4]],targets:[[1,1,1,1]],total:8,choices:[8,4,5],center:0,
+  centerWhy:TT('C มีอิเล็กตรอนเดี่ยว 4 ตัว สร้างพันธะได้มากที่สุด','C has 4 unpaired electrons, so it can form the most bonds'),
+  intro:TT('คาร์บอนมีอิเล็กตรอนเดี่ยวถึง 4 ตัว','Carbon has as many as 4 unpaired electrons'),
+  hints:[TT('ใช้อิเล็กตรอนเดี่ยวของ C ทั้ง 4 ตัว จับคู่กับ H ทั้ง 4 อะตอม','Use all 4 unpaired electrons of C to pair with the 4 H atoms')],
+  learn:TT('C ใช้อิเล็กตรอนทั้ง 4 ตัวสร้างพันธะ จึง<b>ไม่มีคู่โดดเดี่ยว</b>เลย — เทียบกับ NH₃ (1 คู่) และ H₂O (2 คู่)','C uses all 4 electrons in bonds, so it has <b>no lone pairs</b> at all. Compare NH₃ (1 pair) and H₂O (2 pairs)'),
+  q:{t:TT('เปรียบเทียบ CH₄ NH₃ และ H₂O ข้อใดถูกต้อง','Comparing CH₄, NH₃ and H₂O, which statement is correct?'),o:[TT('อะตอมกลางทุกตัวมีอิเล็กตรอนล้อมรอบ 8 ตัว แต่มีคู่โดดเดี่ยว 0, 1, 2 คู่ตามลำดับ','Every central atom is surrounded by 8 electrons, but they have 0, 1 and 2 lone pairs respectively'),TT('อะตอมกลางมีอิเล็กตรอนล้อมรอบ 4, 3, 2 ตัวตามลำดับ','The central atoms are surrounded by 4, 3 and 2 electrons respectively'),TT('ทั้งสามโมเลกุลไม่มีคู่อิเล็กตรอนโดดเดี่ยว','None of the three molecules has a lone pair')],a:0,e:TT('อะตอมกลางทั้งสามครบออกเตตเหมือนกัน ต่างกันที่แบ่งเป็นคู่ร่วมพันธะกับคู่โดดเดี่ยวอย่างไร','All three central atoms have a full octet; they differ in how it is split between bonding pairs and lone pairs')}},
+
+ {id:'o2',ch:2,f:'O₂',nm:TT('แก๊สออกซิเจน','oxygen gas'),atoms:[['O',-.55,0],['O',.55,0]],edges:[[0,1]],targets:[[2]],total:12,choices:[6,12,16],
+  intro:TT('สร้างพันธะแรกแล้ว O แต่ละอะตอมครบ 8 หรือยัง? ดูวงขีดรอบอะตอม','After the first bond, does each O have 8 yet? Look at the ring of ticks around each atom'),
+  hints:[TT('หลังพันธะแรก O มีเพียง 7 ตัว และยังเหลืออิเล็กตรอนเดี่ยว','After the first bond, O has only 7 and still has an unpaired electron'),TT('จับอิเล็กตรอนเดี่ยวที่เหลือระหว่าง O คู่เดิมอีกครั้ง → พันธะคู่','Pair the remaining unpaired electrons between the same two O atoms again → a double bond')],
+  learn:TT('อิเล็กตรอนร่วมกัน 2 คู่ = <b>พันธะคู่</b> O=O ทั้งสองอะตอมครบ 8','Two shared pairs = a <b>double bond</b> O=O. Both atoms reach 8'),
+  q:{t:TT('พันธะคู่หมายถึงข้อใด','What does a double bond mean?'),o:[TT('สองอะตอมใช้อิเล็กตรอนร่วมกัน 2 คู่ (4 ตัว)','Two atoms share 2 pairs of electrons (4 electrons)'),TT('สองอะตอมใช้อิเล็กตรอนร่วมกัน 2 ตัว','Two atoms share 2 electrons'),TT('อะตอมหนึ่งมีพันธะเดี่ยวกับอะตอมอื่น 2 อะตอม','One atom has single bonds to 2 other atoms')],a:0,e:TT('พันธะเดี่ยว = 1 คู่ (2 ตัว) พันธะคู่ = 2 คู่ (4 ตัว) พันธะสาม = 3 คู่ (6 ตัว)','Single bond = 1 pair (2 electrons), double bond = 2 pairs (4 electrons), triple bond = 3 pairs (6 electrons)')}},
+ {id:'n2',ch:2,f:'N₂',nm:TT('แก๊สไนโตรเจน','nitrogen gas'),atoms:[['N',-.55,0],['N',.55,0]],edges:[[0,1]],targets:[[3]],total:10,choices:[5,10,14],
+  intro:TT('N แต่ละอะตอมมีอิเล็กตรอนเดี่ยว 3 ตัว','Each N atom has 3 unpaired electrons'),
+  hints:[TT('จับคู่อิเล็กตรอนเดี่ยวระหว่าง N ทั้งสองไปเรื่อย ๆ จนไม่เหลือเดี่ยว','Keep pairing unpaired electrons between the two N atoms until none are left')],
+  learn:TT('<b>พันธะสาม</b> N≡N ใช้อิเล็กตรอนร่วม 3 คู่ เป็นพันธะที่แข็งแรงมาก N₂ ในอากาศจึงเกิดปฏิกิริยาได้ยาก','A <b>triple bond</b> N≡N shares 3 pairs. It is very strong, which is why N₂ in the air reacts so reluctantly'),
+  q:{t:TT('N₂ มีอิเล็กตรอนที่ใช้ร่วมพันธะทั้งหมดกี่ตัว','How many electrons are shared in the bonds of N₂?'),o:[TT('6 ตัว','6'),TT('3 ตัว','3'),TT('10 ตัว','10')],a:0,e:TT('พันธะสาม = 3 คู่ = 6 ตัว ที่เหลืออีก 4 ตัวเป็นคู่โดดเดี่ยวบน N อะตอมละ 1 คู่','Triple bond = 3 pairs = 6 electrons. The other 4 electrons are lone pairs, 1 pair on each N')}},
+ {id:'co2',ch:2,f:'CO₂',nm:TT('คาร์บอนไดออกไซด์','carbon dioxide'),atoms:[['C',0,0],['O',-1.05,0],['O',1.05,0]],edges:[[0,1],[0,2]],targets:[[2,2]],total:16,choices:[16,12,18],center:0,
+  centerWhy:TT('C สร้างพันธะได้ 4 พันธะ มากกว่า O (2 พันธะ) และมีค่า EN ต่ำกว่า','C can form 4 bonds, more than O (2 bonds), and has a lower EN'),
+  intro:TT('C มีอิเล็กตรอนเดี่ยว 4 ตัว ส่วน O แต่ละข้างมีเดี่ยว 2 ตัว','C has 4 unpaired electrons, and each O has 2'),
+  hints:[TT('C ต้องแบ่งอิเล็กตรอนเดี่ยวให้ O ข้างละ 2 ตัว','C must share its unpaired electrons with O, 2 on each side'),TT('สร้างพันธะคู่กับ O ทั้งซ้ายและขวา','Make a double bond to the O on both the left and the right')],
+  learn:TT('O=C=O : C สร้างพันธะคู่ 2 พันธะ รวมเป็น 4 พันธะพอดี และไม่มีคู่โดดเดี่ยว','O=C=O: C forms 2 double bonds, exactly 4 bonds, and has no lone pairs'),
+  q:{t:TT('อะตอม C ใน CO₂ มีคู่อิเล็กตรอนโดดเดี่ยวกี่คู่','How many lone pairs does the C atom in CO₂ have?'),o:[TT('0 คู่','0'),TT('1 คู่','1'),TT('2 คู่','2')],a:0,e:TT('อิเล็กตรอนล้อมรอบ C ทั้ง 8 ตัวอยู่ในพันธะคู่สองพันธะทั้งหมด','All 8 electrons around C are in the two double bonds')}},
+ {id:'hcn',ch:2,f:'HCN',nm:TT('ไฮโดรเจนไซยาไนด์','hydrogen cyanide'),atoms:[['C',0,0],['H',-1.05,0],['N',1.05,0]],edges:[[0,1],[0,2]],targets:[[1,3]],total:10,choices:[10,9,11],center:0,
+  centerWhy:TT('H อยู่กลางไม่ได้ และ C สร้างพันธะได้ 4 พันธะ มากกว่า N (3 พันธะ)','H cannot be central, and C can form 4 bonds, more than N (3 bonds)'),
+  intro:TT('C ต้องสร้างพันธะรวม 4 พันธะ แบ่งให้ H และ N อย่างไร?','C must form 4 bonds in total. How should it split them between H and N?'),
+  hints:[TT('H รับได้เพียงพันธะเดี่ยว','H can take only a single bond'),TT('ที่เหลือ C ใช้สร้างพันธะสามกับ N','C uses the rest to form a triple bond with N')],
+  learn:TT('H–C≡N : C สร้างพันธะเดี่ยวกับ H และพันธะสามกับ N รวม 4 พันธะเช่นเดิม','H–C≡N: C forms a single bond to H and a triple bond to N, 4 bonds as always'),
+  q:{t:TT('อะตอม N ใน HCN มีคู่อิเล็กตรอนโดดเดี่ยวกี่คู่','How many lone pairs does the N atom in HCN have?'),o:[TT('1 คู่','1'),TT('0 คู่','0'),TT('2 คู่','2')],a:0,e:TT('N ใช้ 6 ตัวในพันธะสาม และเหลือคู่โดดเดี่ยว 1 คู่ รวม 8 ตัว','N uses 6 electrons in the triple bond and keeps 1 lone pair: 8 in total')}},
+ {id:'c2h4',ch:2,f:'C₂H₄',nm:TT('เอทีน','ethene'),atoms:[['C',-.5,0],['C',.5,0],['H',-1.15,-.75],['H',-1.15,.75],['H',1.15,-.75],['H',1.15,.75]],edges:[[0,1],[0,2],[0,3],[1,4],[1,5]],targets:[[2,1,1,1,1]],total:12,choices:[12,10,14],
+  intro:TT('โมเลกุลนี้มีอะตอมกลางสองตัว — โครงร่างวางไว้ให้แล้ว','This molecule has two central atoms. The skeleton is already laid out'),
+  hints:[TT('สร้าง C–H ให้ครบ 4 พันธะก่อน','Make all 4 C–H bonds first'),TT('C แต่ละตัวยังเหลือเดี่ยว 1 ตัว และมีเพียง 7 — ต้องเพิ่มพันธะระหว่าง C กับ C','Each C still has 1 unpaired electron and only 7 in total, so add another bond between C and C')],
+  learn:TT('C=C พันธะคู่ระหว่างคาร์บอน เป็นลักษณะของสารอินทรีย์กลุ่ม<b>แอลคีน</b>','C=C, a double bond between carbon atoms, is the mark of the <b>alkenes</b>'),
+  q:{t:TT('C₂H₄ มีคู่อิเล็กตรอนร่วมพันธะทั้งหมดกี่คู่','How many bonding pairs are there in C₂H₄?'),o:[TT('6 คู่','6'),TT('5 คู่','5'),TT('4 คู่','4')],a:0,e:TT('C–H 4 คู่ + C=C 2 คู่ = 6 คู่ (12 ตัว) เท่ากับอิเล็กตรอนเวเลนซ์รวม จึงไม่มีคู่โดดเดี่ยวเลย','4 C–H pairs + 2 C=C pairs = 6 pairs (12 electrons), equal to the total valence electrons, so there are no lone pairs')}},
+
+ {id:'nh4',ch:3,f:'NH₄⁺',nm:TT('แอมโมเนียมไอออน','ammonium ion'),charge:1,atoms:star('N','H',[[0,-1],[1,0],[0,1]]).concat([['H',-1,0,{s:0,p:0,ion:1}]]),edges:[[0,1],[0,2],[0,3],[0,4]],targets:[[1,1,1,1]],total:8,choices:[9,8,10],
+  intro:TT('H⁺ คือ H ที่เสียอิเล็กตรอนไปแล้ว ไม่มีจุดให้จับคู่เลย — ใครจะช่วยได้?','H⁺ is an H atom that has lost its electron, so it has no dot to pair with. Who can help?'),
+  hints:[TT('สร้างพันธะ N–H ปกติ 3 พันธะก่อน','Make the 3 ordinary N–H bonds first'),TT('แตะคู่อิเล็กตรอนโดดเดี่ยวของ N แล้วแตะ H⁺ — N ให้ทั้งคู่','Tap the lone pair on N, then tap H⁺: N gives both electrons')],
+  learn:TT('พันธะที่คู่อิเล็กตรอนมาจากอะตอมเดียว = <b>พันธะโคออร์ดิเนตโคเวเลนต์</b> (สังเกตจุดสีเดียวกันสองจุด) เมื่อเกิดแล้ว พันธะ N–H ทั้งสี่เหมือนกันทุกประการ ประจุ +1 ของไอออนอยู่ที่ N (ประจุฟอร์มัล)','A bond whose pair comes from one atom = a <b>coordinate covalent bond</b> (notice the two dots of the same colour). Once formed, all four N–H bonds are identical. The ion’s +1 charge sits on N (formal charge)'),
+  q:{t:TT('พันธะโคออร์ดิเนตโคเวเลนต์ต่างจากพันธะโคเวเลนต์ทั่วไปอย่างไร','How does a coordinate covalent bond differ from an ordinary covalent bond?'),o:[TT('คู่อิเล็กตรอนที่ใช้ร่วมมาจากอะตอมเดียว','The shared pair comes from only one atom'),TT('เกิดจากการถ่ายโอนอิเล็กตรอนไปทั้งหมด','Electrons are transferred completely'),TT('ใช้อิเล็กตรอนร่วมกัน 2 คู่เสมอ','It always shares 2 pairs of electrons')],a:0,e:TT('ต่างกันแค่ "ที่มา" ของอิเล็กตรอน — N ให้คู่ของตัวเองทั้งคู่แก่ H⁺ ส่วนตัวพันธะที่ได้ก็เป็นคู่อิเล็กตรอนร่วมเหมือนเดิม','Only the "source" of the electrons differs: N gives both electrons of its own pair to H⁺, and the bond formed is still a shared pair')}},
+ {id:'co',ch:3,f:'CO',nm:TT('คาร์บอนมอนอกไซด์','carbon monoxide'),atoms:[['C',-.55,0,{s:2,p:1}],['O',.55,0]],edges:[[0,1]],targets:[[3]],total:10,choices:[10,8,12],
+  intro:TT('ในโมเลกุลนี้ C จัดอิเล็กตรอนเป็นเดี่ยว 2 ตัว + คู่ 1 คู่ ลองทำให้ทั้ง C และ O ครบ 8','In this molecule C arranges its electrons as 2 unpaired + 1 pair. Try to give both C and O an octet'),
+  hints:[TT('จับคู่อิเล็กตรอนเดี่ยวก่อน จะได้ C=O','Pair the unpaired electrons first to get C=O'),TT('ตอนนี้ C มีเพียง 6 — O ยังมีคู่โดดเดี่ยว ลองให้ O ให้คู่อิเล็กตรอนแก่ C','Now C has only 6, and O still has lone pairs. Let O give a pair to C')],
+  learn:TT('C≡O เป็นพันธะสามที่มีพันธะโคออร์ดิเนต 1 พันธะ (O เป็นผู้ให้) ประจุฟอร์มัลจึงเป็น C (−1) และ O (+1)','C≡O is a triple bond that includes 1 coordinate bond (O is the donor), so the formal charges are C (−1) and O (+1)'),
+  q:{t:TT('พันธะสามใน CO ประกอบด้วยข้อใด','What makes up the triple bond in CO?'),o:[TT('พันธะโคเวเลนต์ปกติ 2 พันธะ + พันธะโคออร์ดิเนต 1 พันธะที่ O ให้คู่อิเล็กตรอน','2 ordinary covalent bonds + 1 coordinate bond in which O donates the pair'),TT('พันธะโคเวเลนต์ปกติ 3 พันธะ','3 ordinary covalent bonds'),TT('พันธะโคออร์ดิเนต 3 พันธะ','3 coordinate bonds')],a:0,e:TT('C มีเดี่ยวเพียง 2 ตัว จับคู่ปกติได้ 2 พันธะ พันธะที่สามต้องมาจากคู่โดดเดี่ยวของ O','C has only 2 unpaired electrons, enough for 2 ordinary bonds; the third bond must come from a lone pair on O')}},
+ {id:'o3',ch:3,f:'O₃',nm:TT('โอโซน','ozone'),atoms:[['O',-.95,.4],['O',0,-.18],['O',.95,.4]],edges:[[0,1],[1,2]],targets:[[2,1],[1,2]],total:18,choices:[18,12,16],
+  intro:TT('โอโซน: ออกซิเจน 3 อะตอมต่อกันเป็นสาย O–O–O','Ozone: 3 oxygen atoms joined in a chain, O–O–O'),
+  hints:[TT('O กลางสร้างพันธะคู่กับ O ข้างใดข้างหนึ่งได้','The central O can form a double bond to either outer O'),TT('O กลางยังมีคู่โดดเดี่ยว — ให้คู่นั้นแก่ O อีกข้าง','The central O still has a lone pair: give it to the other outer O'),TT('O ที่รับคู่ ต้องจัดอิเล็กตรอนเดี่ยว 2 ตัวของตัวเองให้เป็นคู่: แตะจุดเดี่ยวของมัน แล้วแตะจุดเดี่ยวอีกจุดบนอะตอมเดียวกัน','The O that receives the pair must first pair up its own 2 unpaired electrons: tap one of its single dots, then tap the other single dot on the same atom')],
+  learn:TT('เขียนได้ 2 แบบ (พันธะคู่อยู่ซ้ายหรือขวา) เรียกว่า <b>เรโซแนนซ์</b> — ในความจริงพันธะ O–O ทั้งสองยาวเท่ากัน (128 pm) อยู่ระหว่างพันธะเดี่ยวกับพันธะคู่','It can be drawn 2 ways (double bond on the left or the right), called <b>resonance</b>. In reality both O–O bonds are the same length (128 pm), between a single and a double bond'),
+  q:{t:TT('ความยาวพันธะ O–O ทั้งสองพันธะในโมเลกุล O₃ จริง ๆ เป็นอย่างไร','What are the two O–O bond lengths in a real O₃ molecule like?'),o:[TT('ยาวเท่ากัน อยู่ระหว่างความยาวพันธะเดี่ยวและพันธะคู่','Equal, between the length of a single bond and a double bond'),TT('พันธะคู่สั้นกว่าพันธะเดี่ยวเสมอ','The double bond is always shorter than the single bond'),TT('สลับไปมาระหว่างสองแบบตลอดเวลา','They switch back and forth between the two forms')],a:0,e:TT('โครงสร้างเรโซแนนซ์ไม่ได้สลับไปมา โมเลกุลจริงเป็น "ค่าเฉลี่ย" ของทุกแบบ พันธะทั้งสองจึงเหมือนกัน','Resonance structures do not switch back and forth. The real molecule is an "average" of all the forms, so both bonds are identical')}},
+
+ {id:'bf3',ch:4,f:'BF₃',nm:TT('โบรอนไตรฟลูออไรด์','boron trifluoride'),atoms:[['B',0,.05],['F',0,-1],['F',.9,.55],['F',-.9,.55]],edges:[[0,1],[0,2],[0,3]],targets:[[1,1,1]],total:24,choices:[24,26,21],exc:{0:6},
+  intro:TT('โบรอนมีอิเล็กตรอนเวเลนซ์เพียง 3 ตัว','Boron has only 3 valence electrons'),
+  hints:[TT('สร้างพันธะเดี่ยว B–F ให้ครบ 3 พันธะ','Make all 3 B–F single bonds'),TT('B จะมีเพียง 6 ตัว — นี่คือข้อยกเว้นกฎออกเตต ไม่ต้องบังคับให้ครบ 8','B will have only 6. This is an exception to the octet rule, so do not force it to 8')],
+  learn:TT('B ใน BF₃ มีอิเล็กตรอนล้อมรอบเพียง <b>6 ตัว</b> (ออกเตตไม่ครบ) ข้อมูลการทดลองพบว่าพันธะ B–F ทั้งสามเหมือนกัน BF₃ จึงพร้อมรับคู่อิเล็กตรอนจากโมเลกุลอื่น','B in BF₃ is surrounded by only <b>6 electrons</b> (an incomplete octet). Experiments show all three B–F bonds are identical, so BF₃ readily accepts an electron pair from another molecule'),
+  q:{t:TT('BF₃ + NH₃ → F₃B–NH₃ พันธะระหว่าง B กับ N เป็นพันธะชนิดใด','BF₃ + NH₃ → F₃B–NH₃. What kind of bond forms between B and N?'),o:[TT('พันธะโคออร์ดิเนตโคเวเลนต์ โดย N ให้คู่อิเล็กตรอนแก่ B','A coordinate covalent bond, with N donating an electron pair to B'),TT('พันธะไอออนิก','An ionic bond'),TT('พันธะคู่','A double bond')],a:0,e:TT('B ขาดอิเล็กตรอน 2 ตัว ส่วน N ใน NH₃ มีคู่โดดเดี่ยว 1 คู่ N จึงให้คู่นั้นแก่ B ทำให้ B ครบ 8','B is 2 electrons short, while N in NH₃ has 1 lone pair, so N gives that pair to B and B reaches 8')}},
+ {id:'pcl5',ch:4,f:'PCl₅',nm:TT('ฟอสฟอรัสเพนตะคลอไรด์','phosphorus pentachloride'),atoms:[['P',0,0]].concat(ring(5,1.05,-90).map(p=>['Cl',p[0],p[1]])),edges:[[0,1],[0,2],[0,3],[0,4],[0,5]],targets:[[1,1,1,1,1]],total:40,choices:[40,26,35],
+  intro:TT('P มีอิเล็กตรอนเดี่ยวเพียง 3 ตัว แต่ต้องต่อกับ Cl ถึง 5 อะตอม!','P has only 3 unpaired electrons, yet it must join to 5 Cl atoms!'),
+  hints:[TT('สร้าง P–Cl ได้ 3 พันธะก่อน','Make 3 P–Cl bonds first'),TT('แตะคู่โดดเดี่ยวของ P แล้วกด "แยกคู่" — P อยู่คาบ 3 จึงมีอิเล็กตรอนล้อมรอบเกิน 8 ได้','Tap the lone pair on P and press "Split the pair". P is in period 3, so it can hold more than 8 electrons')],
+  learn:TT('P มีอิเล็กตรอนล้อมรอบ <b>10 ตัว</b> = ออกเตตขยาย (expanded octet) ทำได้เฉพาะธาตุคาบที่ 3 ขึ้นไป','P is surrounded by <b>10 electrons</b> = an expanded octet, possible only for elements in period 3 and beyond'),
+  q:{t:TT('สารในข้อใด "ไม่สามารถ" มีโครงสร้างแบบขยายออกเตตเช่นนี้ได้','Which substance "cannot" have an expanded-octet structure like this?'),o:[TT('NCl₅ เพราะ N อยู่คาบที่ 2','NCl₅, because N is in period 2'),'PCl₅','SF₆'],a:0,e:TT('ธาตุคาบที่ 2 (C N O F) มีอิเล็กตรอนล้อมรอบได้ไม่เกิน 8 จึงไม่มี NCl₅ แต่มี NCl₃','Period 2 elements (C, N, O, F) can hold at most 8 electrons, so NCl₅ does not exist, but NCl₃ does')}},
+ {id:'sf6',ch:4,f:'SF₆',nm:TT('ซัลเฟอร์เฮกซะฟลูออไรด์','sulfur hexafluoride'),atoms:[['S',0,0]].concat(ring(6,1.05,-90).map(p=>['F',p[0],p[1]])),edges:[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6]],targets:[[1,1,1,1,1,1]],total:48,choices:[48,42,36],
+  intro:TT('S มีอิเล็กตรอนเดี่ยว 2 ตัว แต่ต้องต่อกับ F 6 อะตอม','S has 2 unpaired electrons, but it must join to 6 F atoms'),
+  hints:[TT('S มีคู่โดดเดี่ยว 2 คู่ แยกได้ทั้งสองคู่','S has 2 lone pairs, and both can be split'),TT('แยกคู่ทั้งสองแล้ว S จะมีอิเล็กตรอนเดี่ยว 6 ตัว พอสำหรับ F ทั้ง 6','After splitting both pairs, S has 6 unpaired electrons, enough for all 6 F')],
+  learn:TT('S ล้อมรอบด้วยอิเล็กตรอน <b>12 ตัว</b> เป็นตัวอย่างออกเตตขยายที่ชัดเจนที่สุด','S is surrounded by <b>12 electrons</b>, the clearest example of an expanded octet'),
+  q:{t:TT('อะตอม S ใน SF₆ มีอิเล็กตรอนล้อมรอบกี่ตัว','How many electrons surround the S atom in SF₆?'),o:[TT('12 ตัว','12'),TT('8 ตัว','8'),TT('10 ตัว','10')],a:0,e:TT('พันธะเดี่ยว 6 พันธะ × 2 = 12 ตัว และ S ไม่เหลือคู่โดดเดี่ยว','6 single bonds × 2 = 12 electrons, and S has no lone pairs left')}}
+];
+L.forEach((lv,i)=>{lv.idx=i;lv.atoms=lv.atoms.map(a=>({el:a[0],x:a[1],y:a[2],...(a[3]||{})}));lv.max=10+(lv.center!=null?10:0)+30+20});
+const MAXALL=L.reduce((s,l)=>s+l.max,0);
+
+/* ---------------- PROGRESS ---------------- */
+const KEY='lewis-builder-v1';
+let PR={best:{},name:''};
+try{const r=localStorage.getItem(KEY);if(r)PR=Object.assign(PR,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(PR))}catch(e){}};
+
+/* ---------------- HELPERS ---------------- */
+function mix(a,b,t){const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const A=p(a),B=p(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('')}
+const perOf=i=>EL[G.lv.atoms[i].el].per;
+const maxE=i=>[0,2,8,12][perOf(i)];
+const ruleE=i=>perOf(i)===1?2:8;
+const sym=i=>G.lv.atoms[i].ion?'H⁺':G.lv.atoms[i].el;
+const order=k=>G.bonds[k].length;
+const edgeIdx=(i,j)=>G.lv.edges.findIndex(e=>(e[0]===i&&e[1]===j)||(e[0]===j&&e[1]===i));
+function bondSum(i){let s=0;G.lv.edges.forEach((e,k)=>{if(e[0]===i||e[1]===i)s+=order(k)});return s}
+const cnt=i=>G.atoms[i].s+2*G.atoms[i].p+2*bondSum(i);
+const fc=i=>EL[G.lv.atoms[i].el].V-(G.atoms[i].s+2*G.atoms[i].p)-bondSum(i);
+const atomOK=i=>G.atoms[i].s===0&&(cnt(i)>=ruleE(i)||(G.lv.exc&&G.lv.exc[i]===cnt(i)));
+const bname=n=>['',TT('พันธะเดี่ยว','single bond'),TT('พันธะคู่','double bond'),TT('พันธะสาม','triple bond')][n];
+const starsOf=p=>p>=.9?3:p>=.7?2:1;
+const starHTML=n=>[0,1,2].map(k=>`<span class="${k<n?'on':''}">★</span>`).join('');
+
+/* ---------------- GAME STATE ---------------- */
+let G=null;
+function startLevel(k){
+  const lv=L[k]; const seen={};
+  G={lv,k,phase:'count',atoms:lv.atoms.map(a=>{if(a.s!=null)return{s:a.s,p:a.p};const V=EL[a.el].V;return V<=4?{s:V,p:0}:{s:8-V,p:V-4}}),
+     bonds:lv.edges.map(()=>[]),hist:[],sel:null,mistakes:0,tryC:0,tryM:0,sc:{count:0,center:lv.center!=null?0:null,build:0,q:0},
+     hintI:0,showFC:false,doneT:0,flights:[],flash:[],msg:null,qPick:null,warned:{},
+     cols:lv.atoms.map(a=>{const n=seen[a.el]=(seen[a.el]||0)+1;const b=EL[a.el].col;return n%2===0?(a.el==='H'?'#9FD0DE':mix(b,'#ffffff',.45)):b}),
+     disp:null};
+  const tray=trayPos(lv); const useTray=lv.center!=null;
+  G.disp=lv.atoms.map((a,i)=>useTray?{x:tray[i].x,y:tray[i].y}:{x:a.x,y:a.y});
+  $('#home').hidden=true; $('#game').hidden=false;
+  $('#gEye').textContent=TT(`บทที่ ${lv.ch} · ด่าน ${k+1}/${L.length}`,`Chapter ${lv.ch} · Level ${k+1}/${L.length}`);
+  $('#gTitle').innerHTML=`${lv.f}<span>${lv.nm}</span>`;
+  resize(); renderPanel(); updScore();
+}
+function trayPos(lv){
+  const idx=lv.atoms.map((a,i)=>i).sort((a,b)=>(lv.atoms[a].el+a).localeCompare(lv.atoms[b].el+b));
+  const n=idx.length,out=[];idx.forEach((i,r)=>{out[i]={x:(r-(n-1)/2)*.95,y:0}});return out;
+}
+const inTray=()=>G.lv.center!=null&&(G.phase==='count'||G.phase==='center');
+function targetPos(i){return inTray()?trayPos(G.lv)[i]:{x:G.lv.atoms[i].x,y:G.lv.atoms[i].y}}
+function levelScore(){const s=G.sc;return s.count+(s.center||0)+s.build+s.q}
+function updScore(){
+  let tot=0;Object.values(PR.best).forEach(b=>tot+=b.total);
+  $('#gScore').innerHTML=G?TT(`<span class="lbl">ด่านนี้ </span><b>${levelScore()}</b>/${G.lv.max}`,`<span class="lbl">This level </span><b>${levelScore()}</b>/${G.lv.max}`):'';
+}
+
+/* ---------------- ACTIONS ---------------- */
+function snap(){G.hist.push(JSON.stringify({a:G.atoms,b:G.bonds}))}
+function say(type,html){G.msg={type,html};renderPanel()}
+function fail(html){G.mistakes++;G.sel=null;say('warn',html)}
+function capMsg(i){const p=perOf(i);return p===1?TT(`H รับอิเล็กตรอนได้สูงสุด 2 ตัว (กฎดูเอต)`,`H can hold at most 2 electrons (duet rule)`):p===2?TT(`${sym(i)} อยู่คาบที่ 2 มีอิเล็กตรอนล้อมรอบได้ไม่เกิน 8 ตัว`,`${sym(i)} is in period 2 and can be surrounded by at most 8 electrons`):TT(`${sym(i)} มีอิเล็กตรอนล้อมรอบได้ไม่เกิน 12 ตัว`,`${sym(i)} can be surrounded by at most 12 electrons`)}
+
+function doCov(i,j,k,fromPos,toHint){
+  const A=G.atoms;
+  if(A[j].s===0){fail(TT(`${sym(j)} ไม่มีอิเล็กตรอนเดี่ยวเหลือแล้ว — พันธะโคเวเลนต์ปกติต้องใช้อิเล็กตรอนเดี่ยวจาก<b>ทั้งสอง</b>อะตอม`,`${sym(j)} has no unpaired electrons left. An ordinary covalent bond needs an unpaired electron from <b>both</b> atoms`)+(A[i].p>0?TT(' (ถ้าต้องการให้คู่อิเล็กตรอน ให้แตะ "คู่" แทน)',' (to donate an electron pair, tap a "pair" instead)'):''));return}
+  if(order(k)>=3){fail(TT('ระหว่างสองอะตอมมีได้มากที่สุดแค่พันธะสาม','Two atoms can share at most a triple bond'));return}
+  if(cnt(i)+1>maxE(i)){fail(capMsg(i));return}
+  if(cnt(j)+1>maxE(j)){fail(capMsg(j));return}
+  const LO=layout();const pj=nearestDom(LO,j,'s',LO.A[i]);
+  snap();A[i].s--;A[j].s--;G.bonds[k].push({t:'c',a:i,b:j,T:performance.now()});G.sel=null;
+  launch(k,[fromPos,pj||LO.A[j]],[G.cols[i],G.cols[j]],i);
+  const n=order(k);
+  G.msg={type:'ok',html:TT(`${sym(i)} กับ ${sym(j)} ใช้อิเล็กตรอนร่วมกัน → <b>${bname(n)}</b>${n>1?' (อิเล็กตรอนร่วม '+n+' คู่)':''}`,`${sym(i)} and ${sym(j)} share electrons → <b>${bname(n)}</b>${n>1?' ('+n+' shared pairs)':''}`)};
+  evaluate();
+}
+function doDat(i,j,k,fromPos){
+  const A=G.atoms;
+  if(order(k)>=3){fail(TT('ระหว่างสองอะตอมมีได้มากที่สุดแค่พันธะสาม','Two atoms can share at most a triple bond'));return}
+  if(cnt(j)+2>maxE(j)){fail(capMsg(j)+TT(` — ${sym(j)} รับคู่อิเล็กตรอนเพิ่มไม่ได้`,` — ${sym(j)} cannot accept another electron pair`));return}
+  snap();A[i].p--;G.bonds[k].push({t:'d',d:i,T:performance.now()});G.sel=null;
+  launch(k,[fromPos,fromPos],[G.cols[i],G.cols[i]],i,true);
+  G.msg={type:'ok',html:TT(`<b>พันธะโคออร์ดิเนตโคเวเลนต์</b>: ${sym(i)} ให้คู่อิเล็กตรอนทั้งคู่แก่ ${sym(j)} (ตอนนี้เป็น${bname(order(k))})`,`<b>Coordinate covalent bond</b>: ${sym(i)} gives both electrons of a pair to ${sym(j)} (now a ${bname(order(k))})`)};
+  evaluate();
+}
+function doPair(i){
+  const a=G.atoms[i];if(a.s<2)return;snap();a.s-=2;a.p++;G.sel=null;G.flash.push({i,T:performance.now()});
+  G.msg={type:'info',html:TT(`${sym(i)} จัดอิเล็กตรอนเดี่ยว 2 ตัวให้เป็นคู่โดดเดี่ยว 1 คู่ (จำนวนอิเล็กตรอนไม่เปลี่ยน)`,`${sym(i)} pairs 2 unpaired electrons into 1 lone pair (the number of electrons does not change)`)};evaluate();
+}
+function doSplit(i){
+  const a=G.atoms[i];if(a.p<1)return;snap();a.p--;a.s+=2;G.sel=null;G.flash.push({i,T:performance.now()});
+  G.msg=perOf(i)>=3?{type:'gold',html:TT(`${sym(i)} แยกคู่อิเล็กตรอน → มีอิเล็กตรอนเดี่ยวเพิ่ม 2 ตัว สร้างพันธะได้มากขึ้น (ธาตุคาบ ${perOf(i)} มีอิเล็กตรอนล้อมรอบเกิน 8 ได้)`,`${sym(i)} splits an electron pair → 2 more unpaired electrons, so it can form more bonds (period ${perOf(i)} elements can hold more than 8)`)}
+    :{type:'info',html:TT(`${sym(i)} แยกคู่เป็นเดี่ยว 2 ตัวแล้ว — แต่ธาตุคาบ 2 ยังมีอิเล็กตรอนล้อมรอบได้ไม่เกิน 8 ตัวเหมือนเดิม`,`${sym(i)} has split a pair into 2 unpaired electrons, but a period 2 element still cannot hold more than 8`)};
+  evaluate();
+}
+function breakBond(k){
+  if(!order(k))return;snap();const c=G.bonds[k].pop();
+  if(c.t==='c'){G.atoms[c.a].s++;G.atoms[c.b].s++}else G.atoms[c.d].p++;
+  G.sel=null;G.showFC=false;const [i,j]=G.lv.edges[k];
+  G.msg={type:'info',html:TT(`สลายพันธะ ${sym(i)}–${sym(j)} 1 คู่ อิเล็กตรอน${c.t==='d'?'คู่นั้นกลับไปเป็นคู่โดดเดี่ยวของ '+sym(c.d):'กลับไปเป็นอิเล็กตรอนเดี่ยวของแต่ละอะตอม'}`,`Broke one ${sym(i)}–${sym(j)} pair. The electrons ${c.t==='d'?'return as a lone pair on '+sym(c.d):'return as unpaired electrons to each atom'}`)};renderPanel();
+}
+function undo(){if(!G.hist.length)return;const s=JSON.parse(G.hist.pop());G.atoms=s.a;G.bonds=s.b;G.sel=null;G.showFC=false;G.msg={type:'info',html:TT('ย้อนกลับ 1 ขั้น','Undid 1 step')};renderPanel()}
+function resetBuild(){if(!G.hist.length)return;const s=JSON.parse(G.hist[0]);G.hist=[];G.atoms=s.a;G.bonds=s.b;G.sel=null;G.showFC=false;G.msg={type:'info',html:TT('เริ่มสร้างใหม่ — อิเล็กตรอนทุกตัวกลับสู่อะตอมเดิม','Started over: every electron is back on its own atom')};renderPanel()}
+
+function evaluate(){
+  const lv=G.lv;
+  G.atoms.forEach((a,i)=>{if(cnt(i)>8&&!G.warned[i]){G.warned[i]=1;G.msg={type:'gold',html:TT(`${sym(i)} มีอิเล็กตรอนล้อมรอบ ${cnt(i)} ตัว — <b>ออกเตตขยาย</b> ทำได้เพราะ ${sym(i)} อยู่คาบที่ ${perOf(i)}`,`${sym(i)} is surrounded by ${cnt(i)} electrons, an <b>expanded octet</b>, possible because ${sym(i)} is in period ${perOf(i)}`)}}});
+  const allB=lv.edges.every((e,k)=>order(k)>0), noS=G.atoms.every(a=>a.s===0);
+  if(allB&&noS){
+    const ord=lv.edges.map((e,k)=>order(k));
+    if(lv.targets.some(t=>t.every((o,k)=>o===ord[k]))){complete();return}
+    G.mistakes++;
+    const short=G.atoms.map((a,i)=>i).filter(i=>cnt(i)<ruleE(i)&&!(lv.exc&&lv.exc[i]===cnt(i)));
+    if(short.length){G.msg={type:'warn',html:TT(`ไม่มีอิเล็กตรอนเดี่ยวเหลือแล้ว แต่ ${short.map(i=>sym(i)).join(', ')} มีอิเล็กตรอนล้อมรอบเพียง ${cnt(short[0])} ตัว — มีอะตอมไหนมีคู่โดดเดี่ยวให้ได้บ้าง? (แตะพันธะเพื่อสลายแล้วลองใหม่)`,`No unpaired electrons are left, but ${short.map(i=>sym(i)).join(', ')} is surrounded by only ${cnt(short[0])}. Which atom has a lone pair to give? (Tap a bond to break it and try again)`)}}
+    else{G.showFC=true;G.msg={type:'warn',html:TT(`ทุกอะตอมครบแล้วก็จริง แต่ยังไม่ใช่โครงสร้างที่เสถียรที่สุด — ดู<b>ประจุฟอร์มัล</b>ที่ขึ้นบนอะตอม โครงสร้างที่ดีควรมีประจุฟอร์มัลใกล้ 0 และข้อมูลการทดลองต้องสอดคล้อง ลองสลายพันธะแล้วสร้างใหม่`,`Every atom is complete, but this is not the most stable structure. Look at the <b>formal charges</b> on the atoms: a good structure keeps them close to 0 and agrees with experimental data. Break a bond and rebuild`)}}
+  }
+  renderPanel();
+}
+function complete(){
+  G.phase='complete';G.sel=null;G.doneT=performance.now();G.sc.build=Math.max(10,30-5*G.mistakes);G.msg=null;renderPanel();updScore();
+}
+
+/* ---------------- CANVAS ---------------- */
+const cv=$('#cv'),ctx=cv.getContext('2d');let W=0,H=0,DPR=1,lineMode=false;
+const par={x:0,y:0,tx:0,ty:0};
+function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR)}
+addEventListener('resize',()=>{if(G)resize()});
+function unitFor(){
+  const lv=G.lv;let ex=0,ey=0;const tp=lv.center!=null?trayPos(lv):[];
+  lv.atoms.forEach((a,i)=>{ex=Math.max(ex,Math.abs(a.x),tp[i]?Math.abs(tp[i].x):0);ey=Math.max(ey,Math.abs(a.y))});
+  return Math.max(28,Math.min(W/(2*(ex+.78)),H/(2*(ey+.8)),150));
+}
+const angDist=(a,b)=>{let d=Math.abs(a-b)%(2*Math.PI);return d>Math.PI?2*Math.PI-d:d};
+function layout(){
+  const lv=G.lv,u=unitFor(),cx=W/2+par.x,cy=H/2+par.y,tray=inTray();
+  const A=G.disp.map(d=>({x:cx+d.x*u,y:cy+d.y*u}));
+  const doms=[],bonds=[];const R=.25*u,DD=.41*u;
+  if(!tray)lv.edges.forEach((e,k)=>{const[i,j]=e;bonds.push({k,i,j,x:(A[i].x+A[j].x)/2,y:(A[i].y+A[j].y)/2})});
+  G.atoms.forEach((at,i)=>{
+    const occ=[],invite=[];
+    if(!tray)lv.edges.forEach((e,k)=>{if(e[0]!==i&&e[1]!==i)return;const j=e[0]===i?e[1]:e[0];const an=Math.atan2(A[j].y-A[i].y,A[j].x-A[i].x);if(order(k)>0)occ.push(an);else invite.push(an)});
+    const cands=[];for(let c=0;c<24;c++)cands.push(c*Math.PI/12-Math.PI/2);
+    const pick=()=>{let best=cands[0],bs=-1;cands.forEach(c=>{let m=occ.length?Math.min(...occ.map(o=>angDist(o,c))):Math.PI;if(Math.round(c*12/Math.PI)%6===0)m+=.06;if(m>bs+1e-6){bs=m;best=c}});return best};
+    const list=[];for(let q=0;q<at.s;q++)list.push('s');for(let q=0;q<at.p;q++)list.push('p');
+    let si=0,pi=0;
+    list.forEach(kind=>{
+      let a=null;
+      if(kind==='s'){const inv=invite.find(v=>!occ.some(o=>angDist(o,v)<.35));if(inv!=null){a=inv;invite.splice(invite.indexOf(inv),1)}}
+      if(a==null)a=pick();occ.push(a);
+      doms.push({i,kind,idx:kind==='s'?si++:pi++,a,x:A[i].x+Math.cos(a)*DD,y:A[i].y+Math.sin(a)*DD});
+    });
+  });
+  return {u,A,R,doms,bonds};
+}
+function nearestDom(LO,i,kind,p){let b=null,bd=1e9;LO.doms.forEach(d=>{if(d.i===i&&d.kind===kind){const dd=Math.hypot(d.x-p.x,d.y-p.y);if(dd<bd){bd=dd;b={x:d.x,y:d.y}}}});return b}
+function bondPairPos(LO,k,m){
+  const[i,j]=G.lv.edges[k];const a=LO.A[i],b=LO.A[j];const n=order(k);const dx=b.x-a.x,dy=b.y-a.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,nx=-uy,ny=ux;
+  const off=(m-(n-1)/2)*.17*LO.u,mx=(a.x+b.x)/2+nx*off,my=(a.y+b.y)/2+ny*off,s=.065*LO.u;
+  return [{x:mx-ux*s,y:my-uy*s},{x:mx+ux*s,y:my+uy*s}];
+}
+function launch(k,from,cols,i,dat){
+  const LO=layout();const to=bondPairPos(LO,k,order(k)-1);const [ii]=G.lv.edges[k];
+  const t=performance.now();
+  // to[0] sits near edge atom ii
+  const near=(i===ii);
+  if(dat){const f0=from[0];const sp=.065*LO.u;G.flights.push({x0:f0.x-sp,y0:f0.y,x1:to[0].x,y1:to[0].y,c:cols[0],T:t},{x0:f0.x+sp,y0:f0.y,x1:to[1].x,y1:to[1].y,c:cols[0],T:t});}
+  else{const a=near?to[0]:to[1],b=near?to[1]:to[0];G.flights.push({x0:from[0].x,y0:from[0].y,x1:a.x,y1:a.y,c:cols[0],T:t},{x0:from[1].x,y0:from[1].y,x1:b.x,y1:b.y,c:cols[1],T:t})}
+}
+function dot(x,y,r,c,al){ctx.globalAlpha=al==null?1:al;ctx.fillStyle=c;ctx.shadowColor=c;ctx.shadowBlur=r*2.2;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();ctx.shadowBlur=0;ctx.globalAlpha=1}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+const FLY=380;
+function frame(now){
+  requestAnimationFrame(frame);
+  if(!G||$('#game').hidden)return;
+  par.x+=(par.tx-par.x)*.08;par.y+=(par.ty-par.y)*.08;
+  G.disp.forEach((d,i)=>{const t=targetPos(i);d.x+=(t.x-d.x)*.14;d.y+=(t.y-d.y)*.14});
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
+  const LO=layout();G.lo=LO;const{u,A,R}=LO;const tray=inTray();
+  // glass slide
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;A.forEach(p=>{x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);x1=Math.max(x1,p.x);y1=Math.max(y1,p.y)});
+  const pad=.72*u;rr(x0-pad,y0-pad,x1-x0+2*pad,y1-y0+2*pad,18);ctx.fillStyle='rgba(9,19,23,.58)';ctx.fill();ctx.strokeStyle='rgba(230,240,236,.08)';ctx.lineWidth=1;ctx.stroke();
+  // bonds
+  if(!tray)G.lv.edges.forEach((e,k)=>{
+    const[i,j]=e,a=A[i],b=A[j],n=order(k);const dx=b.x-a.x,dy=b.y-a.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,nx=-uy,ny=ux;
+    if(n===0){ctx.setLineDash([4,6]);ctx.strokeStyle='rgba(230,240,236,.22)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(a.x+ux*R*1.15,a.y+uy*R*1.15);ctx.lineTo(b.x-ux*R*1.15,b.y-uy*R*1.15);ctx.stroke();ctx.setLineDash([]);return}
+    for(let m=0;m<n;m++){
+      const c=G.bonds[k][m];const age=now-c.T;const al=Math.max(0,Math.min(1,(age-FLY)/160));
+      const off=(m-(n-1)/2)*(lineMode?.1:.17)*u;
+      ctx.strokeStyle=`rgba(230,240,236,${lineMode?.92:.26})`;ctx.lineWidth=lineMode?2.6:2;
+      ctx.beginPath();ctx.moveTo(a.x+ux*R*1.1+nx*off,a.y+uy*R*1.1+ny*off);ctx.lineTo(b.x-ux*R*1.1+nx*off,b.y-uy*R*1.1+ny*off);ctx.stroke();
+      if(lineMode&&c.t==='d'){const acc=c.d===i?1:-1;const mx=(a.x+b.x)/2+nx*off,my=(a.y+b.y)/2+ny*off,s=.07*u;ctx.fillStyle='#FFC857';ctx.beginPath();ctx.moveTo(mx+ux*acc*s,my+uy*acc*s);ctx.lineTo(mx-ux*acc*s+nx*s*.7,my-uy*acc*s+ny*s*.7);ctx.lineTo(mx-ux*acc*s-nx*s*.7,my-uy*acc*s-ny*s*.7);ctx.fill()}
+      if(!lineMode){const pp=bondPairPos(LO,k,m);const ci=c.t==='c'?G.cols[i]:G.cols[c.d],cj=c.t==='c'?G.cols[j]:G.cols[c.d];dot(pp[0].x,pp[0].y,Math.max(3.2,.052*u),ci,al);dot(pp[1].x,pp[1].y,Math.max(3.2,.052*u),cj,al)}
+    }
+  });
+  // atoms
+  G.lv.atoms.forEach((at,i)=>{
+    const p=A[i],col=G.cols[i];
+    ctx.fillStyle='rgba(8,16,19,.94)';ctx.beginPath();ctx.arc(p.x,p.y,R,0,7);ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=2.2;ctx.beginPath();ctx.arc(p.x,p.y,R,0,7);ctx.stroke();
+    if(!tray||G.phase!=='count'){
+      const c=cnt(i),rule=ruleE(i),N=Math.max(rule,c),ok=atomOK(i),rr2=R+.07*u,gap=N>2?.12:.3;
+      for(let s=0;s<N;s++){const a0=-Math.PI/2+s*2*Math.PI/N+gap/2,a1=a0+2*Math.PI/N-gap;ctx.strokeStyle=s<c?(ok?(s>=8?'#FF9F43':'#FFC857'):'rgba(230,240,236,.78)'):'rgba(230,240,236,.12)';ctx.lineWidth=Math.max(2.5,.035*u);ctx.beginPath();ctx.arc(p.x,p.y,rr2,a0,a1);ctx.stroke()}
+    }
+    ctx.fillStyle=col;ctx.font=`700 ${Math.round(.3*u*(at.el.length>1?.85:1))}px "Chakra Petch",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(at.ion?'H⁺':at.el,p.x,p.y+1);
+    if(G.phase==='center'){ctx.setLineDash([3,5]);ctx.strokeStyle='rgba(255,200,87,.45)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,R+.14*u+Math.sin(now/300)*2,0,7);ctx.stroke();ctx.setLineDash([])}
+  });
+  // lone domains
+  const selD=G.sel;
+  LO.doms.forEach(d=>{
+    const col=G.cols[d.i],r=Math.max(3.2,.052*u);
+    if(d.kind==='s')dot(d.x,d.y,r,col);
+    else{const px=-Math.sin(d.a)*.065*u,py=Math.cos(d.a)*.065*u;dot(d.x+px,d.y+py,r,col);dot(d.x-px,d.y-py,r,col)}
+  });
+  // valid targets & selection
+  if(G.phase==='build'&&selD){
+    const pulse=.5+.5*Math.sin(now/220);
+    ctx.strokeStyle=`rgba(255,200,87,${.55+.45*pulse})`;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(selD.x,selD.y,.13*u+pulse*2,0,7);ctx.stroke();
+    G.lv.edges.forEach((e,k)=>{if(e[0]!==selD.i&&e[1]!==selD.i)return;const j=e[0]===selD.i?e[1]:e[0];if(order(k)>=3)return;
+      let okT=selD.kind==='s'?(G.atoms[j].s>0&&cnt(j)+1<=maxE(j)&&cnt(selD.i)+1<=maxE(selD.i)):(cnt(j)+2<=maxE(j));
+      if(!okT)return;ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(255,200,87,.55)';ctx.lineWidth=1.6;
+      if(selD.kind==='s')LO.doms.forEach(d=>{if(d.i===j&&d.kind==='s'){ctx.beginPath();ctx.arc(d.x,d.y,.11*u,0,7);ctx.stroke()}});
+      else{ctx.beginPath();ctx.arc(A[j].x,A[j].y,R+.16*u,0,7);ctx.stroke()}
+      ctx.setLineDash([])});
+    if(drag&&drag.moved&&G.ptr){ctx.strokeStyle='rgba(255,200,87,.7)';ctx.lineWidth=2;ctx.setLineDash([2,5]);ctx.beginPath();ctx.moveTo(selD.x,selD.y);ctx.lineTo(G.ptr.x,G.ptr.y);ctx.stroke();ctx.setLineDash([])}
+  }
+  // flights
+  G.flights=G.flights.filter(f=>{const t=(now-f.T)/FLY;if(t>=1.4)return false;const e=t>=1?1:1-Math.pow(1-t,3);const x=f.x0+(f.x1-f.x0)*e,y=f.y0+(f.y1-f.y0)*e-Math.sin(Math.min(1,t)*Math.PI)*.18*u;dot(x,y,Math.max(3.6,.06*u),f.c,t>=1?1-(t-1)/.4:1);return true});
+  G.flash=G.flash.filter(f=>{const t=(now-f.T)/500;if(t>1)return false;ctx.strokeStyle=`rgba(140,200,255,${1-t})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(A[f.i].x,A[f.i].y,R+(.2+.4*t)*u,0,7);ctx.stroke();return true});
+  // formal charges
+  if(!tray&&(G.showFC||G.phase==='complete'||G.phase==='question'||G.phase==='done')){
+    G.lv.atoms.forEach((a,i)=>{const f=fc(i);if(!f)return;const p=A[i],bx=p.x+R*.95,by=p.y-R*.95,rb=Math.max(9,.1*u);
+      ctx.fillStyle=f>0?'#FF8A73':'#8CC8FF';ctx.beginPath();ctx.arc(bx,by,rb,0,7);ctx.fill();
+      ctx.fillStyle='#0B1519';ctx.font=`700 ${Math.round(rb*1.25)}px "IBM Plex Mono",monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText((f>0?'+':'−')+(Math.abs(f)>1?Math.abs(f):''),bx,by+1)});
+  }
+  // completion bloom
+  if(G.doneT){const t=(now-G.doneT)/1400;if(t<1)A.forEach(p=>{ctx.strokeStyle=`rgba(255,200,87,${.8*(1-t)})`;ctx.lineWidth=3*(1-t)+.5;ctx.beginPath();ctx.arc(p.x,p.y,R+t*u*.9,0,7);ctx.stroke()})}
+  if(G.lv.charge&&!tray){ctx.fillStyle='#FFC857';ctx.font=`700 ${Math.round(.2*u)}px "Chakra Petch",sans-serif`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(TT('ประจุรวม +','Total charge +')+G.lv.charge,x0-pad+12,y0-pad+10)}
+}
+requestAnimationFrame(frame);
+
+/* ---------------- INPUT ---------------- */
+let drag=null;
+function ptOf(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function hit(p){
+  const LO=G.lo;if(!LO)return null;const u=LO.u,hr=Math.max(18,.14*u);
+  let best=null,bd=1e9;
+  LO.doms.forEach(d=>{const dd=Math.hypot(d.x-p.x,d.y-p.y);if(dd<hr&&dd<bd){bd=dd;best={t:'dom',...d}}});
+  if(best)return best;
+  for(const b of LO.bonds){if(order(b.k)>0&&Math.hypot(b.x-p.x,b.y-p.y)<Math.max(20,.2*u))return{t:'bond',k:b.k}}
+  for(let i=0;i<LO.A.length;i++){if(Math.hypot(LO.A[i].x-p.x,LO.A[i].y-p.y)<LO.R*1.35)return{t:'atom',i,x:LO.A[i].x,y:LO.A[i].y}}
+  return null;
+}
+cv.addEventListener('pointerdown',e=>{if(!G)return;const p=ptOf(e);G.ptr=p;const h=hit(p);drag={p0:p,h,moved:false,selAtDown:G.sel};onTap(h);try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+cv.addEventListener('pointermove',e=>{if(!G||!drag)return;const p=ptOf(e);G.ptr=p;if(Math.hypot(p.x-drag.p0.x,p.y-drag.p0.y)>12)drag.moved=true});
+cv.addEventListener('pointerup',e=>{if(!G||!drag)return;const p=ptOf(e);if(drag.moved&&G.sel&&G.phase==='build'){const h=hit(p);if(h&&!(h.t==='dom'&&h.i===G.sel.i&&h.kind===G.sel.kind&&h.idx===G.sel.idx))onTap(h)}drag=null});
+cv.addEventListener('pointercancel',()=>drag=null);
+
+function onTap(h){
+  if(G.phase==='center'){if(h&&(h.t==='atom'||h.t==='dom'))chooseCenter(h.i);return}
+  if(G.phase!=='build')return;
+  if(!h){if(G.sel){G.sel=null;renderPanel()}return}
+  if(h.t==='bond'){G.sel=null;breakBond(h.k);return}
+  const s=G.sel;
+  if(!s){if(h.t==='dom'){G.sel=h;G.msg=null;renderPanel()}else atomInfo(h.i);return}
+  if(h.t==='dom'&&h.i===s.i&&h.kind===s.kind&&h.idx===s.idx){G.sel=null;renderPanel();return}
+  if(h.i===s.i){
+    if(s.kind==='s'&&h.t==='dom'&&h.kind==='s'){doPair(s.i);return}
+    if(h.t==='dom'){G.sel=h;renderPanel()}else{G.sel=null;renderPanel()}return;
+  }
+  const k=edgeIdx(s.i,h.i);
+  if(k<0){G.sel=null;say('warn',TT(`${sym(s.i)} กับ ${sym(h.i)} ไม่ได้อยู่ติดกันในโครงร่าง — พันธะเกิดได้เฉพาะตามเส้นประ`,`${sym(s.i)} and ${sym(h.i)} are not next to each other in the skeleton. Bonds can form only along the dashed lines`));return}
+  if(s.kind==='s')doCov(s.i,h.i,k,{x:s.x,y:s.y});else doDat(s.i,h.i,k,{x:s.x,y:s.y});
+}
+function atomInfo(i){
+  const at=G.lv.atoms[i],e=EL[at.el];
+  say('info',TT(`<b>${sym(i)}</b> (${e.th}) คาบ ${e.per} · อิเล็กตรอนเวเลนซ์ ${at.ion?'0 (เสียไป 1 ตัว)':e.V} · ตอนนี้ล้อมรอบ <b>${cnt(i)}</b> ตัว เดี่ยว ${G.atoms[i].s} · คู่โดดเดี่ยว ${G.atoms[i].p}`,`<b>${sym(i)}</b> (${e.th}) period ${e.per} · valence electrons ${at.ion?'0 (lost 1)':e.V} · now surrounded by <b>${cnt(i)}</b> · unpaired ${G.atoms[i].s} · lone pairs ${G.atoms[i].p}`));
+}
+
+/* ---------------- PHASE FLOW ---------------- */
+function answerCount(v){
+  const lv=G.lv;G.tryC++;
+  if(v===lv.total){G.sc.count=G.tryC===1?10:G.tryC===2?5:0;G.countOK=true;G.msg={type:'ok',html:TT(`ถูกต้อง! ${breakdown(lv)}`,`Correct! ${breakdown(lv)}`)};}
+  else{G.msg={type:'warn',html:TT(`ยังไม่ใช่ — นับจุดรอบทุกอะตอมอีกครั้ง${lv.charge?' แล้วอย่าลืมว่าไอออนบวกเสียอิเล็กตรอนไปตามประจุ':''}`,`Not yet. Count the dots around every atom again${lv.charge?', and remember that a positive ion has lost electrons equal to its charge':''}`)}}
+  renderPanel();updScore();
+}
+function breakdown(lv){const m={};lv.atoms.forEach(a=>m[a.el]=(m[a.el]||0)+1);let s=Object.entries(m).map(([e,n])=>n>1?`${e} ${EL[e].V}×${n}`:`${e} ${EL[e].V}`).join(' + ');if(lv.charge)s+=TT(` − ${lv.charge} (ประจุ +${lv.charge})`,` − ${lv.charge} (charge +${lv.charge})`);return s+' = <b>'+lv.total+'</b>'}
+function toNext(){
+  if(G.phase==='count'){G.phase=G.lv.center!=null?'center':'build';G.msg=G.phase==='build'?{type:'info',html:G.lv.hints[0]&&G.k===0?G.lv.hints[0]:TT('แตะอิเล็กตรอนเดี่ยว (จุดเดียว) ของอะตอมหนึ่ง แล้วแตะอะตอมข้างเคียง','Tap an unpaired electron (single dot) on one atom, then tap a neighbouring atom')}:null}
+  else if(G.phase==='center'){G.phase='build';G.msg={type:'info',html:TT('โครงร่างพร้อมแล้ว — เส้นประคือตำแหน่งที่สร้างพันธะได้','The skeleton is ready. The dashed lines show where bonds can form')}}
+  else if(G.phase==='complete'){G.phase='question';G.msg=null}
+  renderPanel();
+}
+function chooseCenter(i){
+  if(G.centerOK)return;const lv=G.lv;G.tryM++;
+  if(i===lv.center){G.centerOK=true;G.sc.center=G.tryM===1?10:G.tryM===2?5:0;G.msg={type:'ok',html:TT(`ถูกต้อง! ${lv.centerWhy}`,`Correct! ${lv.centerWhy}`)};setTimeout(()=>{if(G&&G.phase==='center'){G.phase='build';G.msg={type:'ok',html:TT(`${lv.centerWhy} — เส้นประคือตำแหน่งที่สร้างพันธะได้`,`${lv.centerWhy}. The dashed lines show where bonds can form`)};renderPanel()}},900)}
+  else G.msg={type:'warn',html:lv.atoms[i].el==='H'?TT('H สร้างพันธะได้เพียง 1 พันธะ จึงอยู่ตรงกลางไม่ได้ — ลองใหม่','H can form only 1 bond, so it cannot be in the centre. Try again'):TT('อะตอมกลางมักเป็นอะตอมที่สร้างพันธะได้มากกว่าและมีค่า EN ต่ำกว่า — ลองใหม่','The central atom is usually the one that forms more bonds and has the lower EN. Try again')};
+  renderPanel();updScore();
+}
+function answerQ(di){
+  if(G.qPick!=null)return;const q=G.lv.q;const ord=qOrder();G.qPick=di;const ok=ord[di]===q.a;G.sc.q=ok?20:0;G.phase='done';
+  const tot=levelScore(),pct=tot/G.lv.max,st=starsOf(pct);const prev=PR.best[G.lv.id];
+  if(!prev||tot>prev.total)PR.best[G.lv.id]={total:tot,max:G.lv.max,stars:st};save();renderPanel();updScore();
+}
+const qOrder=()=>{const n=G.lv.q.o.length,r=G.k%n;return Array.from({length:n},(_,i)=>(i+r)%n)};
+
+/* ---------------- PANEL ---------------- */
+function phaseChips(){
+  const ph=[['count',TT('นับอิเล็กตรอน','Count electrons')],...(G.lv.center!=null?[['center',TT('อะตอมกลาง','Central atom')]]:[]),['build',TT('สร้างพันธะ','Build bonds')],['question',TT('ตรวจความเข้าใจ','Check understanding')]];
+  const order_=['count','center','build','complete','question','done'];const cur=G.phase==='complete'?'build':G.phase==='done'?'question':G.phase;
+  return `<div class="phases">${ph.map(([k,t],n)=>{const st=order_.indexOf(k)<order_.indexOf(cur)||(G.phase==='complete'&&k==='build')||(G.phase==='done'&&k==='question')?'fin':k===cur?'cur':'';return `<span class="ph ${st}">${n+1} ${t}</span>`}).join('')}</div>`;
+}
+function ledger(){
+  const lv=G.lv;let inB=0,lone=0,sg=0;lv.edges.forEach((e,k)=>inB+=2*order(k));G.atoms.forEach(a=>{lone+=2*a.p;sg+=a.s});
+  const chips=lv.atoms.map((a,i)=>{const c=cnt(i),ok=atomOK(i),ex=lv.exc&&lv.exc[i]===c&&G.atoms[i].s===0;return `<span class="chip ${ex?'ex':ok?'ok':''}">${sym(i)} ${c}/${c>8?c:ruleE(i)}${ok?' ✓':''}</span>`}).join('');
+  return TT(`<div class="ledger"><div class="tot"><b>${lv.total}</b><span>เวเลนซ์รวม</span></div><div><b>${inB}</b><span>ในพันธะ · ${inB/2} คู่</span></div><div><b>${lone}</b><span>คู่โดดเดี่ยว · ${lone/2} คู่</span></div><div><b>${sg}</b><span>เดี่ยว รอจับคู่</span></div></div><div class="chips">${chips}</div>`,`<div class="ledger"><div class="tot"><b>${lv.total}</b><span>valence total</span></div><div><b>${inB}</b><span>in bonds · ${inB/2} pair${inB/2===1?'':'s'}</span></div><div><b>${lone}</b><span>lone pairs · ${lone/2} pair${lone/2===1?'':'s'}</span></div><div><b>${sg}</b><span>unpaired, waiting</span></div></div><div class="chips">${chips}</div>`);
+}
+const I={undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>',
+ reset:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
+ hint:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>',
+ next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'};
+function renderPanel(){
+  if(!G)return;const lv=G.lv,m=G.msg;let h=phaseChips();
+  const msg=m?`<div class="msg ${m.type}">${m.html}</div>`:'';
+  if(G.phase==='count'){
+    h+=TT(`<p class="lead">${lv.intro}</p><p class="q">นับจุดอิเล็กตรอนรอบทุกอะตอมบนจอ${lv.charge?' (อย่าลืมประจุของไอออน)':''} — มีอิเล็กตรอนเวเลนซ์รวมกี่ตัว?</p>`,`<p class="lead">${lv.intro}</p><p class="q">Count the electron dots around every atom on screen${lv.charge?' (remember the charge of the ion)':''}. How many valence electrons are there in total?</p>`);
+    h+=`<div class="choices">${lv.choices.map(c=>`<button class="btn choice" data-act="count" data-v="${c}" ${G.countOK?'disabled':''}>${c}</button>`).join('')}</div>${msg}`;
+    if(G.countOK)h+=TT(`<div class="row"><button class="btn primary" data-act="next">${I.next}ไปขั้นต่อไป</button></div>`,`<div class="row"><button class="btn primary" data-act="next">${I.next}Next step</button></div>`);
+  }else if(G.phase==='center'){
+    h+=TT(`<p class="q">แตะอะตอมที่ควรอยู่<b>ตรงกลาง</b>ของโครงร่าง</p><p class="ctx">เคล็ดลับ: H อยู่ปลายเสมอ · อะตอมกลางมักสร้างพันธะได้มากที่สุด และมีค่า EN ต่ำกว่าอะตอมรอบข้าง</p>${msg}`,`<p class="q">Tap the atom that should be in the <b>centre</b> of the skeleton</p><p class="ctx">Tip: H is always on the outside · the central atom usually forms the most bonds and has a lower EN than the atoms around it</p>${msg}`);
+  }else if(G.phase==='build'){
+    const s=G.sel;let ctxT=TT('แตะ<b>จุดเดี่ยว</b>เพื่อเริ่มจับคู่ · แตะ<b>คู่</b>อิเล็กตรอนเพื่อให้คู่ · แตะ<b>พันธะ</b>เพื่อสลาย · แตะอะตอมเพื่อดูข้อมูล','Tap an <b>unpaired dot</b> to start pairing · tap a <b>pair</b> to donate it · tap a <b>bond</b> to break it · tap an atom for its details');
+    let extra='';
+    if(s&&s.kind==='s'){ctxT=TT(`เลือก<b>อิเล็กตรอนเดี่ยว</b>ของ ${sym(s.i)} แล้ว → แตะอิเล็กตรอนเดี่ยวของอะตอมข้างเคียง (หรือแตะอิเล็กตรอนเดี่ยวอีกตัวบน ${sym(s.i)} เพื่อจับเป็นคู่)`,`<b>Unpaired electron</b> on ${sym(s.i)} selected → tap an unpaired electron on a neighbouring atom (or another unpaired electron on ${sym(s.i)} to make a pair)`);if(G.atoms[s.i].s>=2)extra=TT(`<button class="btn" data-act="pair">จับเดี่ยว 2 ตัวบน ${sym(s.i)} เป็นคู่</button>`,`<button class="btn" data-act="pair">Pair 2 unpaired electrons on ${sym(s.i)}</button>`)}
+    if(s&&s.kind==='p'){ctxT=TT(`เลือก<b>คู่อิเล็กตรอนโดดเดี่ยว</b>ของ ${sym(s.i)} แล้ว → แตะอะตอมข้างเคียงเพื่อให้คู่นี้ (พันธะโคออร์ดิเนต)`,`<b>Lone pair</b> on ${sym(s.i)} selected → tap a neighbouring atom to donate it (coordinate bond)`);extra=TT(`<button class="btn" data-act="split">แยกคู่เป็นเดี่ยว 2 ตัว</button>`,`<button class="btn" data-act="split">Split the pair into 2 unpaired electrons</button>`)}
+    h+=TT(`<p class="ctx">${ctxT}</p>${msg}${ledger()}<div class="row">${extra}<button class="btn" data-act="undo" ${G.hist.length?'':'disabled'}>${I.undo}ย้อนกลับ</button><button class="btn" data-act="reset" ${G.hist.length?'':'disabled'}>${I.reset}เริ่มใหม่</button><button class="btn ghost" data-act="hint">${I.hint}คำใบ้</button></div>`,`<p class="ctx">${ctxT}</p>${msg}${ledger()}<div class="row">${extra}<button class="btn" data-act="undo" ${G.hist.length?'':'disabled'}>${I.undo}Undo</button><button class="btn" data-act="reset" ${G.hist.length?'':'disabled'}>${I.reset}Start over</button><button class="btn ghost" data-act="hint">${I.hint}Hint</button></div>`);
+  }else if(G.phase==='complete'){
+    const fcs=lv.atoms.map((a,i)=>fc(i)?`${sym(i)} ${fc(i)>0?'+':'−'}${Math.abs(fc(i))}`:null).filter(Boolean);
+    h+=TT(`<div class="msg gold"><b>โครงสร้างสมบูรณ์!</b> ${lv.learn}${fcs.length?`<br><span class="small">ประจุฟอร์มัล: ${fcs.join(' · ')} (ประจุฟอร์มัล = อิเล็กตรอนเวเลนซ์ − อิเล็กตรอนโดดเดี่ยว − จำนวนพันธะ)</span>`:''}</div>${ledger()}
+    <div class="row"><button class="btn primary" data-act="next">${I.next}ขั้นสุดท้าย: ตรวจความเข้าใจ</button><span class="small">สลับดูแบบเส้นได้ที่ปุ่มมุมขวาบน</span></div>`,`<div class="msg gold"><b>Structure complete!</b> ${lv.learn}${fcs.length?`<br><span class="small">Formal charges: ${fcs.join(' · ')} (formal charge = valence electrons − lone-pair electrons − number of bonds)</span>`:''}</div>${ledger()}
+    <div class="row"><button class="btn primary" data-act="next">${I.next}Last step: check your understanding</button><span class="small">Switch to the line view with the button at the top right</span></div>`);
+  }else if(G.phase==='question'||G.phase==='done'){
+    const q=lv.q,ord=qOrder();
+    h+=`<p class="q">${q.t}</p><div class="opts">${ord.map((oi,di)=>{let c='';if(G.qPick!=null){if(oi===q.a)c='right';else if(di===G.qPick)c='wrong'}return `<button class="opt ${c}" data-act="q" data-v="${di}" ${G.qPick!=null?'disabled':''}>${q.o[oi]}</button>`}).join('')}</div>`;
+    if(G.phase==='done'){
+      const ok=ord[G.qPick]===q.a,tot=levelScore(),st=starsOf(tot/lv.max);
+      h+=TT(`<div class="msg ${ok?'ok':'warn'}"><b>${ok?'ถูกต้อง':'ยังไม่ถูก'}</b> — ${q.e}</div>
+      <div class="scoreRow"><div><b>${G.sc.count}</b>/10<span>นับอิเล็กตรอน</span></div>${lv.center!=null?`<div><b>${G.sc.center}</b>/10<span>อะตอมกลาง</span></div>`:''}<div><b>${G.sc.build}</b>/30<span>สร้างพันธะ (พลาด ${G.mistakes})</span></div><div><b>${G.sc.q}</b>/20<span>คำถาม</span></div></div>
+      <div class="row"><span class="stars">${starHTML(st)}</span><b style="font:500 18px var(--mono)">${tot}/${lv.max}</b></div>
+      <div class="row">${G.k<L.length-1?`<button class="btn primary" data-act="nextLv">${I.next}ด่านถัดไป: ${L[G.k+1].f}</button>`:`<button class="btn primary" data-act="home">ดูผลรวมทั้งหมด</button>`}<button class="btn" data-act="retry">${I.reset}เล่นด่านนี้อีกครั้ง</button><button class="btn ghost" data-act="home">เลือกด่าน</button></div>`,`<div class="msg ${ok?'ok':'warn'}"><b>${ok?'Correct':'Not quite'}</b> — ${q.e}</div>
+      <div class="scoreRow"><div><b>${G.sc.count}</b>/10<span>Counting electrons</span></div>${lv.center!=null?`<div><b>${G.sc.center}</b>/10<span>Central atom</span></div>`:''}<div><b>${G.sc.build}</b>/30<span>Building bonds (${G.mistakes} slips)</span></div><div><b>${G.sc.q}</b>/20<span>Question</span></div></div>
+      <div class="row"><span class="stars">${starHTML(st)}</span><b style="font:500 18px var(--mono)">${tot}/${lv.max}</b></div>
+      <div class="row">${G.k<L.length-1?`<button class="btn primary" data-act="nextLv">${I.next}Next level: ${L[G.k+1].f}</button>`:`<button class="btn primary" data-act="home">See my overall result</button>`}<button class="btn" data-act="retry">${I.reset}Play this level again</button><button class="btn ghost" data-act="home">Choose a level</button></div>`);
+    }
+  }
+  $('#panel').innerHTML=h;
+}
+$('#panel').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const a=b.dataset.act;
+  if(a==='count')answerCount(+b.dataset.v);
+  else if(a==='next')toNext();
+  else if(a==='pair'&&G.sel)doPair(G.sel.i);
+  else if(a==='split'&&G.sel)doSplit(G.sel.i);
+  else if(a==='undo')undo();
+  else if(a==='reset')resetBuild();
+  else if(a==='hint'){const hs=G.lv.hints;say('gold',TT('คำใบ้: ','Hint: ')+hs[G.hintI%hs.length]);G.hintI++}
+  else if(a==='q')answerQ(+b.dataset.v);
+  else if(a==='nextLv')startLevel(G.k+1);
+  else if(a==='retry')startLevel(G.k);
+  else if(a==='home')goHome();
+});
+
+/* ---------------- HOME ---------------- */
+function renderHome(){
+  $('#chapters').innerHTML=CH.map(c=>TT(`<section class="chapter"><div class="chHead"><span class="no">บทที่ ${c.no}</span><h2 style="margin:0">${c.t}</h2><span class="d">${c.d}</span></div>
+   <div class="tiles">${L.filter(l=>l.ch===c.no).map(l=>{const b=PR.best[l.id];return `<button class="tile ${b?'done':''}" data-lv="${l.idx}"><span class="lv">${String(l.idx+1).padStart(2,'0')}</span><span class="f">${l.f}</span><span class="nm">${l.nm}</span><span class="st">${b?starHTML(b.stars):'<span>☆☆☆</span>'}</span></button>`}).join('')}</div></section>`,`<section class="chapter"><div class="chHead"><span class="no">Chapter ${c.no}</span><h2 style="margin:0">${c.t}</h2><span class="d">${c.d}</span></div>
+   <div class="tiles">${L.filter(l=>l.ch===c.no).map(l=>{const b=PR.best[l.id];return `<button class="tile ${b?'done':''}" data-lv="${l.idx}"><span class="lv">${String(l.idx+1).padStart(2,'0')}</span><span class="f">${l.f}</span><span class="nm">${l.nm}</span><span class="st">${b?starHTML(b.stars):'<span>☆☆☆</span>'}</span></button>`}).join('')}</div></section>`)).join('');
+  let tot=0,n=0,st=0;L.forEach(l=>{const b=PR.best[l.id];if(b){tot+=b.total;n++;st+=b.stars}});
+  $('#rTotal').innerHTML=`${tot}<small> / ${MAXALL}</small>`;$('#rBar').style.width=(tot/MAXALL*100).toFixed(1)+'%';
+  $('#rText').textContent=n?TT(`ผ่าน ${n} จาก ${L.length} ด่าน · ได้ดาว ${st} จาก ${L.length*3} ดวง${n===L.length?' · ครบทุกด่านแล้ว!':''}`,`Passed ${n} of ${L.length} levels · ${st} of ${L.length*3} stars${n===L.length?' · every level complete!':''}`):TT('ยังไม่ได้เล่นด่านใด — เริ่มจากด่าน 01 ได้เลย','No levels played yet. Start with level 01');
+  $('#stuName').value=PR.name||'';
+}
+function goHome(){$('#game').hidden=true;$('#home').hidden=false;G=null;renderHome()}
+$('#chapters').addEventListener('click',e=>{const t=e.target.closest('[data-lv]');if(t){enableSensors();startLevel(+t.dataset.lv)}});
+$('#stuName').addEventListener('input',e=>{PR.name=e.target.value;save()});
+$('#resetBtn').addEventListener('click',()=>{if(confirm(TT('ล้างคะแนนทุกด่านในเครื่องนี้?','Clear the scores for every level on this device?'))){PR.best={};save();renderHome()}});
+$('#backBtn').addEventListener('click',goHome);
+$('#viewBtn').addEventListener('click',()=>{lineMode=!lineMode;$('#viewBtn').classList.toggle('on',lineMode)});
+
+/* ---------------- AR: camera + tilt ---------------- */
+const vid=$('#camVid');let stream=null;
+async function camOn(){
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    vid.srcObject=stream;await vid.play().catch(()=>{});document.body.classList.add('ar');$('#camBtn').classList.add('on');
+  }catch(e){document.body.classList.remove('ar');$('#camBtn').classList.remove('on');if(G)say('info',TT('เปิดกล้องไม่ได้ในอุปกรณ์หรือหน้าต่างนี้ — เล่นบนพื้นหลังห้องแล็บแทนได้ตามปกติ','The camera cannot be opened on this device or window. You can keep playing on the lab backdrop'))}
+}
+function camOff(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;vid.srcObject=null;document.body.classList.remove('ar');$('#camBtn').classList.remove('on')}
+$('#camBtn').addEventListener('click',()=>stream?camOff():camOn());
+let sensorsOn=false,base=null;
+function enableSensors(){
+  if(sensorsOn)return;sensorsOn=true;
+  const go=()=>addEventListener('deviceorientation',e=>{if(e.gamma==null)return;if(!base)base={b:e.beta,g:e.gamma};const cl=v=>Math.max(-22,Math.min(22,v));par.tx=cl(e.gamma-base.g)*1.1;par.ty=cl(e.beta-base.b)*.9});
+  try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')go()}).catch(()=>{});else go()}catch(e){}
+}
+function firstUnfinished(){const i=L.findIndex(l=>!PR.best[l.id]);return i<0?0:i}
+$('#startBtn').addEventListener('click',()=>{enableSensors();startLevel(firstUnfinished());camOn()});
+$('#startNoCam').addEventListener('click',()=>{enableSensors();startLevel(firstUnfinished())});
+
+/* ---------------- TEACHER GUIDE ---------------- */
+/* [โครงสร้างที่ถูกต้อง, จุดที่นักเรียนมักติด/วิธีช่วย, มโนทัศน์ที่ด่านนี้ท้าทาย] แต่ละช่อง = [ไทย, อังกฤษ] */
+const GN={
+ h2:[['H–H พันธะเดี่ยว 1 พันธะ ไม่มีคู่โดดเดี่ยว','H–H, one single bond, no lone pairs'],
+     ['ด่านแรกให้ครูสาธิตบนจอใหญ่ก่อน ทั้งการแตะทีละจุดและการลากจากจุดหนึ่งไปอีกจุด','Demonstrate this first level on the big screen, both tapping dot by dot and dragging from one dot to the other'],
+     ['"อิเล็กตรอนในพันธะเป็นของอะตอมใดอะตอมหนึ่ง" — ให้สังเกตจุดสองสีในพันธะ','"The bonding electrons belong to one atom". Point out the two colours of dot inside the bond']],
+ f2:[['F–F พันธะเดี่ยว 1 พันธะ คู่โดดเดี่ยว F ละ 3 คู่ (รวม 6 คู่)','F–F, one single bond, 3 lone pairs on each F (6 in all)'],
+     ['นักเรียนบางคนแตะคู่อิเล็กตรอนแทนจุดเดี่ยว เกมจะทำเป็นการให้คู่ ให้กด "ย้อนกลับ" แล้วเลือกจุดเดี่ยว','Some students tap a pair instead of the single dot, which the game treats as donating a pair. Have them press Undo and pick the single dot'],
+     ['"อิเล็กตรอนเวเลนซ์ทุกตัวใช้สร้างพันธะ" — มีเพียงอิเล็กตรอนเดี่ยวที่จับคู่สร้างพันธะปกติ','"Every valence electron is used for bonding". Only unpaired electrons pair up into ordinary bonds']],
+ hcl:[['H–Cl พันธะเดี่ยว 1 พันธะ Cl มีคู่โดดเดี่ยว 3 คู่','H–Cl, one single bond, 3 lone pairs on Cl'],
+     ['ให้แตะอะตอม Cl หลังสร้างพันธะ เพื่อดูว่าวงขีดนับได้ 8','After bonding, have students tap Cl to see that its ring counts 8'],
+     ['"Cl เหลือ 7 ตัวเพราะให้ H ไป 1 ตัว" — คู่ในพันธะนับให้ทั้งสองอะตอม (ตรงกับตัวลวงในคำถามท้ายด่าน)','"Cl is left with 7 because it gave 1 to H". The bonding pair counts for both atoms (this is a distractor in the end-of-level question)']],
+ h2o:[['H–O–H อะตอมกลาง O มีคู่โดดเดี่ยว 2 คู่','H–O–H, central O with 2 lone pairs'],
+     ['ด่านแรกที่มีขั้นเลือกอะตอมกลาง ถ้านักเรียนเลือก H ให้ถามว่า H สร้างได้กี่พันธะ','The first level with the central-atom step. If a student picks H, ask how many bonds H can form'],
+     ['"จำนวนพันธะเท่ากับจำนวนอิเล็กตรอนเวเลนซ์" — จำนวนพันธะปกติเท่ากับจำนวนอิเล็กตรอนเดี่ยว','"The number of bonds equals the number of valence electrons". The number of ordinary bonds equals the number of unpaired electrons']],
+ nh3:[['N ต่อ H 3 พันธะเดี่ยว N มีคู่โดดเดี่ยว 1 คู่','N with 3 single bonds to H and 1 lone pair on N'],
+     ['ชี้ให้จำคู่โดดเดี่ยวบน N ไว้ เพราะจะใช้สร้างพันธะโคออร์ดิเนตในด่าน 12 (NH₄⁺)','Ask students to remember the lone pair on N; it forms the coordinate bond in level 12 (NH₄⁺)'],
+     ['ใช้ร่วมกับด่าน 4 และ 6 เพื่อเทียบคู่ร่วมพันธะกับคู่โดดเดี่ยว','Use with levels 4 and 6 to compare bonding pairs and lone pairs']],
+ ch4:[['C ต่อ H 4 พันธะเดี่ยว ไม่มีคู่โดดเดี่ยว','C with 4 single bonds to H and no lone pairs'],
+     ['หลังจบด่านให้นักเรียนเรียง CH₄ NH₃ H₂O ตามจำนวนคู่โดดเดี่ยว 0 1 2','After the level, have students order CH₄, NH₃ and H₂O by lone pairs: 0, 1, 2'],
+     ['"O ใน H₂O มีอิเล็กตรอนล้อมรอบน้อยกว่า C ใน CH₄" — อะตอมกลางทั้งสามมี 8 เท่ากัน','"O in H₂O is surrounded by fewer electrons than C in CH₄". All three central atoms have 8']],
+ o2:[['O=O พันธะคู่ คู่โดดเดี่ยว O ละ 2 คู่','O=O, a double bond, 2 lone pairs on each O'],
+     ['หลังพันธะแรก วงขีดของ O ยังไม่เป็นสีทอง ให้ถามว่า "ยังขาดอีกกี่ตัว และยังมีจุดเดี่ยวเหลือไหม"','After the first bond the O rings are not gold yet. Ask "how many are still missing, and are any single dots left?"'],
+     ['"พันธะคู่คืออะตอมหนึ่งต่อกับสองอะตอม" — พันธะคู่คือใช้ร่วม 2 คู่ระหว่างสองอะตอมเดิม · หมายเหตุสำหรับครู: โครงสร้างลิวอิส O=O อธิบายสมบัติแม่เหล็กของ O₂ ไม่ได้ ไม่ต้องสอนระดับ ม.4 แต่ควรรู้ไว้หากนักเรียนถาม','"A double bond means one atom joined to two atoms". A double bond is 2 shared pairs between the same two atoms · Teacher note: the Lewis structure O=O cannot explain why O₂ is magnetic. Not needed at Grade 10, but useful if a student asks']],
+ n2:[['N≡N พันธะสาม คู่โดดเดี่ยว N ละ 1 คู่','N≡N, a triple bond, 1 lone pair on each N'],
+     ['ต่อยอดได้ว่าพันธะสามแข็งแรงมาก ซึ่งเป็นเนื้อหาแผนที่ 7 (3.3.3 ความยาวพันธะและพลังงานพันธะ)','A link forward: a triple bond is very strong, the content of plan 7 (3.3.3 bond length and bond energy)'],
+     ['นับอิเล็กตรอนในพันธะเป็น "3 ตัว" แทน 6 ตัว — ใช้แถบนับในแผงด้านล่างช่วยตรวจ','Counting the bond as "3 electrons" instead of 6. Use the tally in the bottom panel to check']],
+ co2:[['O=C=O อะตอมกลาง C ไม่มีคู่โดดเดี่ยว O ละ 2 คู่','O=C=O, central C with no lone pairs, 2 lone pairs on each O'],
+     ['ถ้านักเรียนสร้างพันธะคู่ข้างเดียวก่อน จะเห็นว่า O อีกข้างยังขาด ให้แบ่งอิเล็กตรอนเดี่ยวของ C ให้สองข้างเท่ากัน','If a student makes one double bond first, the other O is left short. C has to share its unpaired electrons equally between both sides'],
+     ['ปูพื้นรูปร่างเส้นตรงของ CO₂ ในแผนที่ 8 (C ไม่มีคู่โดดเดี่ยว)','Lays the ground for the linear shape of CO₂ in plan 8 (no lone pairs on C)']],
+ hcn:[['H–C≡N C มีพันธะรวม 4 พันธะ N มีคู่โดดเดี่ยว 1 คู่','H–C≡N, C with 4 bonds in total, 1 lone pair on N'],
+     ['ให้นับพันธะรอบ C ว่าได้ 1 + 3 = 4 ทุกครั้ง','Have students count the bonds around C: 1 + 3 = 4 every time'],
+     ['"C ต้องมีพันธะเดี่ยว 4 พันธะเสมอ" — C มี 4 พันธะได้หลายแบบ (4 เดี่ยว, 2 คู่, เดี่ยว+สาม)','"C must always have 4 single bonds". C can make 4 bonds in several ways (4 single, 2 double, single + triple)']],
+ c2h4:[['H₂C=CH₂ พันธะคู่ระหว่าง C ไม่มีคู่โดดเดี่ยว','H₂C=CH₂, a C=C double bond, no lone pairs'],
+     ['โครงร่างวางให้แล้ว ให้สร้าง C–H ทั้ง 4 พันธะก่อน แล้วค่อยเติมพันธะที่สองระหว่าง C','The skeleton is given. Build the 4 C–H bonds first, then add the second bond between the two C atoms'],
+     ['เชื่อมสู่สารอินทรีย์กลุ่มแอลคีน ใช้เป็นด่านทบทวนพันธะคู่','Links to the alkenes; a good review level for double bonds']],
+ nh4:[['N ต่อ H 4 พันธะ (1 ใน 4 เป็นพันธะโคออร์ดิเนต) ประจุฟอร์มัล N +1 เวเลนซ์รวม 5 + 4 − 1 = 8','N with 4 bonds to H (1 of them coordinate), formal charge +1 on N, valence total 5 + 4 − 1 = 8'],
+     ['ขั้นนับอิเล็กตรอน นักเรียนมักตอบ 9 เพราะลืมหักประจุ +1 · ขั้นสร้าง ให้แตะคู่โดดเดี่ยวของ N แล้วแตะ H⁺','At the counting step students often answer 9 because they forget to subtract the +1 charge · To build, tap the lone pair on N, then tap H⁺'],
+     ['"ประจุบวกอยู่ที่ H⁺ ตลอด" และ "พันธะโคออร์ดิเนตยังต่างจากพันธะอื่นหลังเกิดแล้ว" — พันธะ N–H ทั้งสี่เหมือนกัน และประจุฟอร์มัลอยู่ที่ N','"The positive charge stays on H⁺" and "a coordinate bond stays different after it forms". All four N–H bonds are identical and the formal charge sits on N']],
+ co:[['C≡O พันธะสาม (O ให้คู่อิเล็กตรอน 1 พันธะ) ประจุฟอร์มัล C −1 และ O +1','C≡O, a triple bond (one pair donated by O), formal charges C −1 and O +1'],
+     ['เกมจัดให้ C มีเดี่ยว 2 ตัว + คู่ 1 คู่ไว้แล้ว ให้สร้าง C=O ก่อน แล้วแตะคู่โดดเดี่ยวของ O ไปให้ C','The game sets C up with 2 unpaired electrons + 1 pair. Build C=O first, then tap a lone pair on O and give it to C'],
+     ['"อะตอมที่มีค่า EN สูงกว่าเป็นผู้รับคู่อิเล็กตรอนเสมอ" — ใน CO อะตอม O เป็นผู้ให้','"The more electronegative atom always accepts the pair". In CO, the O atom is the donor']],
+ o3:[['O=O–O หรือ O–O=O (ยอมรับทั้งสองแบบ) O กลางมีคู่โดดเดี่ยว 1 คู่ ประจุฟอร์มัล O กลาง +1 และ O ที่ต่อพันธะเดี่ยว −1','O=O–O or O–O=O (both accepted), 1 lone pair on the central O, formal charges +1 on the central O and −1 on the singly bonded O'],
+     ['ด่านที่ยากที่สุดของเกม: O ปลายที่จะรับคู่ต้องจับอิเล็กตรอนเดี่ยว 2 ตัวของตัวเองเป็นคู่ก่อน (แตะจุดเดี่ยว แล้วแตะจุดเดี่ยวอีกจุดบนอะตอมเดียวกัน) คำใบ้ข้อที่ 3 บอกขั้นนี้','The hardest level: the outer O that receives the pair must first pair up its own 2 unpaired electrons (tap a single dot, then the other single dot on the same atom). Hint 3 explains this step'],
+     ['"โครงสร้างเรโซแนนซ์สลับไปมา" — โมเลกุลจริงเป็นค่าเฉลี่ย พันธะทั้งสองยาวเท่ากัน 128 pm · เนื้อหาเรโซแนนซ์เต็มอยู่ในแผนที่ 7 (3.3.3)','"Resonance structures switch back and forth". The real molecule is an average and both bonds are 128 pm · resonance is taught in full in plan 7 (3.3.3)']],
+ bf3:[['B ต่อ F 3 พันธะเดี่ยว B มีอิเล็กตรอนล้อมรอบ 6 ตัว F ละ 3 คู่โดดเดี่ยว','B with 3 single bonds to F, 6 electrons around B, 3 lone pairs on each F'],
+     ['ถ้านักเรียนให้ F ส่งคู่อิเล็กตรอนเพื่อให้ B ครบ 8 เกมจะแสดงประจุฟอร์มัลและไม่ผ่าน ใช้เป็นจังหวะชวนคุยว่า "ทำไมโครงสร้างนี้ใช้ไม่ได้"','If a student has F donate a pair so B reaches 8, the game shows formal charges and does not accept it. Use this moment to discuss "why does this structure not work?"'],
+     ['"ทุกอะตอมต้องมีอิเล็กตรอนล้อมรอบ 8 ตัวเสมอ" — B ใน BF₃ มี 6 (ออกเตตไม่ครบ)','"Every atom must always have 8 electrons around it". B in BF₃ has 6 (an incomplete octet)']],
+ pcl5:[['P ต่อ Cl 5 พันธะเดี่ยว P มีอิเล็กตรอนล้อมรอบ 10 ตัว','P with 5 single bonds to Cl, 10 electrons around P'],
+     ['ต้องแตะคู่โดดเดี่ยวของ P แล้วกดปุ่ม "แยกคู่เป็นเดี่ยว 2 ตัว" นักเรียนส่วนใหญ่ไม่รู้จักปุ่มนี้จนกดคำใบ้','Students must tap the lone pair on P and press "Split the pair into 2 unpaired electrons". Most do not find this button until they use a hint'],
+     ['"ธาตุทุกตัวขยายออกเตตได้" — ทำได้เฉพาะธาตุคาบที่ 3 ขึ้นไป (มี NCl₃ แต่ไม่มี NCl₅)','"Any element can expand its octet". Only elements from period 3 onward can (NCl₃ exists, NCl₅ does not)']],
+ sf6:[['S ต่อ F 6 พันธะเดี่ยว S มีอิเล็กตรอนล้อมรอบ 12 ตัว ไม่มีคู่โดดเดี่ยว','S with 6 single bonds to F, 12 electrons around S, no lone pairs'],
+     ['ต้องแยกคู่โดดเดี่ยวของ S ทั้ง 2 คู่ จึงจะมีอิเล็กตรอนเดี่ยวครบ 6 ตัว','Both lone pairs on S must be split to give 6 unpaired electrons'],
+     ['ใช้เป็นด่านสรุปข้อยกเว้นกฎออกเตต: BF₃ (6) · PCl₅ (10) · SF₆ (12)','A summary level for the octet exceptions: BF₃ (6) · PCl₅ (10) · SF₆ (12)']]
+};
+const T2=a=>TT(a[0],a[1]);
+const lvName=i=>`${i+1}. ${L[i].f}`;
+const MIS=[
+ [['อิเล็กตรอนคู่ในพันธะเป็นของอะตอมเดียว หรือนับให้อะตอมเดียว','The bonding pair belongs to, or is counted for, only one atom'],[1,3],['จุดในพันธะมีสีของอะตอมเจ้าของทั้งสองสี และวงขีดรอบอะตอมนับคู่ในพันธะให้ทั้งสองอะตอม','The dots in a bond keep the colours of both owner atoms, and the ring around each atom counts the bonding pair for both']],
+ [['จำนวนพันธะเท่ากับจำนวนอิเล็กตรอนเวเลนซ์','The number of bonds equals the number of valence electrons'],[4,5,6],['อะตอมสร้างพันธะได้ตามจำนวนจุดเดี่ยวเท่านั้น O มีเวเลนซ์ 6 แต่มีจุดเดี่ยว 2 จุด จึงสร้างได้ 2 พันธะ','An atom can bond only through its single dots. O has 6 valence electrons but 2 single dots, so it forms 2 bonds']],
+ [['พันธะคู่คืออะตอมหนึ่งต่อกับอีกสองอะตอม','A double bond means one atom joined to two other atoms'],[7,9],['พันธะที่สองเกิดซ้ำบนเส้นเดิมระหว่างสองอะตอมเดิม และแถบนับแสดงว่าใช้ร่วม 2 คู่','The second bond forms on the same line between the same two atoms, and the tally shows 2 shared pairs']],
+ [['พันธะโคออร์ดิเนตยังต่างจากพันธะอื่นหลังเกิดแล้ว และประจุบวกอยู่ที่ H⁺','A coordinate bond stays different once formed, and the positive charge stays on H⁺'],[12,13],['ข้อความสรุปท้ายด่านระบุว่าเมื่อเกิดแล้วพันธะทุกพันธะเหมือนกันทุกประการ และเกมแสดงประจุฟอร์มัลบนอะตอมผู้ให้ (N ใน NH₄⁺, O ใน CO) ไม่ใช่บน H⁺','The end-of-level summary states that once formed all the bonds are identical, and the game shows the formal charge on the donor atom (N in NH₄⁺, O in CO), not on H⁺']],
+ [['โครงสร้างเรโซแนนซ์สลับไปมาระหว่างแบบต่าง ๆ','Resonance structures switch back and forth'],[14],['เกมยอมรับทั้งสองแบบ แล้วคำถามท้ายด่านใช้ข้อมูลความยาวพันธะ 128 pm ที่เท่ากันเป็นหลักฐาน','The game accepts both forms, then the end-of-level question uses the equal 128 pm bond lengths as evidence']],
+ [['ทุกอะตอมในโมเลกุลต้องมีอิเล็กตรอนล้อมรอบ 8 ตัวเสมอ','Every atom in a molecule must always have 8 electrons around it'],[15,16,17],['เกมยอมรับ B ที่มี 6 ตัวว่าครบ (ป้ายในแผงด้านล่างเป็นสีฟ้า) และวงขีดเกิน 8 ช่องเป็นสีส้มใน PCl₅ และ SF₆ พร้อมข้อความบอกเหตุผลเรื่องคาบ','The game accepts B with 6 as complete (its label in the bottom panel turns blue), and in PCl₅ and SF₆ the ring grows past 8 ticks in orange, with a message explaining the period rule']],
+ [['ธาตุทุกตัวขยายออกเตตได้','Any element can expand its octet'],[16],['ถ้าแยกคู่ของธาตุคาบ 2 เกมเตือนว่ายังเกิน 8 ไม่ได้ และคำถามท้ายด่านเทียบ NCl₅ กับ PCl₅','Splitting a pair on a period 2 element brings a warning that it still cannot exceed 8, and the end-of-level question contrasts NCl₅ with PCl₅']]
+];
+function guideHTML(){
+  const chRows=CH.map(c=>{const ls=L.filter(l=>l.ch===c.no);return `<tr><td class="n">${TT('บท','Ch.')} ${c.no}</td><td>${c.t}</td><td>${ls.map(l=>`${l.idx+1}. ${l.f}`).join(' · ')}</td><td>${[TT('3.3.1 กฎออกเตต พันธะเดี่ยว','3.3.1 octet rule, single bonds'),TT('3.3.1 พันธะคู่และพันธะสาม','3.3.1 double and triple bonds'),TT('3.3.1 พันธะโคออร์ดิเนตโคเวเลนต์ · ด่าน O₃ ปูพื้นเรโซแนนซ์ของ 3.3.3 (แผนที่ 7)','3.3.1 coordinate covalent bonds · the O₃ level previews resonance from 3.3.3 (plan 7)'),TT('3.3.1 ข้อยกเว้นกฎออกเตต','3.3.1 exceptions to the octet rule')][c.no-1]}</td></tr>`}).join('');
+  const misRows=MIS.map(m=>`<tr><td>${T2(m[0])}</td><td class="n">${m[1].map(n=>lvName(n-1)).join('<br>')}</td><td>${T2(m[2])}</td></tr>`).join('');
+  return TT(`
+<div class="gWrap">
+ <div class="gHead"><div><div class="eyebrow">คู่มือครู · ช่างต่อพันธะลิวอิส</div><h2 id="gTitleH">ความสอดคล้องกับแผนการสอนและแนวการใช้เกม</h2></div>
+  <div class="row noPrint"><button class="btn" id="gPrint">พิมพ์คู่มือ</button><button class="btn primary" id="gClose">ปิด</button></div></div>
+ <nav class="gNav noPrint"><a href="#g1">1 ภาพรวม</a><a href="#g2">2 ความสอดคล้อง</a><a href="#g3">3 ใช้ในขั้นใด</a><a href="#g4">4 มโนทัศน์ที่คลาดเคลื่อน</a><a href="#g5">5 คะแนน</a><a href="#g6">6 AR และการเตรียม</a></nav>
+
+ <section class="gSec" id="g1"><h3>1. ภาพรวมของเกม</h3>
+  <p>เกมนี้ให้นักเรียนสร้างโครงสร้างลิวอิสเองทีละคู่อิเล็กตรอน แทนการจำโครงสร้างสำเร็จ จุดอิเล็กตรอนมีสีตามอะตอมเจ้าของ นักเรียนจึงเห็นว่าอิเล็กตรอนแต่ละตัวในพันธะมาจากอะตอมใด</p>
+  <ul><li><b>ใช้กับ</b> แผนการจัดการเรียนรู้ที่ 5 หัวข้อ 3.3.1 การเกิดพันธะโคเวเลนต์ (หนังสือเรียนรายวิชาเพิ่มเติมเคมี เล่ม 1 บทที่ 3)</li>
+  <li><b>บทบาท</b> เกมเสริมของเกมหลัก "จากอิเล็กตรอนสู่พันธะ" เน้นฝึกเขียนโครงสร้างลิวอิสให้คล่อง</li>
+  <li><b>ขนาด</b> 17 ด่าน 4 บท คะแนนเต็ม ${MAXALL.toLocaleString()} คะแนน ด่านละ 3–5 นาที (บทที่ 3–4 ใช้ 5–7 นาที)</li>
+  <li><b>ทุกด่านมี 4 ขั้น</b> นับอิเล็กตรอนเวเลนซ์รวม → เลือกอะตอมกลาง (เฉพาะ 5 ด่าน) → สร้างพันธะเอง → ตอบคำถามความเข้าใจ 1 ข้อ</li></ul></section>
+
+ <section class="gSec" id="g2"><h3>2. ความสอดคล้องกับเนื้อหาในหนังสือเรียน</h3>
+  <div class="gTbl"><table><thead><tr><th>บท</th><th>ชื่อบทในเกม</th><th>ด่าน</th><th>เนื้อหาในหนังสือ</th></tr></thead><tbody>${chRows}</tbody></table></div>
+  <p class="gNote">ผลการเรียนรู้ของแผนที่ 5 ให้ใช้ตามเล่มแผน (ผลการเรียนรู้ชุด 13 ข้อของหน่วยพันธะเคมี) เกมนี้รองรับส่วนของการเขียนโครงสร้างลิวอิส การระบุชนิดพันธะเดี่ยว คู่ สาม และพันธะโคออร์ดิเนต และการระบุข้อยกเว้นกฎออกเตต</p></section>
+
+ <section class="gSec" id="g3"><h3>3. ใช้ในขั้นใดของแผน</h3>
+  <p>เกมนี้เป็นเกมเสริม จึงไม่อยู่ในด่านบังคับของขั้น T ซึ่งใช้เกมหลัก แนะนำให้ใช้ดังนี้</p>
+  <div class="gTbl"><table><thead><tr><th>ขั้น</th><th>ด่านที่แนะนำ</th><th>วิธีใช้</th></tr></thead><tbody>
+   <tr><td class="n">A</td><td>1. H₂, 15. BF₃</td><td>ครูเปิดบนจอใหญ่ ให้นักเรียนทำนายก่อนเล่น เช่น "อิเล็กตรอนคู่ในพันธะ H–H เป็นของใคร" หรือ "B ใน BF₃ จะมีอิเล็กตรอนล้อมรอบกี่ตัว" แล้วเขียนคำตอบลงบัตรความคิดก่อนเรียน</td></tr>
+   <tr><td class="n">M</td><td>ชุดฝึกหลัก: 4. H₂O, 9. CO₂, 12. NH₄⁺, 15. BF₃ (บทละ 1 ด่าน ราว 20 นาที)</td><td>ฝึกเขียนโครงสร้างให้คล่องหลังสรุปกฎในขั้น O ให้คู่ ก และคู่ ข เล่นชุดเดียวกัน แล้วเทียบโครงสร้างแบบเส้นกัน</td></tr>
+   <tr><td class="n">M</td><td>ชุดท้าทาย: 13. CO, 14. O₃, 16. PCl₅, 17. SF₆</td><td>สำหรับกลุ่มที่ทำชุดหลักเสร็จก่อน ใช้เป็นทางเลือกตามความแตกต่างระหว่างบุคคล</td></tr>
+   <tr><td class="n">ซ่อมเสริม</td><td>บทที่ 1 ทั้งบท (ด่าน 1–6)</td><td>สำหรับนักเรียนที่ยังนับอิเล็กตรอนเวเลนซ์หรือเลือกอะตอมกลางไม่ได้</td></tr>
+   <tr><td class="n">นอกห้อง</td><td>10. HCN, 11. C₂H₄, 13. CO, 16. PCl₅</td><td>ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ ให้แคปหน้าจอผลการเล่นส่งครู</td></tr>
+  </tbody></table></div>
+  <p class="gNote">ตารางนี้เป็นข้อเสนอ ให้ปรับเลขด่านและเวลาให้ตรงกับภาคผนวก ค.6 (การจัดสรรด่าน) และ ค.7 (บันทึกการทำงานนอกห้องเรียน) ในเล่มแผน</p></section>
+
+ <section class="gSec" id="g4"><h3>4. มโนทัศน์ที่คลาดเคลื่อนที่เกมท้าทาย</h3>
+  <div class="gTbl"><table><thead><tr><th>มโนทัศน์ที่คลาดเคลื่อน</th><th>ด่าน</th><th>หลักฐานในเกมที่ท้าทายความคิดเดิม</th></tr></thead><tbody>${misRows}</tbody></table></div></section>
+
+
+ <section class="gSec" id="g5"><h3>5. การคิดคะแนนและหลักฐาน</h3>
+  <div class="gTbl"><table><thead><tr><th>ขั้น</th><th>คะแนน</th><th>เกณฑ์</th></tr></thead><tbody>
+   <tr><td>นับอิเล็กตรอน</td><td class="n">10</td><td>ตอบถูกครั้งแรก 10 · ครั้งที่สอง 5 · หลังจากนั้น 0</td></tr>
+   <tr><td>อะตอมกลาง</td><td class="n">10</td><td>เฉพาะด่าน 4, 5, 6, 9, 10 · เกณฑ์เดียวกับขั้นนับอิเล็กตรอน</td></tr>
+   <tr><td>สร้างพันธะ</td><td class="n">30</td><td>หักครั้งละ 5 คะแนนเมื่อสร้างพันธะผิดกฎหรือได้โครงสร้างที่ไม่เสถียร ต่ำสุด 10</td></tr>
+   <tr><td>คำถามท้ายด่าน</td><td class="n">20</td><td>ตอบได้ครั้งเดียว</td></tr>
+  </tbody></table></div>
+  <ul><li>ดาว: ได้ 90% ขึ้นไป 3 ดวง · 70% ขึ้นไป 2 ดวง · ต่ำกว่านั้น 1 ดวง เกมเก็บคะแนนดีที่สุดของแต่ละด่าน</li>
+  <li>การกดย้อนกลับ เริ่มใหม่ และคำใบ้ ไม่หักคะแนน นักเรียนจึงลองผิดได้โดยไม่กลัว</li>
+  <li>หลักฐาน: ให้นักเรียนพิมพ์ ชื่อ–ชั้น–เลขที่ ในส่วน "ผลการเล่นของฉัน" แล้วแคปหน้าจอส่ง ผลเก็บไว้ในเครื่องที่เล่นเท่านั้น ถ้าใช้เครื่องร่วมกัน ให้กด "ล้างผลทั้งหมด" ก่อนเปลี่ยนคน</li></ul></section>
+
+ <section class="gSec" id="g6"><h3>6. การใช้โหมด AR และการเตรียมก่อนสอน</h3>
+  <ul><li>โหมด AR ใช้ภาพจากกล้องหลังเป็นฉาก และขยับโมเลกุลตามการเอียงเครื่องเล็กน้อย กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari ถ้าเปิดผ่านลิงก์หรือเปิดกล้องไม่ได้ เกมเล่นบนพื้นหลังห้องแล็บได้ตามปกติ</li>
+  <li>iPhone และ iPad จะขออนุญาตใช้เซนเซอร์การเคลื่อนไหวตอนเริ่มเล่น ให้กดอนุญาต</li>
+  <li>ให้นักเรียนนั่งเล่นกับที่ ไม่ต้องเดินขณะใช้กล้อง</li>
+  <li>ปุ่มมุมขวาบนสลับดูโครงสร้างแบบจุดและแบบเส้น ใช้เชื่อมโครงสร้างลิวอิสแบบจุดกับสูตรโครงสร้างแบบเส้นได้ดี ส่วนปุ่ม ไทย/EN สลับภาษาได้ทั้งเกม</li>
+  <li>ก่อนสอน: ทดลองเล่นด่าน 12, 14 และ 16 ด้วยตนเอง เพราะใช้ทักษะที่นักเรียนมักติด (ให้คู่อิเล็กตรอน จับเดี่ยวเป็นคู่ และแยกคู่) · โหลดไฟล์ลงเครื่องนักเรียนหรือแชร์ลิงก์ไว้ล่วงหน้า · จัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน</li></ul></section>
+ <p class="small">ออกแบบและพัฒนาเกมโดย นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม</p>
+</div>`,`
+<div class="gWrap">
+ <div class="gHead"><div><div class="eyebrow">Teacher’s guide · Lewis Bond Builder</div><h2 id="gTitleH">Links to the lesson plans and how to use the game</h2></div>
+  <div class="row noPrint"><button class="btn" id="gPrint">Print the guide</button><button class="btn primary" id="gClose">Close</button></div></div>
+ <nav class="gNav noPrint"><a href="#g1">1 Overview</a><a href="#g2">2 Alignment</a><a href="#g3">3 Lesson stages</a><a href="#g4">4 Misconceptions</a><a href="#g5">5 Scoring</a><a href="#g6">6 AR and preparation</a></nav>
+
+ <section class="gSec" id="g1"><h3>1. Overview</h3>
+  <p>Students build Lewis structures themselves, one electron pair at a time, instead of memorising finished structures. Each electron dot is coloured by the atom that owns it, so students can see where every electron in a bond came from.</p>
+  <ul><li><b>Used with</b> lesson plan 5, topic 3.3.1 covalent bond formation (IPST additional chemistry textbook, book 1, chapter 3)</li>
+  <li><b>Role</b> a supporting game for the main game "From Electrons to Bonds", focused on fluency in drawing Lewis structures</li>
+  <li><b>Size</b> 17 levels in 4 chapters, ${MAXALL.toLocaleString()} points in total, 3–5 minutes per level (5–7 minutes in chapters 3–4)</li>
+  <li><b>Every level has 4 steps</b> count the valence electrons → choose the central atom (5 levels only) → build the bonds → answer 1 check-up question</li></ul></section>
+
+ <section class="gSec" id="g2"><h3>2. Alignment with the textbook</h3>
+  <div class="gTbl"><table><thead><tr><th>Ch.</th><th>Chapter in the game</th><th>Levels</th><th>Textbook content</th></tr></thead><tbody>${chRows}</tbody></table></div>
+  <p class="gNote">Use the learning outcomes for plan 5 as written in the plan book (the 13 outcomes of the chemical bonding unit). This game supports drawing Lewis structures, identifying single, double, triple and coordinate bonds, and identifying exceptions to the octet rule.</p></section>
+
+ <section class="gSec" id="g3"><h3>3. Where it fits in the lesson</h3>
+  <p>This is a supporting game, so it is not part of the required levels in stage T, which uses the main game. Suggested use:</p>
+  <div class="gTbl"><table><thead><tr><th>Stage</th><th>Suggested levels</th><th>How to use them</th></tr></thead><tbody>
+   <tr><td class="n">A</td><td>1. H₂, 15. BF₃</td><td>Project the level and ask students to predict before playing, e.g. "Who owns the bonding pair in H–H?" or "How many electrons will surround B in BF₃?", then write it on the pre-lesson idea card</td></tr>
+   <tr><td class="n">M</td><td>Core set: 4. H₂O, 9. CO₂, 12. NH₄⁺, 15. BF₃ (one per chapter, about 20 minutes)</td><td>Fluency practice after the rules are summarised in stage O. Pair A and pair B play the same set, then compare their line structures</td></tr>
+   <tr><td class="n">M</td><td>Challenge set: 13. CO, 14. O₃, 16. PCl₅, 17. SF₆</td><td>For groups who finish the core set early; an option for differentiation</td></tr>
+   <tr><td class="n">Support</td><td>All of chapter 1 (levels 1–6)</td><td>For students who still cannot count valence electrons or choose the central atom</td></tr>
+   <tr><td class="n">Homework</td><td>10. HCN, 11. C₂H₄, 13. CO, 16. PCl₅</td><td>Use in the spaced retrieval practice sets; students screenshot their results for the teacher</td></tr>
+  </tbody></table></div>
+  <p class="gNote">This table is a suggestion. Adjust the level numbers and timing to match appendix ค.6 (level allocation) and ค.7 (out-of-class log) in the plan book.</p></section>
+
+ <section class="gSec" id="g4"><h3>4. Misconceptions the game challenges</h3>
+  <div class="gTbl"><table><thead><tr><th>Misconception</th><th>Levels</th><th>Evidence in the game that challenges it</th></tr></thead><tbody>${misRows}</tbody></table></div></section>
+
+
+ <section class="gSec" id="g5"><h3>5. Scoring and evidence</h3>
+  <div class="gTbl"><table><thead><tr><th>Step</th><th>Points</th><th>Rule</th></tr></thead><tbody>
+   <tr><td>Counting electrons</td><td class="n">10</td><td>Right first time 10 · second try 5 · after that 0</td></tr>
+   <tr><td>Central atom</td><td class="n">10</td><td>Levels 4, 5, 6, 9, 10 only · same rule as counting</td></tr>
+   <tr><td>Building bonds</td><td class="n">30</td><td>Minus 5 for each bond that breaks a rule or ends in an unstable structure, minimum 10</td></tr>
+   <tr><td>End-of-level question</td><td class="n">20</td><td>One attempt</td></tr>
+  </tbody></table></div>
+  <ul><li>Stars: 90% or more gives 3 · 70% or more gives 2 · below that 1. The game keeps each level’s best score</li>
+  <li>Undo, Start over and Hint cost no points, so students can try things without fear</li>
+  <li>Evidence: students type their name, class and number under "My results" and screenshot it. Results stay on the device; if devices are shared, press "Clear all results" before the next student</li></ul></section>
+
+ <section class="gSec" id="g6"><h3>6. AR mode and preparation</h3>
+  <ul><li>AR mode uses the rear camera as the backdrop and moves the molecule slightly as the device tilts. The camera works when the .html file is opened directly in Chrome or Safari; through a link, or if the camera is unavailable, the game plays on the lab backdrop as usual</li>
+  <li>iPhone and iPad ask for motion-sensor permission at the start; tap Allow</li>
+  <li>Students should stay seated while using the camera</li>
+  <li>The top-right button switches between the dot and line views, which helps link Lewis dot structures to line structures. The ไทย/EN button switches the whole game’s language</li>
+  <li>Before the lesson: play levels 12, 14 and 16 yourself, as they need the skills students most often miss (donating a pair, pairing single electrons, splitting a pair) · load the file onto devices or share the link in advance · plan one device per two students</li></ul></section>
+ <p class="small">Game designed and developed by Mrs. Manthana Chaiyasong, That Phanom School</p>
+</div>`);
+}
+const gBox=$('#guideBox');
+function openGuide(){gBox.innerHTML=guideHTML();gBox.hidden=false;gBox.scrollTop=0;
+  $('#gClose').addEventListener('click',closeGuide);
+  $('#gPrint').addEventListener('click',()=>{gBox.querySelectorAll('details').forEach(d=>d.open=true);window.print()});
+  gBox.querySelectorAll('.gNav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=gBox.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}));
+  $('#gClose').focus();}
+function closeGuide(){gBox.hidden=true;const b=$('#guideBtn');if(b)b.focus()}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!gBox.hidden)closeGuide()});
+addEventListener('beforeprint',()=>{if(!gBox.hidden)gBox.querySelectorAll('details').forEach(d=>d.open=true)});
+$('#teacherCard').innerHTML=TT(`<div><h2 style="margin:0 0 4px">สำหรับครู</h2><p>ความสอดคล้องกับแผนที่ 5 (3.3.1) ขั้นที่ควรใช้ มโนทัศน์ที่คลาดเคลื่อน เกณฑ์คะแนน และการใช้โหมด AR</p></div><button class="btn" id="guideBtn">คู่มือครู · ความสอดคล้องกับแผนการสอน</button>`,`<div><h2 style="margin:0 0 4px">For teachers</h2><p>Alignment with plan 5 (3.3.1), which lesson stages to use it in, misconceptions, scoring and AR use</p></div><button class="btn" id="guideBtn">Teacher’s guide · links to the lesson plans</button>`);
+$('#guideBtn').addEventListener('click',openGuide);
+
+/* ---------------- LANGUAGE ---------------- */
+const DICT={"ช่างต่อพันธะลิวอิส": "Lewis Bond Builder", "เคมี ม.4 · 3.3.1 การเกิดพันธะโคเวเลนต์ · AR": "Chemistry Grade 10 · 3.3.1 Covalent bond formation · AR", "ช่างต่อ": "Lewis ", "พันธะ": "Bond", "ลิวอิส": "Builder", "ไม่ต้องจำโครงสร้าง — สร้างเองทีละคู่อิเล็กตรอน แตะจุดอิเล็กตรอนของอะตอมหนึ่ง แล้วแตะอีกอะตอม ดูว่าใครให้อิเล็กตรอนตัวไหน จนทุกอะตอมครบออกเตต 17 ด่าน จากพันธะเดี่ยวไปจนถึงข้อยกเว้นกฎออกเตต": "No need to memorise structures: build them yourself, one electron pair at a time. Tap an electron dot on one atom, then tap another atom, and see which atom gives which electron until every atom has an octet. 17 levels, from single bonds to the exceptions to the octet rule.", "เริ่มเล่นแบบ AR": "Play in AR", "เล่นโดยไม่เปิดกล้อง": "Play without the camera", "โหมด AR ใช้กล้องหลังเป็นฉาก และขยับโมเลกุลตามการเอียงเครื่องเล็กน้อย": "AR mode uses the rear camera as the backdrop and moves the molecule slightly as you tilt the phone", "สีของจุด = อะตอมที่เป็นเจ้าของอิเล็กตรอน": "Dot colour = the atom that owns the electron", "ทุกด่านเดินตาม 4 ขั้นของการเขียนโครงสร้างลิวอิส": "Every level follows the 4 steps of drawing a Lewis structure", "นับอิเล็กตรอนเวเลนซ์รวม": "Count the total valence electrons", "รวมทุกอะตอม ไอออนบวกให้ลบตามประจุ ไอออนลบให้บวก": "Add up every atom; subtract the charge for a cation, add it for an anion", "เลือกอะตอมกลาง": "Choose the central atom", "H อยู่ปลายเสมอ อะตอมกลางมักสร้างพันธะได้มากและ EN ต่ำกว่า": "H is always on the outside; the central atom usually forms more bonds and has a lower EN", "สร้างพันธะเอง": "Build the bonds yourself", "จับคู่อิเล็กตรอนเดี่ยว ใช้พันธะคู่ พันธะสาม หรือให้คู่อิเล็กตรอน จนครบออกเตต": "Pair unpaired electrons, use double or triple bonds, or donate an electron pair until every octet is complete", "ตรวจความเข้าใจ": "Check understanding", "ตอบคำถามหนึ่งข้อจากโครงสร้างที่เพิ่งสร้าง": "Answer one question about the structure you just built", "วิธีต่อพันธะบนจอ": "How to build bonds on screen", "แตะจุดเดี่ยว → แตะอะตอมข้างเคียง": "Tap a single dot → tap a neighbouring atom", "อิเล็กตรอนเดี่ยวจากสองอะตอมจับคู่ = พันธะโคเวเลนต์": "Unpaired electrons from two atoms pair up = a covalent bond", "แตะคู่อิเล็กตรอน → แตะอะตอมที่รับ": "Tap an electron pair → tap the receiving atom", "ให้คู่ทั้งคู่ = พันธะโคออร์ดิเนตโคเวเลนต์": "Donating the whole pair = a coordinate covalent bond", "แตะพันธะ": "Tap a bond", "สลายพันธะ อิเล็กตรอนกลับสู่เจ้าของเดิม": "Breaks the bond; the electrons return to their owners", "วงขีดรอบอะตอม": "Ring of ticks around an atom", "จำนวนอิเล็กตรอนที่ล้อมรอบ ครบแล้วเปลี่ยนเป็นสีทอง": "How many electrons surround it; it turns gold when complete", "ผลการเล่นของฉัน": "My results", "ยังไม่ได้เล่นด่านใด": "No levels played yet", "ชื่อ–ชั้น–เลขที่": "Name – class – number", "ล้างผลทั้งหมด": "Clear all results", "ผลบันทึกไว้ในเครื่องนี้เท่านั้น — ครูสามารถให้นักเรียนแคปหน้าจอส่วนนี้ส่งเป็นหลักฐานได้": "Results are saved on this device only. Teachers can ask students to screenshot this section as evidence.", "บทที่ 1": "Chapter 1", "คะแนน": "Score", "เกม AR ให้นักเรียนสร้างโครงสร้างลิวอิสด้วยการจับคู่อิเล็กตรอนเอง 17 ด่าน": "AR game in which students build Lewis structures by pairing electrons themselves, 17 levels", "ภาพอะตอมไฮโดรเจนสองอะตอมใช้อิเล็กตรอนร่วมกันหนึ่งคู่": "Two atoms sharing one pair of electrons", "เช่น ด.ญ.มณี ม.4/1 เลขที่ 12": "e.g. Manee, M.4/1, No. 12", "กลับหน้าเลือกด่าน": "Back to level select", "สลับการแสดงพันธะแบบจุดหรือเส้น": "Switch between dot and line views of the bonds", "จุด / เส้น": "Dots / lines", "เปิดหรือปิดกล้อง AR": "Turn the AR camera on or off", "กล้อง AR": "AR camera", "ออกแบบและพัฒนาโดย": "Designed and developed by", "นางมัณฑนา ไชยสงค์": "Mrs. Manthana Chaiyasong", "ครูโรงเรียนธาตุพนม": "Teacher, That Phanom School", "ภาษา": "Language"};
+function applyStatic(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));
+  $('#langBtn').textContent=LANG==='en'?'ไทย':'EN';$('#langBtn').title=LANG==='en'?'เปลี่ยนเป็นภาษาไทย':'Switch to English';
+  if(LANG!=='en')return;
+  document.title=DICT['ช่างต่อพันธะลิวอิส'];
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+  while(n=w.nextNode()){const t=n.nodeValue.trim();if(t&&DICT[t]!=null)n.nodeValue=n.nodeValue.replace(t,DICT[t])}
+  document.querySelectorAll('[aria-label],[placeholder],[title],meta[name=description]').forEach(e=>['aria-label','placeholder','title','content'].forEach(a=>{const v=e.getAttribute(a);if(v&&DICT[v]!=null)e.setAttribute(a,DICT[v])}));
+}
+function setLang(l){if(l===LANG)return;try{localStorage.setItem('lewis-lang',l);if(G)sessionStorage.setItem('lewis-resume',G.k)}catch(e){}location.reload()}
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+$('#langBtn').addEventListener('click',()=>setLang(LANG==='en'?'th':'en'));
+applyStatic();
+renderHome();
+try{const r=sessionStorage.getItem('lewis-resume');if(r!=null){sessionStorage.removeItem('lewis-resume');enableSensors();startLevel(+r)}}catch(e){}
+})();
+</script>
+
+</body></html>

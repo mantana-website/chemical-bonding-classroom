@@ -1,0 +1,1417 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ถ่ายโอนสู่ผลึก</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sarabun:wght@400;500;700&display=swap">
+<style>
+/* Layout: one mine shaft — dark crown band with a turning rock-salt lattice, then six strata (3.2.1–3.2.5) descending; a sticky level bar on top */
+:root{
+  --bg:#edf0f2; --surface:#ffffff; --surface2:#e2e7eb; --ink:#18212a; --muted:#56636f; --line:#c8d0d8;
+  --cat:#b5600b; --an:#0c7a6e; --accent:#ad2f5a; --onAccent:#ffffff;
+  --good:#2b7d39; --bad:#bd3a2b; --endo:#c2432b; --exo:#2465ad; --gold:#c99a1c;
+  --band:#16212c; --bandInk:#e9eef3; --bandMuted:#a2b2c1;
+  --f-disp:"Chakra Petch","Sarabun",system-ui,sans-serif;
+  --f-body:"Sarabun","Leelawadee UI","Thonburi",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151b; --surface:#18212a; --surface2:#212c37; --ink:#e5eaef; --muted:#9caab7; --line:#33414f;
+  --cat:#f0a43e; --an:#3fc3b1; --accent:#e5668f; --onAccent:#22070f;
+  --good:#5cc46c; --bad:#f06b5b; --endo:#f17b5d; --exo:#6aa7ee; --gold:#e8be4a;
+  --band:#0a0f14; --bandInk:#e9eef3; --bandMuted:#94a5b5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151b; --surface:#18212a; --surface2:#212c37; --ink:#e5eaef; --muted:#9caab7; --line:#33414f;
+  --cat:#f0a43e; --an:#3fc3b1; --accent:#e5668f; --onAccent:#22070f;
+  --good:#5cc46c; --bad:#f06b5b; --endo:#f17b5d; --exo:#6aa7ee; --gold:#e8be4a;
+  --band:#0a0f14; --bandInk:#e9eef3; --bandMuted:#94a5b5; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--f-body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+sub,sup{font-size:.68em;line-height:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.en{font-size:.78em;color:var(--muted);font-weight:500;letter-spacing:.01em}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;margin:0;line-height:1.25}
+.num{font-family:var(--f-disp);font-variant-numeric:tabular-nums}
+
+/* level bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--band);color:var(--bandInk);border-bottom:1px solid #000}
+.bar .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+.bar .wrap::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:0;border:1px solid #2c3b49;background:#1d2a36;color:var(--bandInk);border-radius:6px;padding:4px 10px;min-width:86px;line-height:1.25}
+.chip b{font:600 .78rem var(--f-disp);color:var(--bandMuted)}
+.chip span{font-size:.84rem;white-space:nowrap}
+.chip i{font-style:normal;font-size:.72rem;color:#e8be4a;letter-spacing:1px;min-height:1em}
+.chip.on{background:#f4e9ec;color:#16212c;border-color:#f4e9ec}
+.chip.on b{color:#ad2f5a}
+.chip.done{border-color:#3fc3b1}
+.chip.home{justify-content:center;min-width:auto}
+
+/* hero */
+.hero{background:var(--band);color:var(--bandInk);position:relative;overflow:hidden}
+.hero canvas{position:absolute;right:-30px;top:-10px;width:300px;height:300px;opacity:.9;pointer-events:none;--cat:#f0a43e;--an:#3fc3b1;--line:#3a4b5b;--accent:#e5668f}
+.hero .wrap{position:relative;padding-block:34px 30px}
+.eyebrow{font:600 .8rem var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--bandMuted)}
+.hero h1{font-size:clamp(2.1rem,7vw,3.3rem);font-weight:700;margin-top:6px;max-width:14ch}
+.hero h1 small{display:block;font-size:.42em;font-weight:500;letter-spacing:.08em;color:#e5668f;margin-top:4px}
+.hero p{max-width:46ch;color:#cfd9e2;margin:14px 0 0}
+@media (max-width:560px){.hero canvas{opacity:.35;right:-90px}}
+
+.section{padding-block:22px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 220px}
+.field label{font-size:.88rem;color:var(--muted)}
+input[type=text]{font:inherit;padding:.55rem .7rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;padding:.6rem 1.05rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);line-height:1.3;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
+.btn.quiet{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:.35rem .7rem;font-size:.92rem}
+
+.meter{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--an),var(--cat));border-radius:5px}
+
+/* strata */
+.strata{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;border-left:3px solid var(--line);margin-left:6px}
+.stratum{position:relative;padding:14px 0 14px 22px}
+.stratum::before{content:"";position:absolute;left:-9px;top:24px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--line)}
+.stratum.done::before{background:var(--an);border-color:var(--an)}
+.stratum .card{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stratum .card>div{min-width:0}
+.depth{font:600 .76rem var(--f-disp);color:var(--muted);letter-spacing:.06em}
+.stratum h3{font-size:1.18rem;margin-top:2px}
+.stratum .place{color:var(--muted);font-size:.93rem}
+.stars{color:var(--gold);letter-spacing:2px;font-size:.95rem}
+.stars .off{color:var(--line)}
+@media (max-width:520px){.stratum .card{grid-template-columns:1fr}}
+
+.foot{padding-block:24px 40px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);margin-top:10px}
+
+/* station */
+.st-head{padding-block:20px 6px}
+.st-head .code{font:600 .82rem var(--f-disp);color:var(--accent);letter-spacing:.1em}
+.st-head h2{font-size:clamp(1.5rem,5vw,2rem)}
+.pips{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.pip{font-size:.8rem;padding:2px 9px;border-radius:20px;background:var(--surface2);color:var(--muted)}
+.pip.on{background:var(--ink);color:var(--bg)}
+.pip.ok{background:color-mix(in srgb,var(--an) 20%,var(--surface));color:var(--ink)}
+.stepTitle{font-size:1.25rem;margin:14px 0 4px}
+.stepLead{color:var(--muted);margin:0 0 12px;max-width:62ch}
+.nav{display:flex;justify-content:flex-end;gap:10px;padding-block:18px 40px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.lcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.lcard h3{font-size:1.05rem;margin-bottom:6px}
+.lcard p{margin:0 0 6px}
+.lcard .k{font-family:var(--f-disp);font-size:1.02rem;background:var(--surface2);border-radius:6px;padding:4px 8px;display:inline-block;margin:2px 0}
+.c{color:var(--cat);font-weight:700}.a{color:var(--an);font-weight:700}
+table.ions{border-collapse:collapse;width:100%;font-size:.95rem}
+table.ions td{border-bottom:1px solid var(--line);padding:3px 4px}
+
+/* questions */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.qtext{margin:0 0 10px;font-weight:500}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;padding:.6rem .8rem;border-radius:8px;border:1px solid var(--line);background:var(--bg);line-height:1.45}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 16%,var(--surface));font-weight:600}
+.opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface));text-decoration:line-through;opacity:.8}
+.fb{margin-top:10px;padding:8px 12px;border-radius:8px;font-size:.95rem}
+.fb.ok{background:color-mix(in srgb,var(--good) 14%,var(--surface));border-left:4px solid var(--good)}
+.fb.no{background:color-mix(in srgb,var(--bad) 11%,var(--surface));border-left:4px solid var(--bad)}
+.fb.info{background:var(--surface2);border-left:4px solid var(--muted)}
+
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stage svg{display:block;width:100%;height:auto;max-width:520px;margin:0 auto}
+.svgt{font-family:var(--f-body);fill:var(--ink)}
+.svgd{font-family:var(--f-disp);fill:var(--ink)}
+.roundTag{font:600 .82rem var(--f-disp);color:var(--muted);letter-spacing:.06em}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stepper button{border:0;background:var(--surface2);width:38px;height:36px;font-size:1.2rem}
+.stepper output{min-width:38px;text-align:center;font:700 1.1rem var(--f-disp)}
+.eq{font-family:var(--f-disp);font-size:1.05rem}
+.big{font-family:var(--f-disp);font-size:1.6rem;font-weight:700}
+
+/* lattice puzzle */
+.grid{display:grid;gap:4px;margin:8px auto;max-width:300px}
+.cell{aspect-ratio:1;max-width:100%;border-radius:50%;border:2px dashed var(--line);background:var(--bg);font:700 .95rem var(--f-disp);display:flex;align-items:center;justify-content:center;padding:0}
+.cell.p{background:var(--cat);border:2px solid var(--cat);color:#fff}
+.cell.m{background:var(--an);border:2px solid var(--an);color:#fff}
+.cell.fix{box-shadow:inset 0 0 0 3px rgba(0,0,0,.25)}
+.cell.bad{outline:3px solid var(--bad);outline-offset:1px}
+canvas.cr{width:100%;max-width:360px;height:280px;display:block;margin:0 auto;touch-action:none;cursor:grab}
+
+.tiles{display:flex;gap:8px;flex-wrap:wrap}
+.tile{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:.5rem .7rem;text-align:left;font-family:var(--f-disp)}
+.tile.used{opacity:.35}
+.seq{min-height:52px;border:2px dashed var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.seq .tile{display:flex;gap:8px;align-items:center}
+.seq .tile b{color:var(--accent)}
+.cls{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.cls>div{min-width:0}
+.tog{display:flex;gap:6px}
+.tog .btn.on-ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 16%,var(--surface))}
+.tog .btn.on-no{border-color:var(--bad);text-decoration:line-through}
+@media (max-width:520px){.cls{grid-template-columns:1fr}}
+
+.bulb{transition:fill .3s}
+.bulb.on{fill:#ffd54a;filter:drop-shadow(0 0 10px #ffd54a)}
+@keyframes drift{from{transform:translateX(-6px)}to{transform:translateX(6px)}}
+@keyframes drift2{from{transform:translateX(6px)}to{transform:translateX(-6px)}}
+.mv1{animation:drift 1.1s ease-in-out infinite alternate}
+.mv2{animation:drift2 1.3s ease-in-out infinite alternate}
+.tok{display:inline-flex;align-items:center;padding:.3rem .55rem;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-family:var(--f-disp);margin:3px 2px}
+.tok.x{text-decoration:line-through;text-decoration-thickness:2px;color:var(--muted);background:var(--surface2)}
+.tok.fixed{border-style:dashed;cursor:default}
+details.rules{background:var(--surface2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:.94rem}
+details.rules summary{font-weight:600;cursor:pointer}
+
+/* result */
+.result{text-align:center;padding:26px 16px}
+.result .score{font:700 3.6rem var(--f-disp);line-height:1;font-variant-numeric:tabular-nums}
+.result .stars{font-size:2rem}
+.result .medal{font:600 1.1rem var(--f-disp);margin-top:6px}
+.result p{max-width:48ch;margin:12px auto}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:30;background:rgba(8,12,16,.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(20px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 20px max(12px,env(safe-area-inset-left,0px))}
+.modal .box{background:var(--surface);color:var(--ink);border-radius:12px;max-width:720px;width:100%;padding:18px;display:flex;flex-direction:column;gap:12px}
+.modal img.cert{width:100%;border:1px solid var(--line);border-radius:6px}
+.sig{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sig img{max-height:50px;max-width:160px;background:#fff;border:1px solid var(--line);border-radius:4px}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:20px;font-weight:600;max-width:90vw;text-align:center}
+.confetti{position:fixed;top:-10px;width:10px;height:10px;border-radius:50%;z-index:35;pointer-events:none;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.2}}
+@media (prefers-reduced-motion:reduce){.mv1,.mv2,.confetti{animation:none}.confetti{display:none}}
+</style>
+
+<nav class="bar" aria-label="ด่านทั้งหมด"><div class="wrap" id="bar"></div></nav>
+<main id="app"></main>
+<div id="modalRoot"></div>
+
+<script>
+/* ===== ห้อง AR — ชุดเกมพันธะไอออนิก (กล้องหลัง ลากหมุน ถ่างนิ้วย่อขยาย เอียงเครื่อง ถ่ายภาพ AR) ===== */
+(function(){
+"use strict";
+const RMo=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FD='"Chakra Petch","Sarabun",sans-serif',FB='"Sarabun","Leelawadee UI",sans-serif',FM='"IBM Plex Mono",ui-monospace,monospace';
+const CSS=`
+.iar-h{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:#FFB627;color:#1E1400;border:0;border-radius:999px;padding:10px 18px 10px 14px;font:700 1rem ${FB};cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.iar-h:hover{background:#FFC85C}.iar-h small{font-weight:600;opacity:.75;font-size:.8em}
+.iar-s{display:inline-flex;align-items:center;gap:6px;margin-top:8px;border:1px solid var(--line,#c8d0d8);background:var(--surface,#fff);color:var(--ink,#18212a);border-radius:999px;padding:6px 13px 6px 10px;font:700 .9rem ${FB};cursor:pointer}
+.iar-s:hover{border-color:#FFB627}
+.iar-h svg,.iar-s svg{width:18px;height:18px;flex:none}
+.iar-h:focus-visible,.iar-s:focus-visible,#iar button:focus-visible{outline:3px solid #FFB627;outline-offset:2px}
+dialog#iar{width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:#06090C;color:#F2F6F9;overflow:hidden;font-family:${FB}}
+dialog#iar::backdrop{background:#06090C}
+#iar *{box-sizing:border-box}
+#iar .ar-bg{position:absolute;inset:0;background:#141D25;background-image:radial-gradient(ellipse at 50% 60%,rgba(255,182,39,.10),transparent 60%),linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:auto,28px 28px,28px 28px}
+#iarVid,#iarPhoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#iarCv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#iar .ar-top,#iar .ar-bot{position:absolute;left:0;right:0;z-index:2;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));pointer-events:none}
+#iar .ar-top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 12px);padding-bottom:28px;background:linear-gradient(rgba(4,7,10,.78),rgba(4,7,10,0));display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+#iar .ar-bot{bottom:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding-top:34px;background:linear-gradient(rgba(4,7,10,0),rgba(4,7,10,.82));display:flex;flex-direction:column;align-items:center;gap:10px}
+#iar .ar-top>*,#iar .ar-bot>*{pointer-events:auto}
+#iar .ar-info{display:flex;flex-direction:column;gap:2px;min-width:0;pointer-events:none}
+#iar .ar-eb{font-family:${FM};font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#FFB627}
+#iar .ar-info h2{margin:0;font-family:${FD};font-size:clamp(1.6rem,6vw,2.3rem);font-weight:700;line-height:1.1;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+#iar .ar-info h2 small{font-family:${FB};font-size:.5em;font-weight:500;color:#D5DEE5;margin-left:8px}
+#iar .ar-meta{font-size:.92rem;color:#E6EDF2;text-shadow:0 1px 6px rgba(0,0,0,.7);max-width:60ch}
+#iar .ar-meta .m{font-family:${FM};color:#FFC85C}
+#iar .ar-meta .lp{display:block;font-size:.8rem;color:#C6D2DB}
+#iar .ar-x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(10,15,20,.55);color:#fff;font-size:1.2rem;display:grid;place-items:center;cursor:pointer}
+#iar .ar-hint{margin:0;font-size:.8rem;color:#C6D2DB;text-align:center;max-width:46ch;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+#iar .ar-nav{display:flex;align-items:center;gap:10px;background:rgba(10,15,20,.6);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px}
+#iar .ar-nav[hidden]{display:none}
+#iar .ar-nav button{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer}
+#iar .ar-nav button:disabled{opacity:.3;cursor:default}
+#iar .ar-nav span{font-family:${FM};font-size:.84rem;min-width:7ch;text-align:center;font-variant-numeric:tabular-nums}
+#iar .ar-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+#iar .ar-b{border:1px solid rgba(255,255,255,.26);background:rgba(10,15,20,.6);color:#fff;border-radius:999px;padding:9px 14px;font:600 .88rem ${FB};display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+#iar .ar-b[aria-pressed="true"]{border-color:#FFB627;color:#FFD27A}
+#iar .ar-b.ar-shot{background:#FFB627;border-color:#FFB627;color:#1E1400}
+#iar .ar-msg{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100% - 32px));background:rgba(13,19,24,.94);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
+#iar .ar-msg[hidden],#iar .ar-sheet[hidden],#iar .ar-status[hidden]{display:none}
+#iar .ar-msg h3{margin:0;font-family:${FD};font-size:1.2rem;color:#fff}
+#iar .ar-msg p{margin:0;font-size:.92rem;color:#D5DEE5;line-height:1.55}
+#iar .ar-msg .ar-opts{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+#iar .ar-msg .ar-b{justify-content:center;width:100%}
+#iar .ar-status{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);font-size:.95rem;color:#E6EDF2;background:rgba(10,15,20,.6);padding:8px 14px;border-radius:999px;pointer-events:none}
+#iar .ar-sheet{position:absolute;inset:0;z-index:4;background:rgba(4,7,10,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+#iar .ar-sheet h3{margin:0;font-family:${FD};font-size:1.15rem;color:#fff}
+#iar .ar-sheet img{max-width:100%;max-height:62vh;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.6);display:block}
+#iar .ar-sheet p{margin:0;font-size:.82rem;color:#AFC0CC;text-align:center;max-width:46ch}
+@media (max-width:520px){#iar .ar-b{padding:8px 11px;font-size:.82rem}}`;
+const ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M12 7l4.5 2.6v5L12 17l-4.5-2.4v-5z"/><path d="M12 12l4.5-2.4M12 12v5M12 12L7.5 9.6"/></svg>';
+const S={eb:'AR · ความเป็นจริงเสริม',hint:'ลากเพื่อหมุน · ถ่างสองนิ้วเพื่อย่อหรือขยาย · เอียงเครื่องเพื่อมองจากมุมอื่น',hintNo:'ลากเพื่อหมุน · ถ่างสองนิ้วหรือหมุนล้อเมาส์เพื่อย่อหรือขยาย',
+  gOn:'เอียงเครื่องเพื่อหมุน: เปิด',gOff:'เอียงเครื่องเพื่อหมุน: ปิด',gNA:'อุปกรณ์นี้ไม่ส่งค่าการเอียง ใช้นิ้วลากหมุนแทน',reset:'จัดกลาง',src:'ฉากหลัง',shot:'ถ่ายภาพ AR',back:'กลับสู่ AR',save:'บันทึกภาพ',
+  saveHint:'ถ้ากดบันทึกไม่ได้ ให้แตะค้างที่ภาพ (มือถือ) หรือคลิกขวา › บันทึกรูปภาพ (คอมพิวเตอร์)',starting:'กำลังเปิดกล้อง…',
+  noCamT:'เปิดกล้องไม่ได้',noCamB:'หน้าที่เปิดอยู่ไม่อนุญาตให้ใช้กล้อง เช่น เมื่อเปิดผ่านหน้าแชร์หรือแอปแชท ให้เปิดไฟล์เกมด้วย Chrome หรือ Safari โดยตรงแล้วกดอนุญาตกล้อง หรือถ่ายภาพห้องเรียนมาเป็นฉากหลังแทน',
+  srcT:'เลือกฉากหลัง',srcB:'ใช้ภาพสดจากกล้อง ภาพถ่าย หรือฉากโต๊ะแล็บ แบบจำลองจะลอยอยู่บนฉากที่เลือก',useCam:'ใช้กล้องสด',usePhoto:'ถ่ายภาพหรือเลือกภาพเป็นฉากหลัง',useLab:'ใช้ฉากโต๊ะแล็บ',cancel:'ปิด',btn:'ดูแบบ AR',btnSub:'ใช้กล้องหลัง'};
+
+/* ---------- 3D drawing (same projection and shading as the covalent games) ---------- */
+const vadd=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vsub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],vmul=(a,k)=>a.map(x=>x*k),norm=v=>{const l=Math.hypot(...v)||1;return v.map(x=>x/l)};
+function hexRGB(h){h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function mix(h,tt,a){const c=hexRGB(h),d=tt==='w'?[255,255,255]:[0,0,0];return `rgb(${c.map((v,i)=>Math.round(v+(d[i]-v)*a)).join(',')})`}
+function rotP(p,yaw,pitch){const cy=Math.cos(yaw),sy=Math.sin(yaw);const x=p[0]*cy+p[2]*sy,z=-p[0]*sy+p[2]*cy,y=p[1];const cp=Math.cos(pitch),sp=Math.sin(pitch);return [x,y*cp-z*sp,y*sp+z*cp]}
+function fitCanvas(cv){const dpr=Math.min(2,window.devicePixelRatio||1),r=cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width*dpr)),h=Math.max(1,Math.round(r.height*dpr));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}return dpr}
+function extOf(m){let ext=.3;m.atoms.forEach(a=>{ext=Math.max(ext,Math.hypot(...a.p)+a.r)});return ext}
+function autoScale(m){return Math.min(.24,.31/extOf(m))}
+function draw3D(cv,m,yaw,pitch,o){o=o||{};
+  const dpr=fitCanvas(cv),ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  const sc=typeof m.scale==='function'?m.scale(W,H):(m.scale||(m._as||(m._as=autoScale(m))));
+  const unit=Math.min(W,H)*sc*(o.zoom||1),cx=W/2+(o.ox||0)*dpr,cy=H/2+(o.oy||0)*dpr,D=6;
+  if(o.pre)o.pre(ctx,cx,cy,unit,dpr,m.ext||(m.ext=extOf(m)));
+  const proj=p=>{const r=rotP(p,yaw,pitch),s=D/(D-r[2]);return {x:cx+r[0]*s*unit,y:cy-r[1]*s*unit,z:r[2],s}};
+  if(m.under)m.under(ctx,proj,unit,dpr);
+  const P=m.atoms.map(a=>proj(a.p)),items=[];
+  m.bonds.forEach(bd=>{const p=P[bd.a],q=P[bd.b];if(!p||!q)return;items.push({z:(p.z+q.z)/2-.02,d:()=>{
+    const ra=m.atoms[bd.a].r*unit*p.s*.7,rb=m.atoms[bd.b].r*unit*q.s*.7;
+    let dx=q.x-p.x,dy=q.y-p.y;const l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,nx=-uy,ny=ux,w=Math.max(2,.085*unit*(p.s+q.s)/2*(bd.w||1));
+    ctx.lineCap='round';
+    if(bd.s==='hb'){ctx.save();ctx.setLineDash([3*dpr,5*dpr]);ctx.strokeStyle=bd.col||'#7FD3FF';ctx.lineWidth=Math.max(2,w*.55);ctx.beginPath();ctx.moveTo(p.x+ux*ra,p.y+uy*ra);ctx.lineTo(q.x-ux*rb,q.y-uy*rb);ctx.stroke();ctx.restore();return}
+    const n=bd.s==='res'?2:(bd.o||1),sp=w*1.25;ctx.globalAlpha=bd.ghost?.25:1;
+    for(let k=0;k<n;k++){const off=(k-(n-1)/2)*sp,dash=bd.s==='res'&&k===1;
+      ctx.save();if(dash)ctx.setLineDash([w*1.1,w*1.1]);
+      ctx.strokeStyle='rgba(5,9,13,.85)';ctx.lineWidth=n>1?w*.85+2:w+2.5;ctx.beginPath();ctx.moveTo(p.x+nx*off,p.y+ny*off);ctx.lineTo(q.x+nx*off,q.y+ny*off);ctx.stroke();
+      ctx.strokeStyle=bd.col||'#C8D2DB';ctx.lineWidth=n>1?w*.85:w;ctx.stroke();ctx.restore()}
+    ctx.globalAlpha=1}})});
+  m.atoms.forEach((a,i)=>{const p=P[i];items.push({z:p.z,d:()=>{
+    const r=a.r*unit*p.s;ctx.globalAlpha=a.ghost?.28:1;
+    const g=ctx.createRadialGradient(p.x-r*.35,p.y-r*.4,r*.08,p.x,p.y,r);
+    g.addColorStop(0,mix(a.col,'w',.6));g.addColorStop(.45,a.col);g.addColorStop(1,mix(a.col,'b',.5));
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill();
+    if(a.hl){ctx.strokeStyle='#FFB627';ctx.lineWidth=3*dpr;ctx.beginPath();ctx.arc(p.x,p.y,r+4*dpr,0,Math.PI*2);ctx.stroke()}
+    if(a.sym&&r>9*dpr&&!a.ghost){const k=a.sym.length>3?.5:a.sym.length>2?.58:a.sym.length>1?.72:.85;ctx.fillStyle=a.txt||'#fff';ctx.font=`700 ${Math.round(r*k)}px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(a.sym,p.x,p.y+r*.04)}
+    ctx.globalAlpha=1}})});
+  items.sort((a,b)=>a.z-b.z).forEach(it=>it.d());
+  (m.arrows||[]).forEach(ar=>{const a=proj(ar.a),b=proj(ar.b),dx=b.x-a.x,dy=b.y-a.y,l=Math.hypot(dx,dy);if(l<4)return;const ux=dx/l,uy=dy/l,nx=-uy,ny=ux,w=(ar.w||1)*Math.max(2.5*dpr,.05*unit),hd=Math.max(8*dpr,w*3.2);
+    ctx.save();ctx.strokeStyle=ar.col||'#FFB627';ctx.fillStyle=ar.col||'#FFB627';ctx.lineWidth=w;ctx.lineCap='round';ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=4*dpr;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x-ux*hd*.8,b.y-uy*hd*.8);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x-ux*hd+nx*hd*.55,b.y-uy*hd+ny*hd*.55);ctx.lineTo(b.x-ux*hd-nx*hd*.55,b.y-uy*hd-ny*hd*.55);ctx.closePath();ctx.fill();
+    if(ar.label){ctx.shadowBlur=0;const fs=Math.round((ar.fs||14)*dpr);ctx.font=`700 ${fs}px ${FM}`;ctx.textBaseline='middle';const sd=ar.side||1,lx=(a.x+b.x)/2+sd*9*dpr,ly=(a.y+b.y)/2,tw=ctx.measureText(ar.label).width;ctx.textAlign=sd<0?'right':'left';
+      if(ar.pill){const x0=sd<0?lx-tw-5*dpr:lx-5*dpr;ctx.fillStyle='rgba(6,9,12,.82)';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x0,ly-fs*.7,tw+10*dpr,fs*1.4,6*dpr);else ctx.rect(x0,ly-fs*.7,tw+10*dpr,fs*1.4);ctx.fill();ctx.fillStyle=ar.col||'#FFB627'}
+      else{ctx.shadowBlur=5*dpr}ctx.fillText(ar.label,lx,ly)}
+    ctx.restore()});
+  m.atoms.forEach((a,i)=>{if(!a.lab||a.ghost)return;const p=P[i],r=a.r*unit*p.s;ctx.save();ctx.font=`700 ${Math.round(Math.max(12*dpr,Math.min(r*.3,17*dpr)))}px ${FM}`;ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.fillStyle=a.labCol||'#FFD27A';ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=4*dpr;ctx.fillText(a.lab,p.x,p.y+r+5*dpr);ctx.restore()});
+  if(m.post)m.post(ctx,proj,unit,dpr);
+}
+
+/* ---------- ions and atoms ---------- */
+const ION={
+  Na:{sym:'Na⁺',pm:102,col:'#F0A43E',txt:'#2A1600'},K:{sym:'K⁺',pm:138,col:'#E8873A',txt:'#2A1200'},Mg:{sym:'Mg²⁺',pm:72,col:'#F5C451',txt:'#2A1E00'},Ag:{sym:'Ag⁺',pm:115,col:'#C9D1D9',txt:'#1B2530'},
+  Cl:{sym:'Cl⁻',pm:181,col:'#3FC3B1',txt:'#06302B'},F:{sym:'F⁻',pm:133,col:'#86D99A',txt:'#0E2E16'},O:{sym:'O²⁻',pm:140,col:'#E85A4F',txt:'#fff'}};
+const EL={H:{col:'#F2F4F6',txt:'#1B2530',r:.2},N:{col:'#4C7BE8',txt:'#fff',r:.3},O:{col:'#E0453A',txt:'#fff',r:.3},C:{col:'#4F555C',txt:'#fff',r:.3},S:{col:'#E8C430',txt:'#2A2200',r:.36},P:{col:'#F08A24',txt:'#2A1400',r:.35}};
+const ionR=k=>Math.max(.15,ION[k].pm/181*.4);
+const ion=(k,p,ex)=>Object.assign({p,sym:ION[k].sym,col:ION[k].col,txt:ION[k].txt,r:ionR(k)},ex||{});
+const atom=(e,p,ex)=>Object.assign({p,sym:e,col:EL[e].col,txt:EL[e].txt,r:EL[e].r},ex||{});
+function center(m){const n=m.atoms.length;if(!n)return m;const c=m.atoms.reduce((s,a)=>vadd(s,a.p),[0,0,0]).map(x=>x/n);m.atoms.forEach(a=>a.p=vsub(a.p,c));(m.arrows||[]).forEach(r=>{r.a=vsub(r.a,c);r.b=vsub(r.b,c)});return m}
+function rockSalt(c,a,o){o=o||{};const atoms=[],bonds=[],key={},n=1;
+  for(let x=-n;x<=n;x++)for(let y=-n;y<=n;y++)for(let z=-n;z<=n;z++){key[[x,y,z]]=atoms.length;atoms.push(ion(((x+y+z)%2+2)%2===0?c:a,[x,y,z]))}
+  for(let x=-n;x<=n;x++)for(let y=-n;y<=n;y++)for(let z=-n;z<=n;z++){const i=key[[x,y,z]];[[1,0,0],[0,1,0],[0,0,1]].forEach(d=>{const j=key[[x+d[0],y+d[1],z+d[2]]];if(j!=null)bonds.push({a:i,b:j,w:.55,col:'#8E9AA6'})})}
+  if(o.coord){atoms.forEach((at,i)=>{const d=Math.abs(at.p[0])+Math.abs(at.p[1])+Math.abs(at.p[2]);if(d===0)at.hl=true;else if(d>1)at.ghost=true});
+    bonds.forEach(b=>{const da=atoms[b.a].p,db=atoms[b.b].p,c0=da.every(v=>v===0)||db.every(v=>v===0);if(c0){b.w=1;b.col='#FFD27A'}else b.ghost=true})}
+  return {atoms,bonds}}
+function ionSize(){
+  const R=pm=>pm/200*.55,m={atoms:[
+    {p:[-1.15,.95,0],sym:'Na',col:'#B8875A',txt:'#fff',r:R(186),lab:'186 pm'},{p:[1.15,.95,0],sym:'Cl',col:'#2E9C8C',txt:'#fff',r:R(99),lab:'99 pm'},
+    {p:[-1.15,-1.05,0],sym:'Na⁺',col:ION.Na.col,txt:ION.Na.txt,r:R(102),lab:'102 pm'},{p:[1.15,-1.05,0],sym:'Cl⁻',col:ION.Cl.col,txt:ION.Cl.txt,r:R(181),lab:'181 pm'}],
+    bonds:[],arrows:[{a:[-.55,1.15,0],b:[.75,1.15,0],col:'#FFD27A',label:'e⁻',side:-1},{a:[-1.15,.35,0],b:[-1.15,-.65,0],col:'#F17B5D',w:.8},{a:[1.15,.55,0],b:[1.15,-.45,0],col:'#6AA7EE',w:.8}]};
+  m.noSpin=true;m.yaw0=-.12;m.pitch0=.06;return m}
+function tetra(c,e,d,ex){const D=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]].map(norm);const atoms=[atom(c,[0,0,0])];D.forEach(u=>atoms.push(atom(e,vmul(u,d))));return Object.assign({atoms,bonds:D.map((_,i)=>({a:0,b:i+1,o:1}))},ex||{})}
+function trig(c,e,d){const atoms=[atom(c,[0,0,0])];[90,210,330].forEach(t=>{const a=t*Math.PI/180;atoms.push(atom(e,[Math.cos(a)*d,Math.sin(a)*d,0]))});return {atoms,bonds:[1,2,3].map(i=>({a:0,b:i,s:'res'}))}}
+const OCT=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const perp=u=>norm(Math.abs(u[1])<.9?cross(u,[0,1,0]):cross(u,[1,0,0]));
+function hydrate(k){const isCat=k==='Na',core=ion(k,[0,0,0],{r:isCat?.32:.5}),atoms=[core],bonds=[],ang=104.5*Math.PI/180,half=ang/2,dOH=.5;
+  OCT.forEach(u=>{const v=perp(u);
+    if(isCat){const O=vmul(u,1.05),io=atoms.length;atoms.push(atom('O',O,{r:.26,sym:'O'}));
+      [1,-1].forEach(s=>{const h=vadd(O,vmul(norm(vadd(vmul(u,Math.cos(half)),vmul(v,s*Math.sin(half)))),dOH));bonds.push({a:io,b:atoms.length,w:.8});atoms.push(atom('H',h,{r:.15,sym:''}))});
+      bonds.push({a:0,b:io,s:'hb',col:'#FFB627'})}
+    else{const H1=vmul(u,1.0),O=vmul(u,1.0+dOH),ih=atoms.length;atoms.push(atom('H',H1,{r:.15,sym:''}));const io=atoms.length;atoms.push(atom('O',O,{r:.26,sym:'O'}));bonds.push({a:ih,b:io,w:.8});
+      const back=vmul(u,-1),d2=norm(vadd(vmul(back,Math.cos(ang)),vmul(v,Math.sin(ang))));const ih2=atoms.length;atoms.push(atom('H',vadd(O,vmul(d2,dOH)),{r:.15,sym:''}));bonds.push({a:io,b:ih2,w:.8});
+      bonds.push({a:0,b:ih,s:'hb',col:'#FFB627'})}});
+  return {atoms,bonds}}
+function brittle(){const atoms=[],bonds=[],key={};const cat=(x,y,z)=>y===1?((x+z)%2===0):((x+y+z)%2+2)%2===0;
+  for(let y=-1;y<=1;y++)for(let x=0;x<4;x++)for(let z=0;z<2;z++){key[[x,y,z]]=atoms.length;atoms.push(ion(cat(x,y,z)?'Na':'Cl',[x,y,z]))}
+  for(let y=-1;y<=1;y++)for(let x=0;x<4;x++)for(let z=0;z<2;z++){const i=key[[x,y,z]];
+    [[1,0,0],[0,0,1]].forEach(d=>{const j=key[[x+d[0],y,z+d[2]]];if(j!=null)bonds.push({a:i,b:j,w:.55,col:'#8E9AA6'})});
+    const j=key[[x,y+1,z]];if(j!=null)bonds.push(y===0?{a:i,b:j,s:'hb',col:'#F06B5B'}:{a:i,b:j,w:.55,col:'#8E9AA6'})}
+  return center({atoms,bonds,arrows:[{a:[0,1.6,.5],b:[2.2,1.6,.5],col:'#FFD27A',label:'แรงทุบ',side:-1}]})}
+function ladder(){const E=[0,107,229,725,376,-411],L=['Na(s) + ½Cl₂(g)','Na(g) + ½Cl₂(g)','Na(g) + Cl(g)','Na⁺(g) + e⁻ + Cl(g)','Na⁺(g) + Cl⁻(g)','NaCl(s)'],D=['+107','+122','+496','−349','−787'];
+  const y=e=>e/330-.62,x=i=>-1.85+i*.74,pl=E.map((e,i)=>({x:x(i),y:y(e),lab:L[i],end:i===0||i===5}));
+  const arrows=[];for(let i=0;i<5;i++){const up=E[i+1]>E[i],xm=(pl[i].x+pl[i+1].x)/2;arrows.push({a:[xm,pl[i].y,0],b:[xm,pl[i+1].y,0],col:up?'#F17B5D':'#6AA7EE',label:D[i],side:1,w:.9,pill:true,fs:13})}
+  return {atoms:[],bonds:[],arrows,scale:(W,H)=>W<H*.8?.21:.158,noSpin:true,yaw0:-.18,pitch0:.22,ext:2.15,
+    under(ctx,proj,unit,dpr){pl.map(p=>({p,c:proj([p.x,p.y,0])})).sort((a,b)=>a.c.z-b.c.z).forEach(({p})=>{const q=[[p.x-.3,p.y,-.3],[p.x+.3,p.y,-.3],[p.x+.3,p.y,.3],[p.x-.3,p.y,.3]].map(proj);
+      ctx.save();ctx.fillStyle=p.end?'rgba(198,210,219,.55)':'rgba(255,182,39,.45)';ctx.strokeStyle=p.end?'#E6EDF2':'#FFC85C';ctx.lineWidth=1.6*dpr;ctx.beginPath();q.forEach((c,i)=>i?ctx.lineTo(c.x,c.y):ctx.moveTo(c.x,c.y));ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()})},
+    post(ctx,proj,unit,dpr){pl.forEach(p=>{const c=proj([p.x,p.y+.06,0]),fs=Math.round(Math.max(10.5*dpr,Math.min(unit*.1,14*dpr)));ctx.save();ctx.font=`600 ${fs}px ${FB}`;const tw=ctx.measureText(p.lab).width,yb=c.y-6*dpr;ctx.fillStyle='rgba(6,9,12,.72)';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(c.x-tw/2-5*dpr,yb-fs*1.25,tw+10*dpr,fs*1.4,6*dpr);else ctx.rect(c.x-tw/2-5*dpr,yb-fs*1.25,tw+10*dpr,fs*1.4);ctx.fill();ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillStyle='#fff';ctx.fillText(p.lab,c.x,yb);ctx.restore()});
+      const z=proj([-2.45,y(0),0]);ctx.save();ctx.strokeStyle='rgba(255,255,255,.35)';ctx.setLineDash([4*dpr,4*dpr]);ctx.lineWidth=1*dpr;const z2=proj([2.45,y(0),0]);ctx.beginPath();ctx.moveTo(z.x,z.y);ctx.lineTo(z2.x,z2.y);ctx.stroke();ctx.restore()}}}
+
+/* ---------- model sets per game ---------- */
+const M={
+  ionsize:{e:'atoms becoming ions',t:'Na → Na⁺ · Cl → Cl⁻',n:'อะตอมกลายเป็นไอออน',meta:'โลหะเสียอิเล็กตรอน ไอออนบวกเล็กลง · อโลหะรับอิเล็กตรอน ไอออนลบใหญ่ขึ้น',note:'ตัวเลขใต้ทรงกลมคือรัศมีโดยประมาณ (pm) · ลูกศร e⁻ คืออิเล็กตรอนที่ถ่ายโอน',b:ionSize},
+  nacl:{e:'rock-salt lattice',t:'NaCl',n:'ผลึกเกลือหิน',meta:'Na⁺ : Cl⁻ = 1 : 1 · ไอออนบวกและลบเรียงสลับกันทั้งสามมิติ',note:'ผลึกต่อเนื่อง ไม่มีโมเลกุล NaCl แยกออกมา สูตรบอกอัตราส่วนอย่างต่ำของไอออน',b:()=>rockSalt('Na','Cl')},
+  coord6:{e:'six neighbouring ions',t:'NaCl',n:'ไอออนรอบตัว 6 ไอออน',meta:'Na⁺ ตรงกลาง (วงสีเหลือง) ถูกล้อมด้วย Cl⁻ 6 ไอออน',note:'แรงดึงดูดทางไฟฟ้าสถิตเกิดทุกทิศทาง ไอออนอื่นในผลึกแสดงแบบจาง',b:()=>rockSalt('Na','Cl',{coord:1})},
+  mgo:{e:'magnesium oxide lattice',t:'MgO',n:'ผลึกแมกนีเซียมออกไซด์',meta:'Mg²⁺ : O²⁻ = 1 : 1 · โครงสร้างแบบเดียวกับ NaCl',note:'ไอออนประจุ 2 หน่วยและขนาดเล็ก ดึงดูดกันแรงกว่า NaCl จุดหลอมเหลวจึงสูงมาก (2,852 °C)',b:()=>rockSalt('Mg','O')},
+  kf:{e:'potassium fluoride lattice',t:'KF',n:'ผลึกโพแทสเซียมฟลูออไรด์',meta:'K⁺ : F⁻ = 1 : 1 · โครงสร้างแบบเกลือหิน',note:'K ให้อิเล็กตรอน 1 ตัว F รับ 1 ตัว จึงรวมกันในอัตราส่วน 1 : 1',b:()=>rockSalt('K','F')},
+  nh4:{e:'ammonium ion',t:'NH₄⁺',n:'แอมโมเนียมไอออน',meta:'ไอออนบวกกลุ่มอะตอม ประจุ 1+ · ทรงสี่หน้า',note:'ต่างจากแอมโมเนีย (NH₃) ที่เป็นโมเลกุล · เช่น (NH₄)₂SO₄ แอมโมเนียมซัลเฟต',b:()=>tetra('N','H',.85)},
+  oh:{e:'hydroxide ion',t:'OH⁻',n:'ไฮดรอกไซด์ไอออน',meta:'ไอออนลบกลุ่มอะตอม ประจุ 1−',note:'เช่น Fe(OH)₃ ไอร์ออน(III) ไฮดรอกไซด์ · มีมากกว่า 1 กลุ่มต้องใส่วงเล็บ',b:()=>({atoms:[atom('O',[-.3,0,0]),atom('H',[.55,0,0])],bonds:[{a:0,b:1,o:1}]})},
+  no3:{e:'nitrate ion',t:'NO₃⁻',n:'ไนเตรตไอออน',meta:'ไอออนลบกลุ่มอะตอม ประจุ 1− · สามเหลี่ยมแบนราบ',note:'เส้นประคู่แสดงว่าพันธะทั้งสามยาวเท่ากัน · ต่างจากไนไตรต์ (NO₂⁻) และไนไตรด์ (N³⁻)',b:()=>trig('N','O',1)},
+  co3:{e:'carbonate ion',t:'CO₃²⁻',n:'คาร์บอเนตไอออน',meta:'ไอออนลบกลุ่มอะตอม ประจุ 2− · สามเหลี่ยมแบนราบ',note:'เช่น Na₂CO₃ โซเดียมคาร์บอเนต (โซดาแอช)',b:()=>trig('C','O',1)},
+  so4:{e:'sulfate ion',t:'SO₄²⁻',n:'ซัลเฟตไอออน',meta:'ไอออนลบกลุ่มอะตอม ประจุ 2− · ทรงสี่หน้า',note:'เช่น Al₂(SO₄)₃ · ต่างจากซัลไฟด์ (S²⁻) ที่เป็นไอออนอะตอมเดี่ยว',b:()=>tetra('S','O',1.05)},
+  po4:{e:'phosphate ion',t:'PO₄³⁻',n:'ฟอสเฟตไอออน',meta:'ไอออนลบกลุ่มอะตอม ประจุ 3− · ทรงสี่หน้า',note:'เช่น Ca₃(PO₄)₂ แคลเซียมฟอสเฟต ต้องใช้ Ca²⁺ 3 ไอออนต่อ PO₄³⁻ 2 กลุ่ม',b:()=>tetra('P','O',1.05)},
+  ladder:{e:'energy ladder for NaCl(s)',t:'ΔH = −411 kJ/mol',n:'บันไดพลังงานการเกิด NaCl(s)',meta:'ลูกศรแดงขึ้น = ดูดพลังงาน · ลูกศรฟ้าลง = คายพลังงาน (kJ/mol)',note:'เส้นประคือระดับพลังงานเริ่มต้น · พลังงานแลตทิซ −787 kJ/mol ทำให้ผลรวมเป็นลบ',b:ladder},
+  lattice:{e:'gaseous ions forming the lattice',t:'NaCl',n:'ไอออนแก๊สรวมกันเป็นผลึก',meta:'พลังงานแลตทิซของ NaCl = −787 kJ/mol',note:'ขั้นที่คายพลังงานมากที่สุดในวัฏจักรบอร์น–ฮาเบอร์',b:()=>rockSalt('Na','Cl')},
+  brittle:{e:'struck crystal with shifted layers',t:'NaCl',n:'ผลึกถูกทุบ ชั้นไอออนเลื่อน',meta:'ชั้นบนเลื่อนไปหนึ่งตำแหน่ง ไอออนประจุเหมือนกันมาอยู่ตรงกัน',note:'เส้นประสีแดงคือแรงผลักระหว่างไอออนประจุเหมือนกัน ผลึกจึงแตกแทนที่จะงอ',b:brittle},
+  naaq:{e:'a cation in water',t:'Na⁺(aq)',n:'ไอออนบวกในน้ำ',meta:'โมเลกุลน้ำหันด้าน O (ขั้วลบ) เข้าหา Na⁺',note:'เส้นประสีเหลืองคือแรงดึงดูดระหว่างไอออนกับขั้วของโมเลกุลน้ำ (พลังงานไฮเดรชัน)',b:()=>hydrate('Na')},
+  claq:{e:'an anion in water',t:'Cl⁻(aq)',n:'ไอออนลบในน้ำ',meta:'โมเลกุลน้ำหันด้าน H (ขั้วบวก) เข้าหา Cl⁻',note:'เมื่อละลาย ไอออนแยกจากโครงผลึกและถูกโมเลกุลน้ำล้อมรอบ',b:()=>hydrate('Cl')},
+  agcl:{e:'silver chloride precipitate',t:'AgCl(s)',n:'ตะกอนซิลเวอร์คลอไรด์',meta:'Ag⁺(aq) + Cl⁻(aq) → AgCl(s)',note:'ตะกอนสีขาวจากการผสม AgNO₃ กับ NaCl · Na⁺ และ NO₃⁻ ไม่ได้ทำปฏิกิริยา',b:()=>rockSalt('Ag','Cl')}
+};
+const SETS={
+  g1:{list:['ionsize','nacl','coord6','mgo','kf'],st:{l1:'ionsize',l2:'mgo',l3:'nacl',l4:'coord6',l5:'nacl'}},
+  g2:{list:['nh4','oh','no3','co3','so4','po4'],st:{l1:'nh4',l2:'so4',l3:'no3',l4:'so4',l5:'po4'}},
+  g3:{list:['ionsize','ladder','lattice','mgo'],st:{l1:'ladder',l2:'ladder',l3:'ladder',l4:'mgo',l5:'ionsize'}},
+  g4:{list:['nacl','brittle','naaq','claq','agcl','mgo'],st:{l1:'brittle',l2:'nacl',l3:'mgo',l4:'naaq',l5:'agcl',l6:'nacl'}}};
+
+/* ---------- AR room ---------- */
+const $i=id=>document.getElementById(id);
+const AR={on:false,list:[],i:0,model:null,src:'cam',pref:'cam',stream:null,photoURL:'',yaw:.6,pitch:.3,zoom:1.05,idle:0,ptr:new Map(),drag:null,pinch:null,gyro:false,g:null,g0:null,gyroSeen:false,gyroTimer:0,shot:null,token:0,raf:0,last:0};
+const clampN=(v,a,b)=>Math.max(a,Math.min(b,v));
+let built=false;
+(function(){const st=document.createElement('style');st.id='iarStyle';st.textContent=CSS;(document.head||document.documentElement).appendChild(st)})();
+function ensure(){if(built)return;built=true;
+  const d=document.createElement('dialog');d.id='iar';d.setAttribute('aria-labelledby','iarTitle');
+  d.innerHTML=`<div class="ar-bg"></div><video id="iarVid" playsinline muted autoplay hidden></video><img id="iarPhoto" alt="" hidden><canvas id="iarCv" aria-label="AR"></canvas><div class="ar-status" id="iarStatus" hidden></div>
+  <div class="ar-top"><div class="ar-info"><span class="ar-eb">${S.eb}</span><h2 id="iarTitle"></h2><div class="ar-meta" id="iarMeta"></div></div><button class="ar-x" type="button" id="iarClose" aria-label="ปิด">✕</button></div>
+  <div class="ar-bot"><p class="ar-hint" id="iarHint"></p><div class="ar-nav" id="iarNav"><button type="button" id="iarPrev" aria-label="ก่อนหน้า">‹</button><span id="iarCount"></span><button type="button" id="iarNext" aria-label="ถัดไป">›</button></div>
+  <div class="ar-tools"><button class="ar-b" type="button" id="iarGyro" aria-pressed="false"></button><button class="ar-b" type="button" id="iarReset">${S.reset}</button><button class="ar-b" type="button" id="iarSrcBtn">${S.src}</button><button class="ar-b ar-shot" type="button" id="iarShot">${S.shot}</button></div></div>
+  <div class="ar-msg" id="iarMsg" hidden></div>
+  <div class="ar-sheet" id="iarSheet" hidden><h3 id="iarShotTitle"></h3><img id="iarShotImg" alt=""><div class="ar-tools"><button class="ar-b ar-shot" type="button" id="iarSave">${S.save}</button><button class="ar-b" type="button" id="iarBack">${S.back}</button></div><p>${S.saveHint}</p></div>
+  <input type="file" id="iarFile" accept="image/*" capture="environment" hidden>`;
+  document.body.appendChild(d);wire()}
+function info(){const k=AR.list[AR.i],m=M[k];AR.model=m.b();AR.yaw=AR.model.yaw0??.6;AR.pitch=AR.model.pitch0??.3;AR.zoom=1.05;AR.idle=0;
+  $i('iarTitle').innerHTML=`${m.t}<small>${m.n}</small>`;$i('iarMeta').innerHTML=`${m.meta}<span class="lp">${m.note}</span>`;
+  const n=AR.list.length;$i('iarNav').hidden=n<2;$i('iarCount').textContent=`${AR.i+1} / ${n}`;$i('iarPrev').disabled=AR.i===0;$i('iarNext').disabled=AR.i===n-1;gLabel()}
+function gLabel(){const b=$i('iarGyro');b.textContent=AR.gyro?S.gOn:S.gOff;b.setAttribute('aria-pressed',AR.gyro);$i('iarHint').textContent=AR.gyro?S.hint:S.hintNo}
+function open(start){ensure();const set=SETS[GAME.id];if(!set)return;
+  const k=set.st[start]||start;AR.list=set.list.slice();AR.i=Math.max(0,AR.list.indexOf(k));
+  AR.yaw=.6;AR.pitch=.3;AR.zoom=1.05;AR.idle=0;AR.ptr.clear();AR.drag=AR.pinch=null;
+  info();$i('iarSheet').hidden=true;$i('iarMsg').hidden=true;
+  const d=$i('iar');if(!d.open)d.showModal();AR.on=true;gStart();setSrc(AR.pref);$i('iarClose').focus();
+  cancelAnimationFrame(AR.raf);AR.last=performance.now();AR.raf=requestAnimationFrame(loop)}
+function loop(ts){if(!AR.on)return;const dt=Math.min(64,ts-AR.last);AR.last=ts;frame(ts,dt);AR.raf=requestAnimationFrame(loop)}
+function stop(){if(AR.stream){AR.stream.getTracks().forEach(x=>x.stop());AR.stream=null}const v=$i('iarVid');v.srcObject=null;v.hidden=true}
+function status(msg){const el=$i('iarStatus');el.hidden=!msg;el.textContent=msg||''}
+function setSrc(src){AR.token++;const tok=AR.token;$i('iarMsg').hidden=true;if(src==='cam'){camera(tok);return}stop();status(null);AR.src=src;AR.pref=src;$i('iarPhoto').hidden=src!=='photo'}
+async function camera(tok){stop();$i('iarPhoto').hidden=true;AR.src='cam';
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){status(null);choose(true);return}
+  status(S.starting);
+  try{const s=await Promise.race([navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),12000))]);
+    if(tok!==AR.token||!AR.on){s.getTracks().forEach(x=>x.stop());return}
+    AR.stream=s;AR.pref='cam';const v=$i('iarVid');v.srcObject=s;v.hidden=false;try{await v.play()}catch(e){}status(null);
+  }catch(e){if(tok!==AR.token)return;status(null);AR.src='lab';choose(true)}}
+function choose(failed){const m=$i('iarMsg');
+  m.innerHTML=`<h3>${failed?S.noCamT:S.srcT}</h3><p>${failed?S.noCamB:S.srcB}</p><div class="ar-opts"><button class="ar-b ar-shot" type="button" data-src="photo">${S.usePhoto}</button><button class="ar-b" type="button" data-src="cam">${S.useCam}</button><button class="ar-b" type="button" data-src="lab">${S.useLab}</button>${failed?'':`<button class="ar-b" type="button" data-src="x">${S.cancel}</button>`}</div>`;
+  m.hidden=false;const f=m.querySelector('button');if(f)f.focus()}
+function ori(e){if(e.alpha==null&&e.beta==null)return;AR.gyroSeen=true;AR.g={a:e.alpha||0,b:e.beta||0};if(!AR.g0)AR.g0={...AR.g}}
+async function gStart(){AR.g=AR.g0=null;AR.gyroSeen=false;clearTimeout(AR.gyroTimer);const DOE=window.DeviceOrientationEvent;
+  if(!DOE){AR.gyro=false;gLabel();return false}
+  try{if(typeof DOE.requestPermission==='function'){const r=await DOE.requestPermission();if(r!=='granted'){AR.gyro=false;gLabel();return false}}}catch(e){AR.gyro=false;gLabel();return false}
+  window.addEventListener('deviceorientation',ori);AR.gyro=true;gLabel();
+  AR.gyroTimer=setTimeout(()=>{if(!AR.gyroSeen){window.removeEventListener('deviceorientation',ori);AR.gyro=false;gLabel()}},1600);return true}
+function gStop(){window.removeEventListener('deviceorientation',ori);clearTimeout(AR.gyroTimer);AR.gyro=false;AR.g=AR.g0=null;gLabel()}
+function pose(){let yaw=AR.yaw,pitch=AR.pitch,ox=0,oy=0;
+  if(AR.gyro&&AR.g&&AR.g0){let da=AR.g.a-AR.g0.a;da=((da+540)%360)-180;const db=clampN(AR.g.b-AR.g0.b,-70,70);yaw+=da*Math.PI/180;pitch=clampN(pitch+db*Math.PI/180*.8,-1.45,1.45);ox=clampN(da*3.2,-innerWidth*.3,innerWidth*.3);oy=clampN(db*3.2,-innerHeight*.25,innerHeight*.25)}
+  return {yaw,pitch,ox,oy}}
+function ground(ctx,cx,cy,unit,dpr,ts,ext){const gy=cy+unit*(ext+.3),rx=unit*Math.max(1.1,ext*1.05),ry=rx*.22;
+  ctx.save();ctx.translate(cx,gy);ctx.scale(1,ry/rx);const g=ctx.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,'rgba(0,0,0,.55)');g.addColorStop(.6,'rgba(0,0,0,.22)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,Math.PI*2);ctx.fill();ctx.restore();
+  ctx.save();ctx.setLineDash([rx*.1,rx*.065]);ctx.lineDashOffset=RMo?0:-(ts||0)*.03;ctx.strokeStyle='rgba(255,182,39,.9)';ctx.lineWidth=2.2*dpr;ctx.beginPath();ctx.ellipse(cx,gy,rx*.78,ry*.78,0,0,Math.PI*2);ctx.stroke();
+  ctx.setLineDash([]);ctx.strokeStyle='rgba(255,210,122,.35)';ctx.lineWidth=1*dpr;ctx.beginPath();ctx.ellipse(cx,gy,rx*.52,ry*.52,0,0,Math.PI*2);ctx.stroke();ctx.restore()}
+function frame(ts,dt){if(!AR.model||!$i('iarSheet').hidden)return;const live=AR.gyro&&AR.gyroSeen;
+  if(!AR.drag&&!AR.pinch&&!live&&!RMo&&!AR.model.noSpin&&ts-AR.idle>2500)AR.yaw+=dt*.00045;
+  const p=pose();draw3D($i('iarCv'),AR.model,p.yaw,p.pitch,{zoom:AR.zoom,ox:p.ox,oy:p.oy-innerHeight*.05,pre:(c,x,y,u,d,e)=>ground(c,x,y,u,d,ts,e)})}
+function cover(ctx,src,sw,sh,W,H){const k=Math.max(W/sw,H/sh),dw=sw*k,dh=sh*k;ctx.drawImage(src,(W-dw)/2,(H-dh)/2,dw,dh)}
+function fit(ctx,txt,cx,y,size,fam,wt,col,maxW){let s=size;do{ctx.font=`${wt} ${s}px ${fam}`;s-=1}while(ctx.measureText(txt).width>maxW&&s>10);ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillText(txt,cx,y)}
+function capture(){const cv=$i('iarCv'),W=cv.width,H=cv.height;if(!W||!H)return;
+  const out=document.createElement('canvas');out.width=W;out.height=H;const ctx=out.getContext('2d'),v=$i('iarVid'),im=$i('iarPhoto');
+  ctx.fillStyle='#141D25';ctx.fillRect(0,0,W,H);
+  if(AR.src==='cam'&&AR.stream&&v.videoWidth)cover(ctx,v,v.videoWidth,v.videoHeight,W,H);
+  else if(AR.src==='photo'&&im.naturalWidth)cover(ctx,im,im.naturalWidth,im.naturalHeight,W,H);
+  else{ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;const g=Math.round(28*W/innerWidth);for(let x=0;x<W;x+=g){ctx.beginPath();ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,H);ctx.stroke()}for(let y=0;y<H;y+=g){ctx.beginPath();ctx.moveTo(0,y+.5);ctx.lineTo(W,y+.5);ctx.stroke()}}
+  ctx.drawImage(cv,0,0);
+  const m=M[AR.list[AR.i]],s=W/innerWidth,bandH=Math.round(150*s),mw=W-32*s;
+  const gr=ctx.createLinearGradient(0,H-bandH*1.4,0,H);gr.addColorStop(0,'rgba(4,7,10,0)');gr.addColorStop(.35,'rgba(4,7,10,.72)');gr.addColorStop(1,'rgba(4,7,10,.9)');ctx.fillStyle=gr;ctx.fillRect(0,H-bandH*1.4,W,bandH*1.4);
+  fit(ctx,`${m.t}  ${m.n}`,W/2,H-bandH+40*s,Math.round(30*s),FD,700,'#FFFFFF',mw);
+  fit(ctx,m.meta,W/2,H-bandH+76*s,Math.round(18*s),FB,600,'#FFC85C',mw);
+  let who='',dt='';try{who=(typeof P!=='undefined'&&P.student)||''}catch(e){}try{dt=typeof thaiDate==='function'?thaiDate():''}catch(e){}
+  fit(ctx,[who,`${GAME.th} · โหมด AR`,dt].filter(Boolean).join('  ·  '),W/2,H-bandH+108*s,Math.round(14*s),FB,500,'#C6D2DB',mw);
+  AR.shot={cv:out,name:`ionic-${GAME.id}-ar-${AR.list[AR.i]}.png`};
+  const url=out.toDataURL('image/png');$i('iarShotImg').src=url;$i('iarShotImg').alt=`ภาพ AR ของ ${m.n}`;$i('iarShotTitle').textContent=`ภาพ AR ของ ${m.n}`;
+  $i('iarSheet').hidden=false;$i('iarSave').focus()}
+function wire(){
+  $i('iarMsg').addEventListener('click',e=>{const b=e.target.closest('[data-src]');if(!b)return;const s=b.dataset.src;if(s==='photo'){$i('iarFile').click();return}if(s==='x'){$i('iarMsg').hidden=true;return}setSrc(s)});
+  $i('iarFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;if(AR.photoURL)URL.revokeObjectURL(AR.photoURL);AR.photoURL=URL.createObjectURL(f);const im=$i('iarPhoto');im.onload=()=>setSrc('photo');im.src=AR.photoURL;e.target.value=''});
+  $i('iarGyro').onclick=async()=>{if(AR.gyro){gStop();return}await gStart();setTimeout(()=>{if(!AR.gyroSeen&&AR.on){status(S.gNA);setTimeout(()=>status(null),2600)}},1700)};
+  const cv=$i('iarCv'),dist=()=>{const v=[...AR.ptr.values()];return Math.hypot(v[0].x-v[1].x,v[0].y-v[1].y)||1};
+  cv.addEventListener('pointerdown',e=>{AR.ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});try{cv.setPointerCapture(e.pointerId)}catch(_){}
+    if(AR.ptr.size===1){AR.drag={x:e.clientX,y:e.clientY,yaw:AR.yaw,pitch:AR.pitch};cv.style.cursor='grabbing'}else if(AR.ptr.size===2){AR.drag=null;AR.pinch={d:dist(),z:AR.zoom}}});
+  cv.addEventListener('pointermove',e=>{if(!AR.ptr.has(e.pointerId))return;AR.ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(AR.pinch&&AR.ptr.size>=2){AR.zoom=clampN(AR.pinch.z*dist()/AR.pinch.d,.5,2.8);return}
+    if(AR.drag){AR.yaw=AR.drag.yaw+(e.clientX-AR.drag.x)*.01;AR.pitch=clampN(AR.drag.pitch+(e.clientY-AR.drag.y)*.01,-1.4,1.4)}});
+  const up=e=>{AR.ptr.delete(e.pointerId);if(AR.ptr.size<2)AR.pinch=null;if(AR.ptr.size===1){const v=[...AR.ptr.values()][0];AR.drag={x:v.x,y:v.y,yaw:AR.yaw,pitch:AR.pitch}}if(AR.ptr.size===0){AR.drag=null;AR.idle=performance.now();cv.style.cursor=''}};
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  cv.addEventListener('wheel',e=>{e.preventDefault();AR.zoom=clampN(AR.zoom*Math.exp(-e.deltaY*.0015),.5,2.8);AR.idle=performance.now()},{passive:false});
+  $i('iarShot').onclick=capture;
+  $i('iarSave').onclick=async()=>{if(!AR.shot)return;const blob=await new Promise(r=>AR.shot.cv.toBlob(r,'image/png'));if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=AR.shot.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)};
+  $i('iarBack').onclick=()=>{$i('iarSheet').hidden=true;$i('iarShot').focus()};
+  $i('iarSrcBtn').onclick=()=>choose(false);
+  $i('iarReset').onclick=()=>{AR.yaw=AR.model&&AR.model.yaw0!=null?AR.model.yaw0:.6;AR.pitch=AR.model&&AR.model.pitch0!=null?AR.model.pitch0:.3;AR.zoom=1.05;if(AR.g)AR.g0={...AR.g};AR.idle=0};
+  $i('iarPrev').onclick=()=>{if(AR.i>0){AR.i--;info()}};
+  $i('iarNext').onclick=()=>{if(AR.i<AR.list.length-1){AR.i++;info()}};
+  $i('iarClose').onclick=()=>$i('iar').close();
+  $i('iar').addEventListener('close',()=>{AR.on=false;AR.token++;cancelAnimationFrame(AR.raf);stop();status(null);gStop();$i('iarSheet').hidden=true;$i('iarMsg').hidden=true;const b=document.querySelector('[data-iar]');if(b)try{b.focus({preventScroll:true})}catch(_){}});
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-iar]');if(b){e.preventDefault();open(b.dataset.iar)}});
+window.IonicAR={open,
+  homeBtn:()=>`<button type="button" class="iar-h" data-iar="home">${ICON}${S.btn} <small>· ${S.btnSub}</small></button>`,
+  stBtn:id=>`<button type="button" class="iar-s" data-iar="${id}">${ICON}${S.btn}</button>`,
+  models:id=>{const s=SETS[id];return s?s.list.map(k=>({t:M[k].t,n:M[k].n,e:M[k].e})):[]}};
+})();
+</script>
+<script>
+/* ===== คู่มือครู (teacher's guide) — shared module ===== */
+(function(){
+"use strict";
+const CSS=`
+#tgBox{position:fixed;inset:0;z-index:2147483000;background:rgba(9,13,17,.74);overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 32px);text-align:left}
+#tgBox[hidden]{display:none!important}
+#tgBox *{box-sizing:border-box}
+.tg-wrap{max-width:880px;margin:0 auto;background:#fbfaf6;color:#1d2427;border-radius:16px;padding:22px 20px 28px;display:grid;gap:22px;font-size:15px;line-height:1.7;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.tg-wrap h2,.tg-wrap h3{color:#1d2427;margin:0;letter-spacing:0;text-transform:none;font-weight:700}
+.tg-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+.tg-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#0f6b5f}
+.tg-head h2{font-size:clamp(20px,4.2vw,25px);line-height:1.3;margin-top:4px}
+.tg-btns{display:flex;flex-wrap:wrap;gap:8px}
+.tg-btn{appearance:none;font:inherit;font-size:15px;font-weight:600;min-height:44px;padding:9px 16px;border-radius:10px;border:1px solid #b9c5c2;background:#fff;color:#1d2427;cursor:pointer}
+.tg-btn:hover{background:#eef3f1}
+.tg-btn.pri{background:#0f6b5f;border-color:#0f6b5f;color:#fff}
+.tg-btn.pri:hover{background:#0c5a50}
+.tg-btn:focus-visible,.tg-nav a:focus-visible,.tg-lv summary:focus-visible{outline:3px solid #e2a62b;outline-offset:2px}
+.tg-nav{display:flex;flex-wrap:wrap;gap:6px}
+.tg-nav a{font-size:13px;font-weight:600;color:#3d4a4d;text-decoration:none;border:1px solid #d4dcda;border-radius:20px;padding:5px 11px;background:#fff}
+.tg-nav a:hover{border-color:#0f6b5f;color:#0f6b5f}
+.tg-sec{display:grid;gap:10px;scroll-margin-top:16px}
+.tg-sec h3{font-size:18px;color:#0f6b5f;line-height:1.4}
+.tg-sec p,.tg-sec li{margin:0;font-size:15px}
+.tg-sec ul{margin:0;padding-left:1.3em;display:grid;gap:5px}
+.tg-sec b{font-weight:700}
+.tg-tbl{overflow-x:auto;border:1px solid #d4dcda;border-radius:10px;background:#fff}
+.tg-tbl table{border-collapse:collapse;width:100%;min-width:540px;font-size:14px}
+.tg-tbl th,.tg-tbl td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid #e4e9e7;line-height:1.6;color:#1d2427}
+.tg-tbl th{font-size:13px;font-weight:700;background:#eef3f1;color:#3d4a4d}
+.tg-tbl tr:last-child td{border-bottom:0}
+.tg-tbl td.n{font-weight:700;color:#0f6b5f;white-space:nowrap}
+.tg-note{font-size:14px!important;color:#3d4a4d;border-left:3px solid #e2a62b;background:#fdf6e6;padding:7px 11px;border-radius:0 8px 8px 0}
+.tg-mut{font-size:13.5px!important;color:#5b6a6c}
+.tg-lv{border:1px solid #d4dcda;border-radius:12px;background:#fff}
+.tg-lv summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:baseline;padding:10px 12px}
+.tg-lv summary::-webkit-details-marker{display:none}
+.tg-lv .no{font-size:12px;font-weight:700;color:#7a8a8c;font-variant-numeric:tabular-nums}
+.tg-lv .fm{font-size:18px;font-weight:700}
+.tg-lv .nm2{font-size:13.5px;color:#5b6a6c}
+.tg-lv .mx{font-size:12.5px;color:#5b6a6c;white-space:nowrap}
+.tg-lv[open] summary{border-bottom:1px solid #e4e9e7}
+.tg-lv dl{margin:0;padding:10px 12px 12px;display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:7px 14px;font-size:14.5px;line-height:1.65}
+.tg-lv dt{color:#5b6a6c;font-weight:600}
+.tg-lv dd{margin:0}
+.tg-lv .ans{color:#0b6b36;font-weight:700}
+.tg-lv .why{display:block;color:#3d4a4d;font-size:13.5px;margin-top:2px}
+.tg-lv sub,.tg-tbl sub{font-size:.75em}
+.tg-credit{font-size:13.5px;color:#5b6a6c;margin:0}
+.tg-mount{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.tg-mount p{margin:0;max-width:62ch}
+@media (max-width:640px){.tg-lv dl{grid-template-columns:1fr;gap:0}.tg-lv dt{margin-top:7px}.tg-wrap{padding:16px 14px 22px}.tg-lv summary{grid-template-columns:auto auto 1fr}.tg-lv .mx{display:none}}
+@media print{
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
+  body>*:not(#tgBox){display:none!important}
+  #tgBox{position:static;background:#fff;padding:0;overflow:visible}
+  .tg-wrap{box-shadow:none;max-width:none;padding:0;background:#fff;color:#000}
+  .tg-noprint{display:none!important}
+  .tg-tbl table{min-width:0}
+  .tg-lv{break-inside:avoid}
+  .tg-sec h3,.tg-tbl td.n,.tg-eyebrow{color:#000}
+}
+@media (prefers-reduced-motion:reduce){#tgBox *{scroll-behavior:auto!important}}`;
+let box=null,lastFocus=null,curSpec=null;
+(function(){if(document.getElementById('tgStyle'))return;const st=document.createElement('style');st.id='tgStyle';st.textContent=CSS;(document.head||document.documentElement).appendChild(st)})();
+function ensure(){
+  if(box)return box;
+  box=document.createElement('div');box.id='tgBox';box.hidden=true;box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','tgTitle');
+  document.body.appendChild(box);
+  box.addEventListener('click',e=>{
+    if(e.target===box){close();return}
+    const a=e.target.closest('[data-tgnav]');if(a){e.preventDefault();const s=box.querySelector('#'+a.dataset.tgnav);if(s)s.scrollIntoView({behavior:'smooth',block:'start'});return}
+    if(e.target.closest('#tgClose'))close();
+    else if(e.target.closest('#tgLang')){if(curSpec&&curSpec.onLang){curSpec.onLang();const b=box.querySelector('#tgLang');if(b)b.focus({preventScroll:true})}}
+    else if(e.target.closest('#tgPrint')){box.querySelectorAll('details').forEach(d=>d.open=true);window.print()}
+  });
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&box&&!box.hidden)close()});
+  addEventListener('beforeprint',()=>{if(box&&!box.hidden)box.querySelectorAll('details').forEach(d=>d.open=true)});
+  return box;
+}
+function render(spec){
+  return `<div class="tg-wrap">
+  <div class="tg-head"><div><div class="tg-eyebrow">${spec.eyebrow}</div><h2 id="tgTitle">${spec.title}</h2></div>
+   <div class="tg-btns tg-noprint">${spec.langLbl?`<button type="button" class="tg-btn" id="tgLang" lang="${spec.langLbl==='EN'?'en':'th'}">${spec.langLbl}</button>`:''}<button type="button" class="tg-btn" id="tgPrint">${spec.printLbl}</button><button type="button" class="tg-btn pri" id="tgClose">${spec.closeLbl}</button></div></div>
+  <nav class="tg-nav tg-noprint" aria-label="${spec.navLbl||''}">${spec.sections.map((s,i)=>`<a href="#tg${i+1}" data-tgnav="tg${i+1}">${i+1} ${s.nav}</a>`).join('')}</nav>
+  ${spec.sections.map((s,i)=>`<section class="tg-sec" id="tg${i+1}"><h3>${i+1}. ${s.h}</h3>${s.html}</section>`).join('')}
+  ${spec.credit?`<p class="tg-credit">${spec.credit}</p>`:''}
+  </div>`;
+}
+function open(spec){
+  ensure();const again=!box.hidden,y=box.scrollTop;curSpec=spec;if(!again)lastFocus=document.activeElement;
+  box.innerHTML=render(spec);box.hidden=false;box.scrollTop=again?y:0;
+  if(!again){const c=box.querySelector('#tgClose');if(c)c.focus({preventScroll:true})}
+}
+function close(){if(!box)return;box.hidden=true;box.innerHTML='';if(lastFocus&&lastFocus.focus)try{lastFocus.focus({preventScroll:true})}catch(_){}}
+const H={
+  table(heads,rows,numCols){numCols=numCols||[];return `<div class="tg-tbl"><table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${numCols.includes(i)?' class="n"':''}>${c==null?'':c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`},
+  list(items){return `<ul>${items.filter(Boolean).map(i=>`<li>${i}</li>`).join('')}</ul>`},
+  note(t){return `<p class="tg-note">${t}</p>`},
+  mut(t){return `<p class="tg-mut tg-noprint">${t}</p>`},
+  card(c){return `<details class="tg-lv"><summary><span class="no">${c.no}</span><span class="fm">${c.f}</span><span class="nm2">${c.name||''}</span><span class="mx">${c.pts||''}</span></summary><dl>${c.rows.filter(Boolean).map(([dt,dd])=>`<dt>${dt}</dt><dd>${dd}</dd>`).join('')}</dl></details>`}
+};
+window.TGuide={open,close,H,isOpen:()=>!!(box&&!box.hidden)};
+})();
+
+/* ===== คู่มือครู — ชุดเกมพันธะไอออนิก (แผนที่ 1–4) ===== */
+(function(){
+"use strict";
+const T=(th,en)=>({th,en});
+let L='th';
+const R=o=>o==null?'':typeof o==='string'?o:(L==='en'?o.en:o.th);
+const CREDIT=T('ออกแบบและพัฒนาเกมโดย นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม','Game designed and developed by Mrs. Manthana Chaiyasong, That Phanom School');
+const SUGGEST=T('ตารางนี้เป็นข้อเสนอ ให้ปรับเลขด่านและเวลาให้ตรงกับภาคผนวก ค.6 (การจัดสรรด่าน) และ ค.7 (บันทึกการทำงานนอกห้องเรียน) ในเล่มแผน','This table is a suggestion. Adjust the level numbers and timing to match appendix ค.6 (level allocation) and ค.7 (out-of-class log) in the plan book.');
+const LO=T('ผลการเรียนรู้ให้ใช้ตามเล่มแผน (ผลการเรียนรู้ชุด 13 ข้อของหน่วยพันธะเคมี ข้อ 1–5 เป็นของพันธะไอออนิก)','Use the learning outcomes as written in the plan book (the 13 outcomes of the chemical bonding unit; outcomes 1–5 cover ionic bonding).');
+const UI={
+  eyebrow:T('คู่มือครู','Teacher’s guide'),title:T('ความสอดคล้องกับแผนการสอนและแนวการใช้เกม','Links to the lesson plans and how to use the game'),
+  print:T('พิมพ์คู่มือ','Print the guide'),close:T('ปิด','Close'),nav:T('หัวข้อในคู่มือ','Guide sections'),lang:T('EN','ไทย'),
+  n1:T('ภาพรวม','Overview'),n2:T('ความสอดคล้อง','Alignment'),n3:T('ใช้ในขั้นใด','Lesson stages'),n4:T('มโนทัศน์ที่คลาดเคลื่อน','Misconceptions'),n5:T('คะแนน','Scoring'),n6:T('AR และการเตรียม','AR and preparation'),
+  h1:T('ภาพรวมของเกม','Overview of the game'),h2:T('ความสอดคล้องกับเนื้อหาในหนังสือเรียน','Alignment with the textbook'),h3:T('ใช้ในขั้นใดของแผน','Where it fits in the lesson'),h4:T('มโนทัศน์ที่คลาดเคลื่อนที่เกมท้าทาย','Misconceptions the game challenges'),h5:T('การคิดคะแนนและหลักฐาน','Scoring and evidence'),h6:T('การใช้โหมด AR และการเตรียมก่อนสอน','AR mode and preparation'),
+  useWith:T('ใช้กับ','Used with'),role:T('บทบาท','Role'),size:T('ขนาด','Size'),flow:T('ขั้นในแต่ละด่าน','Steps in each level'),
+  thLv:T('ด่าน','Level'),thName:T('ชื่อด่าน','Level name'),thAct:T('กิจกรรมในเกม','What students do'),thBook:T('เนื้อหาในหนังสือ','Textbook content'),
+  thStage:T('ขั้น','Stage'),thLvs:T('ด่าน','Levels'),thUse:T('วิธีใช้','How to use it'),thMis:T('มโนทัศน์ที่คลาดเคลื่อน','Misconception'),thEv:T('หลักฐานในเกมที่ท้าทายความคิดเดิม','Evidence in the game that challenges it'),
+  thStep:T('ส่วน','Part'),thPts:T('คะแนน','Points'),thRule:T('เกณฑ์','Rule'),
+  thGame:T('เกม','Game'),thTopic:T('หัวข้อ','Topic'),thPlan:T('แผน','Plan'),
+  mountH:T('สำหรับครู','For teachers'),mountBtn:T('คู่มือครู · ความสอดคล้องกับแผนการสอน','Teacher’s guide · links to the lesson plans')
+};
+const SERIES=[
+  ['1',T('ถ่ายโอนสู่ผลึก','Transfer to Crystal'),'3.2.1',T('แผนที่ 1','Plan 1')],
+  ['2',T('โรงติดฉลากเกลือ','Salt Label Works'),'3.2.2',T('แผนที่ 2','Plan 2')],
+  ['3',T('บันไดพลังงานไอออนิก','Born–Haber Ladder'),'3.2.3',T('แผนที่ 3','Plan 3')],
+  ['4',T('ห้องทดสอบเกลือ','Salt Test Lab'),'3.2.4–3.2.5',T('แผนที่ 4','Plan 4')]];
+const FLOW=T('อ่านบัตรสรุปความรู้ → ทำภารกิจบนจอ (หรือแบบทดสอบในด่านสุดท้าย) → ดูผลคะแนน เหรียญ และรับเกียรติบัตรด่านนั้น','Read the key-idea cards → do the on-screen task (or the checkpoint quiz in the last level) → see the score and medal and collect that level’s certificate');
+const CFG={
+g1:{
+ plan:T('แผนการจัดการเรียนรู้ที่ 1 หัวข้อ 3.2.1 การเกิดพันธะไอออนิก','Lesson plan 1, topic 3.2.1 forming ionic bonds'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T ด่าน 1–2 ใช้ในชั่วโมงแรก ด่าน 3–4 ใช้ในชั่วโมงถัดไป และด่าน 5 ใช้ประเมินท้ายแผน','The main game of the plan, used in stage T. Levels 1–2 go in the first lesson, levels 3–4 in the next, and level 5 is the end-of-plan check'),
+ time:T('ด่านละ 5–8 นาที แผนละ 2–3 คาบ','5–8 minutes per level, 2–3 lessons for the plan'),
+ st:{
+  l1:[T('แตะเวเลนซ์อิเล็กตรอนของโลหะส่งให้อโลหะจนทั้งคู่ครบออกเตต: NaCl, MgO, KF','Tap the metal’s valence electrons across to the nonmetal until both reach an octet: NaCl, MgO, KF'),T('3.2.1 การเกิดไอออนบวกและไอออนลบ การจัดเรียงอิเล็กตรอนแบบแก๊สมีตระกูล และแรงดึงดูดทางไฟฟ้าสถิต','3.2.1 forming cations and anions, noble-gas electron arrangements and electrostatic attraction')],
+  l2:[T('ปรับจำนวนอะตอมให้อิเล็กตรอนที่ให้เท่ากับที่รับ: CaCl₂, Na₂O, AlF₃, Mg₃N₂','Adjust the number of atoms so electrons lost equal electrons gained: CaCl₂, Na₂O, AlF₃, Mg₃N₂'),T('3.2.1 จำนวนอิเล็กตรอนที่ให้เท่ากับที่รับ และอัตราส่วนของไอออนในสารประกอบ','3.2.1 electrons lost equal electrons gained, and the ratio of ions in a compound')],
+  l3:[T('วางไอออนในชั้นผลึกให้ไอออนที่อยู่ติดกันมีประจุตรงข้ามทุกคู่','Place ions in a lattice layer so every neighbouring pair has opposite charges'),T('3.2.1 การจัดเรียงไอออนในโครงผลึก และการไม่มีหน่วยโมเลกุลในสารประกอบไอออนิก','3.2.1 how ions pack in a lattice, and why ionic compounds have no molecules')],
+  l4:[T('หมุนผลึก NaCl สามมิติ นับไอออนที่ล้อมรอบ และให้เหตุผลเรื่องสูตรเอมพิริคัล','Rotate the 3D NaCl lattice, count the surrounding ions and reason about the empirical formula'),T('3.2.1 โครงผลึก NaCl เลขโคออร์ดิเนชัน 6 และสูตรเอมพิริคัลของสารประกอบไอออนิก','3.2.1 the NaCl lattice, coordination number 6 and the empirical formula of ionic compounds')],
+  l5:[T('แบบทดสอบ 8 ข้อ ตอบได้ข้อละครั้งเดียว','An 8-question checkpoint, one attempt per question'),T('3.2.1 ทั้งหัวข้อ','All of 3.2.1')]},
+ stages:[
+  ['A',['l1'],T('เปิดด่าน 1 บนจอใหญ่ ให้นักเรียนทำนายก่อนเล่นว่า "ระหว่าง Na กับ Cl อะตอมใดให้อิเล็กตรอน และหลังจากนั้นมีการจัดเรียงอิเล็กตรอนเหมือนธาตุใด" แล้วเขียนลงบัตรความคิดก่อนเรียน','Project level 1 and ask students to predict "Which of Na and Cl gives up an electron, and which element’s arrangement does each end up with?", then write it on the pre-lesson idea card')],
+  ['T',['l1','l2'],T('ชั่วโมงแรก: ทุกคู่เล่นด่าน 1 แล้วแบ่งสารในด่าน 2 ให้คู่ ก และคู่ ข บันทึกจำนวนอะตอมที่ต้องใช้ แล้วแลกข้อมูลกันในขั้น O','First lesson: every pair plays level 1, then pair A and pair B split the compounds in level 2, record how many atoms each needs, and swap in stage O')],
+  ['T',['l3','l4'],T('ชั่วโมงถัดไป: สำรวจการจัดเรียงไอออนในชั้นผลึกและผลึกสามมิติ','Next lesson: explore how ions pack in a layer and in the 3D lattice')],
+  ['O',['l2','l4'],T('ใช้เป็นข้อมูลท้าทายกฎ: "โลหะ 1 อะตอมจับกับอโลหะ 1 อะตอม" ใช้ไม่ได้กับ CaCl₂ และ Mg₃N₂ และผลึก NaCl ไม่มีโมเลกุล ให้กลุ่มสร้างกฎ "อิเล็กตรอนที่ให้เท่ากับที่รับ" และ "สูตรบอกอัตราส่วนอย่างต่ำของไอออน" เอง','Rule-challenging data: "one metal atom pairs with one nonmetal atom" fails for CaCl₂ and Mg₃N₂, and an NaCl crystal has no molecules. Groups write the rules "electrons lost equal electrons gained" and "the formula gives the lowest ion ratio" themselves')],
+  ['M',['l3'],T('ถ่ายโยงกฎสู่การจัดเรียงไอออนในชั้นผลึกที่ไม่เคยเห็น และเชื่อมกับเกลือหินใต้ที่ราบสูงโคราชจากบัตรสรุปด่าน 4','Transfer the rules to an unseen lattice layer, and link to the rock salt beneath the Khorat Plateau from the level 4 cards')],
+  ['S',['l5'],T('ใช้แบบทดสอบท้ายเกมเป็นการประเมินท้ายแผน แล้วให้นักเรียนเขียนบัตรท้ายคาบ','Use the checkpoint as the end-of-plan check, then have students write their end-of-lesson card')],
+  ['นอกห้อง|Homework',['l2','l5'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ เล่นซ้ำแล้วบันทึกเกียรติบัตรหรือแคปหน้าจอผลส่งครู','Use in the spaced retrieval sets; replay and save the certificate or a screenshot for the teacher')]],
+ mis:[
+  [T('โลหะ 1 อะตอมจับกับอโลหะ 1 อะตอมเสมอ','One metal atom always pairs with one nonmetal atom'),['l2'],T('Mg ให้อิเล็กตรอน 2 ตัว แต่ Cl รับได้ 1 ตัว เกมไม่ให้ผ่านจนกว่าอิเล็กตรอนที่ให้จะเท่ากับที่รับ','Mg gives 2 electrons but Cl takes 1, and the game will not pass until electrons lost equal electrons gained')],
+  [T('พันธะไอออนิกคือการถ่ายโอนอิเล็กตรอน ไม่ใช่แรงดึงดูด','The ionic bond is the electron transfer, not an attraction'),['l1','l5'],T('บัตรสรุป "พันธะไอออนิกคือแรงดึงดูด" และข้อสอบที่แยกพันธะไอออนิก โคเวเลนต์ และโลหะ','The card "the ionic bond is an attraction" and the quiz item that separates ionic, covalent and metallic bonding')],
+  [T('สารประกอบไอออนิกเป็นโมเลกุล เช่น มีโมเลกุล NaCl อยู่จริง','Ionic compounds are molecules, e.g. NaCl molecules exist'),['l3','l4'],T('ชั้นผลึกและผลึกสามมิติเป็นโครงต่อเนื่อง ไม่มีหน่วยใดแยกออกมาเป็นโมเลกุล','The layer and the 3D lattice are continuous, with no separate molecular unit')],
+  [T('Na⁺ หนึ่งไอออนยึดกับ Cl⁻ ได้เพียงไอออนเดียว','One Na⁺ is bonded to only one Cl⁻'),['l4'],T('ขั้นนับไอออนรอบตัวในผลึกสามมิติได้ 6 ไอออน แรงดึงดูดจึงเกิดทุกทิศทาง','Counting neighbours in the 3D lattice gives 6, so the attraction acts in every direction')],
+  [T('สูตร CaCl₂ หมายถึงโมเลกุลที่มี 3 อะตอม','The formula CaCl₂ means a molecule of 3 atoms'),['l4','l5'],T('บัตร "สูตรบอกอัตราส่วนอย่างต่ำ" และข้อสอบเรื่องความหมายของสูตร CaCl₂','The "formula gives the lowest ratio" card and the quiz item on what CaCl₂ means')]],
+ tools:[T('ด่าน 1–2 แตะเวเลนซ์อิเล็กตรอนเพื่อส่งจากอะตอมโลหะไปยังอโลหะ แล้วเห็นอะตอมกลายเป็นไอออนที่มีการจัดเรียงอิเล็กตรอนแบบแก๊สมีตระกูล','In levels 1–2 students tap valence electrons across from the metal to the nonmetal and watch the atoms become ions with noble-gas arrangements'),T('ด่าน 4 เป็นผลึกเกลือหินสามมิติ ลากนิ้วเพื่อหมุนดูไอออนรอบตัวได้ทุกมุม','Level 4 is a 3D rock-salt lattice; drag to rotate and see the neighbours from any angle')],
+ prep:[T('ก่อนสอน: ลองด่าน 2 (Mg₃N₂) และด่าน 3 ด้วยตนเอง เพราะเป็นจุดที่นักเรียนมักติด','Before the lesson: try level 2 (Mg₃N₂) and level 3 yourself, as that is where students most often get stuck'),T('เตรียมเกลือหินหรือเกลือสินเธาว์ของจริงให้ดูรูปผลึกลูกบาศก์ประกอบด่าน 4','Bring real rock salt so students can see the cubic crystals alongside level 4')]
+},
+g2:{
+ plan:T('แผนการจัดการเรียนรู้ที่ 2 หัวข้อ 3.2.2 สูตรเคมีและชื่อของสารประกอบไอออนิก','Lesson plan 2, topic 3.2.2 formulas and names of ionic compounds'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T ด่าน 1–2 ฝึกเขียนสูตร ด่าน 3–4 ฝึกเรียกชื่อ และด่าน 5 ใช้ประเมินท้ายแผน','The main game of the plan, used in stage T. Levels 1–2 practise formulas, levels 3–4 practise names, and level 5 is the end-of-plan check'),
+ time:T('ด่านละ 5–8 นาที แผนละ 2 คาบ','5–8 minutes per level, 2 lessons for the plan'),
+ st:{
+  l1:[T('ปรับจำนวนไอออนให้ประจุรวมเป็นศูนย์และเป็นอัตราส่วนอย่างต่ำ: MgCl₂, Al₂O₃, K₂S, Ca₃N₂','Adjust the ions until the total charge is zero in the lowest ratio: MgCl₂, Al₂O₃, K₂S, Ca₃N₂'),T('3.2.2 การเขียนสูตรจากไอออนอะตอมเดี่ยว ให้ผลรวมประจุเป็นศูนย์','3.2.2 writing formulas from monatomic ions with zero total charge')],
+  l2:[T('เขียนสูตรที่มีไอออนกลุ่มอะตอม: Ca₃(PO₄)₂, (NH₄)₂SO₄, Fe(OH)₃, Na₂CO₃, Al₂(SO₄)₃','Write formulas with polyatomic ions: Ca₃(PO₄)₂, (NH₄)₂SO₄, Fe(OH)₃, Na₂CO₃, Al₂(SO₄)₃'),T('3.2.2 ไอออนกลุ่มอะตอมและการใส่วงเล็บ','3.2.2 polyatomic ions and brackets')],
+  l3:[T('เลือกชื่อภาษาไทยที่ถูกต้องให้ขวดสาร 6 ขวด','Choose the correct Thai name for 6 bottles'),T('3.2.2 การเรียกชื่อสารประกอบไอออนิก ลงท้ายด้วย -ไอด์ และไม่ใช้คำบอกจำนวน','3.2.2 naming ionic compounds with -ide endings and no number prefixes')],
+  l4:[T('หาประจุของโลหะทรานซิชันจากประจุรวมของไอออนลบ แล้วเลือกชื่อที่มีเลขโรมัน (5 ข้อ)','Work out a transition metal’s charge from the anions, then choose the name with a Roman numeral (5 items)'),T('3.2.2 โลหะที่มีได้หลายประจุและการบอกประจุด้วยเลขโรมัน','3.2.2 metals with several charges and Roman numerals')],
+  l5:[T('แบบทดสอบ 6 ข้อ ตอบได้ข้อละครั้งเดียว','A 6-question checkpoint, one attempt per question'),T('3.2.2 ทั้งหัวข้อ','All of 3.2.2')]},
+ stages:[
+  ['A',['l1'],T('ให้นักเรียนทำนายสูตรของสารที่เกิดจาก Al³⁺ กับ O²⁻ ก่อนเล่น และใช้ด่าน 2 ของเกม "ถ่ายโอนสู่ผลึก" เป็นการฝึกดึงความรู้เรื่องอิเล็กตรอนที่ให้เท่ากับที่รับ','Ask students to predict the formula from Al³⁺ and O²⁻ before playing, and use level 2 of "Transfer to Crystal" as retrieval practice on electrons lost equal electrons gained')],
+  ['T',['l1','l2'],T('ชั่วโมงแรก: ทุกคู่เล่นด่าน 1 แล้วแบ่งสารในด่าน 2 ให้คู่ ก และคู่ ข','First lesson: every pair plays level 1, then pair A and pair B split the compounds in level 2')],
+  ['T',['l3','l4'],T('ชั่วโมงถัดไป: ฝึกเรียกชื่อ ให้นักเรียนจดชื่อที่ถูกต้องลงตารางของกลุ่ม','Next lesson: naming practice; students record correct names in the group table')],
+  ['O',['l3','l4'],T('ใช้เป็นข้อมูลท้าทายกฎ: FeCl₂ กับ FeCl₃ ต้องมีชื่อต่างกัน แต่ Na₃PO₄ ไม่ใช้ทั้งคำบอกจำนวนและเลขโรมัน ให้กลุ่มสร้างกฎว่าเมื่อใดต้องใช้เลขโรมัน','Rule-challenging data: FeCl₂ and FeCl₃ need different names, yet Na₃PO₄ takes neither a prefix nor a Roman numeral. Groups write the rule for when a Roman numeral is needed')],
+  ['M',['l2'],T('ถ่ายโยงสู่สารในชีวิตประจำวัน เช่น ปุ๋ยแอมโมเนียมซัลเฟต และโซดาแอช (Na₂CO₃)','Transfer to everyday substances such as ammonium sulfate fertiliser and soda ash (Na₂CO₃)')],
+  ['S',['l5'],T('ใช้แบบทดสอบท้ายเกมเป็นการประเมินท้ายแผน','Use the checkpoint as the end-of-plan check')],
+  ['นอกห้อง|Homework',['l2','l4'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ เล่นซ้ำแล้วบันทึกเกียรติบัตรหรือแคปหน้าจอผลส่งครู','Use in the spaced retrieval sets; replay and save the certificate or a screenshot for the teacher')]],
+ mis:[
+  [T('ใช้คำบอกจำนวน (ได ไตร) กับสารประกอบไอออนิกเหมือนสารโคเวเลนต์','Ionic compounds take number prefixes (di-, tri-) like covalent ones'),['l3','l5'],T('ตัวเลือกอย่าง "ไดอะลูมิเนียมไตรออกไซด์" ในด่าน 3 และ "ไตรโซเดียมฟอสเฟต" ในแบบทดสอบ พร้อมบัตรสรุปที่ระบุว่าสารประกอบไอออนิกไม่ใช้คำบอกจำนวน','Options such as "dialuminium trioxide" in level 3 and "trisodium phosphate" in the quiz, with the card stating that ionic names use no prefixes')],
+  [T('ไม่ต้องใส่วงเล็บเมื่อมีไอออนกลุ่มอะตอมมากกว่า 1 กลุ่ม','No brackets are needed for more than one polyatomic ion'),['l2'],T('สูตร Ca₃(PO₄)₂ และ Al₂(SO₄)₃ ที่ต้องประกอบเอง และบัตรไอออนกลุ่มอะตอม','Students build Ca₃(PO₄)₂ and Al₂(SO₄)₃ themselves, backed by the polyatomic ion card')],
+  [T('เลขโรมันบอกจำนวนอะตอมของโลหะ','The Roman numeral gives the number of metal atoms'),['l4'],T('Fe₂(SO₄)₃ มี Fe 2 ไอออนแต่ชื่อเป็นไอร์ออน(III) และ Cu₂O เป็นคอปเปอร์(I)','Fe₂(SO₄)₃ has two Fe ions but is iron(III), and Cu₂O is copper(I)')],
+  [T('แอมโมเนียกับแอมโมเนียมคือสิ่งเดียวกัน','Ammonia and ammonium are the same thing'),['l2','l5'],T('สูตร (NH₄)₂SO₄ ในด่าน 2 และข้อสอบชื่อของ NH₄Cl','(NH₄)₂SO₄ in level 2 and the quiz item naming NH₄Cl')],
+  [T('ต้องใส่เลขโรมันให้โลหะทุกชนิด เช่น โซเดียม(I)','Every metal needs a Roman numeral, e.g. sodium(I)'),['l5'],T('ข้อสอบชื่อของ Na₃PO₄ ที่มีตัวเลือก โซเดียม(III) ฟอสเฟต','The Na₃PO₄ quiz item with the option sodium(III) phosphate')]],
+ tools:[T('ด่าน 1–2 ปรับจำนวนไอออนแต่ละชนิดแล้วเห็นประจุบวกรวมกับประจุลบรวมทันที เกมบอกด้วยว่าประจุดุลแล้วแต่ยังไม่เป็นอัตราส่วนอย่างต่ำ','In levels 1–2 students adjust each ion and see the total positive and negative charge at once; the game also flags a balanced formula that is not yet in the lowest ratio'),T('ด่าน 3–4 แสดงเหตุผลหลังตอบถูกทุกข้อ เช่น ความต่างของไนเตรต ไนไตรต์ และไนไตรด์','Levels 3–4 show the reasoning after each correct answer, e.g. how nitrate, nitrite and nitride differ')],
+ prep:[T('ก่อนสอน: เตรียมตารางไอออนกลุ่มอะตอม 7 ชนิดจากบัตรสรุปด่าน 2 ไว้บนกระดาน','Before the lesson: put the table of 7 polyatomic ions from the level 2 card on the board'),T('ถ้ามี ให้นำขวดสารหรือบรรจุภัณฑ์จริงที่มีชื่อสารบนฉลากมาเทียบ เช่น ปุ๋ย หรือผงฟู','If possible, bring real containers with chemical names on the label, such as fertiliser or baking powder')]
+},
+g3:{
+ plan:T('แผนการจัดการเรียนรู้ที่ 3 หัวข้อ 3.2.3 พลังงานกับการเกิดสารประกอบไอออนิก','Lesson plan 3, topic 3.2.3 energy and the formation of ionic compounds'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T ควรเล่นด่าน 1–3 ตามลำดับ เพราะแผนภาพระดับพลังงานในด่าน 2–3 ใช้ลำดับที่นักเรียนเรียงไว้ในด่าน 1','The main game of the plan, used in stage T. Play levels 1–3 in order, because the energy diagram in levels 2–3 uses the order built in level 1'),
+ time:T('ด่านละ 5–8 นาที แผนละ 2 คาบ','5–8 minutes per level, 2 lessons for the plan'),
+ st:{
+  l1:[T('เรียงขั้นย่อยทั้ง 5 ของการเกิด NaCl(s) จาก Na(s) และ Cl₂(g)','Order the 5 steps that form NaCl(s) from Na(s) and Cl₂(g)'),T('3.2.3 การเกิดสารประกอบไอออนิกเป็นขั้นย่อย (วัฏจักรบอร์น–ฮาเบอร์)','3.2.3 forming an ionic compound in steps (the Born–Haber cycle)')],
+  l2:[T('จำแนกขั้นที่ดูดและคายพลังงาน แล้วสร้างแผนภาพระดับพลังงาน','Classify each step as absorbing or releasing energy and build the energy diagram'),T('3.2.3 พลังงานการระเหิด พลังงานพันธะ พลังงานไอออไนเซชัน สัมพรรคภาพอิเล็กตรอน และพลังงานแลตทิซ','3.2.3 sublimation, bond energy, ionisation energy, electron affinity and lattice energy')],
+  l3:[T('รวมพลังงานทุกขั้นตามกฎของเฮสส์ หา ΔH ของการเกิด NaCl(s)','Add every step by Hess’s law to find ΔH for forming NaCl(s)'),T('3.2.3 การคำนวณพลังงานรวม ค่าเดียวกับหนังสือเรียน (ΔH = −411 kJ/mol)','3.2.3 calculating the total, using the textbook’s values (ΔH = −411 kJ/mol)')],
+  l4:[T('เปรียบเทียบพลังงานแลตทิซจากประจุ ขนาดไอออน และพลังงานไอออไนเซชัน','Compare lattice energies using charge, ion size and ionisation energy'),T('3.2.3 ปัจจัยที่มีผลต่อพลังงานแลตทิซ','3.2.3 factors that affect lattice energy')],
+  l5:[T('แบบทดสอบ 6 ข้อ ตอบได้ข้อละครั้งเดียว','A 6-question checkpoint, one attempt per question'),T('3.2.3 ทั้งหัวข้อ','All of 3.2.3')]},
+ stages:[
+  ['A',['l1'],T('ให้นักเรียนทำนายก่อนเล่นว่า "การที่ Na ให้อิเล็กตรอนแก่ Cl คายหรือดูดพลังงาน" แล้วเขียนลงบัตรความคิดก่อนเรียน','Ask students to predict "Does Na giving an electron to Cl release or absorb energy?" and write it on the pre-lesson idea card')],
+  ['T',['l1','l2','l3'],T('ทุกคู่เล่นด่าน 1–3 ตามลำดับ บันทึกค่าพลังงานแต่ละขั้นลงตาราง','Every pair plays levels 1–3 in order and records each step’s energy in a table')],
+  ['O',['l2','l3'],T('ใช้เป็นข้อมูลท้าทายกฎ: ขั้นดึงอิเล็กตรอนออกจาก Na ดูดพลังงาน +496 kJ/mol แต่ผลรวมยังเป็นลบ ให้กลุ่มหาว่าขั้นใดชดเชย และสร้างข้อสรุปเรื่องบทบาทของพลังงานแลตทิซ','Rule-challenging data: removing Na’s electron absorbs +496 kJ/mol, yet the total is still negative. Groups find which step makes up for it and conclude what role the lattice energy plays')],
+  ['M',['l4'],T('ถ่ายโยงสู่การเปรียบเทียบสารอื่น เช่น MgO กับ NaCl และเชื่อมกับจุดหลอมเหลวในแผนที่ 4','Transfer to comparing other compounds, such as MgO and NaCl, and link to melting points in plan 4')],
+  ['S',['l5'],T('ใช้แบบทดสอบท้ายเกมเป็นการประเมินท้ายแผน','Use the checkpoint as the end-of-plan check')],
+  ['นอกห้อง|Homework',['l3','l5'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ เล่นซ้ำแล้วบันทึกเกียรติบัตรหรือแคปหน้าจอผลส่งครู','Use in the spaced retrieval sets; replay and save the certificate or a screenshot for the teacher')]],
+ mis:[
+  [T('การเกิดสารประกอบไอออนิกคายพลังงานทุกขั้น','Every step of forming an ionic compound releases energy'),['l2'],T('ขั้นการระเหิด การแตกพันธะ และการดึงอิเล็กตรอนออกมีค่าเป็นบวก และลูกศรบนแผนภาพชี้ขึ้น','Sublimation, bond breaking and electron removal are positive, and their arrows point up on the diagram')],
+  [T('โลหะให้อิเล็กตรอนได้เองโดยไม่ต้องใช้พลังงาน เพราะต้องการครบออกเตต','A metal gives up electrons for free because it "wants" an octet'),['l2','l5'],T('ค่าพลังงานไอออไนเซชันของ Na (+496 kJ/mol) บนแผนภาพ และข้อสอบที่ถามขั้นที่ดูดพลังงาน','Na’s ionisation energy (+496 kJ/mol) on the diagram and the quiz item on absorbing steps')],
+  [T('สารประกอบไอออนิกเกิดได้เพราะคลอรีนรับอิเล็กตรอนแล้วคายพลังงาน','Ionic compounds form because chlorine releases energy when it gains an electron'),['l3','l5'],T('การคำนวณแสดงว่า −349 kJ/mol ไม่พอชดเชยขั้นที่ดูดพลังงาน ต้องมีพลังงานแลตทิซ −787 kJ/mol','The calculation shows −349 kJ/mol cannot cover the absorbing steps; the −787 kJ/mol lattice energy is needed')],
+  [T('ΔH เป็นลบหมายถึงปฏิกิริยาดูดพลังงาน','A negative ΔH means energy is absorbed'),['l3','l5'],T('ผลรวม −411 kJ/mol และข้อสอบเรื่องความหมายของ ΔH เป็นลบ','The −411 kJ/mol total and the quiz item on what a negative ΔH means')],
+  [T('พลังงานแลตทิซขึ้นกับมวลของไอออน','Lattice energy depends on the mass of the ions'),['l4'],T('การเปรียบเทียบ MgO กับ NaCl ใช้ประจุและขนาดไอออน ไม่ใช่มวล','The MgO and NaCl comparison turns on charge and ion size, not mass')]],
+ tools:[T('ด่าน 2–3 สร้างแผนภาพระดับพลังงานจากลำดับที่นักเรียนเรียงเอง ลูกศรขึ้นคือดูดพลังงาน ลูกศรลงคือคายพลังงาน','Levels 2–3 build the energy diagram from the order students chose; up arrows absorb energy and down arrows release it'),T('ค่าพลังงานทุกขั้นเป็นค่าเดียวกับหนังสือเรียน','Every energy value matches the textbook')],
+ prep:[T('ก่อนสอน: เตรียมตารางค่าพลังงานของแต่ละขั้นจากหนังสือเรียน และให้นักเรียนใช้เครื่องคิดเลขในด่าน 3','Before the lesson: have the textbook’s energy table ready, and let students use calculators in level 3'),T('ย้ำเครื่องหมายบวกและลบก่อนเริ่มด่าน 3 เพราะเป็นจุดที่ตอบผิดบ่อยที่สุด','Stress the plus and minus signs before level 3, as that is where most mistakes happen')]
+},
+g4:{
+ plan:T('แผนการจัดการเรียนรู้ที่ 4 หัวข้อ 3.2.4 สมบัติของสารประกอบไอออนิก และ 3.2.5 สมการไอออนิกและสมการไอออนิกสุทธิ','Lesson plan 4, topics 3.2.4 properties of ionic compounds and 3.2.5 ionic and net ionic equations'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T ด่าน 1–4 ใช้กับหัวข้อ 3.2.4 ด่าน 5 ใช้กับหัวข้อ 3.2.5 และด่าน 6 ใช้ประเมินท้ายแผน','The main game of the plan, used in stage T. Levels 1–4 cover 3.2.4, level 5 covers 3.2.5, and level 6 is the end-of-plan check'),
+ time:T('ด่านละ 5–8 นาที แผนละ 2–3 คาบ','5–8 minutes per level, 2–3 lessons for the plan'),
+ st:{
+  l1:[T('เลื่อนแถบแรงทุบให้ชั้นไอออนเลื่อน แล้วสังเกตไอออนประจุเหมือนกันที่มาอยู่ตรงกัน','Slide the hammer force so an ion layer shifts, and watch like charges line up'),T('3.2.4 ความเปราะของสารประกอบไอออนิก','3.2.4 brittleness of ionic compounds')],
+  l2:[T('ทำนายแล้วทดสอบการนำไฟฟ้า 5 ตัวอย่าง: NaCl(s), NaCl(l), NaCl(aq), สารละลายน้ำตาล, KNO₃(aq)','Predict, then test 5 samples: NaCl(s), NaCl(l), NaCl(aq), sugar solution, KNO₃(aq)'),T('3.2.4 การนำไฟฟ้าเมื่อหลอมเหลวหรือละลายน้ำ','3.2.4 conducting when molten or dissolved')],
+  l3:[T('เรียงจุดหลอมเหลวของ MgO, NaCl และ KI พร้อมเหตุผลเรื่องประจุและขนาดไอออน','Order the melting points of MgO, NaCl and KI, with reasons from charge and ion size'),T('3.2.4 จุดหลอมเหลวสูง และการละลายน้ำที่แตกต่างกัน','3.2.4 high melting points and differing solubility')],
+  l4:[T('ละลาย NaOH, NH₄NO₃, CaCl₂ และ NH₄Cl วัดอุณหภูมิ แล้วจำแนกว่าดูดหรือคายพลังงาน','Dissolve NaOH, NH₄NO₃, CaCl₂ and NH₄Cl, read the temperature and classify as absorbing or releasing energy'),T('3.2.4 พลังงานกับการละลาย (พลังงานแลตทิซและพลังงานไฮเดรชัน)','3.2.4 energy and dissolving (lattice energy and hydration energy)')],
+  l5:[T('ผสมสารละลาย 4 คู่ ดูการตกตะกอน แล้วเขียนสมการไอออนิกสุทธิ','Mix 4 pairs of solutions, watch for a precipitate and write the net ionic equation'),T('3.2.5 สมการไอออนิก ไอออนที่ไม่ได้ทำปฏิกิริยา และสมการไอออนิกสุทธิ','3.2.5 ionic equations, spectator ions and net ionic equations')],
+  l6:[T('แบบทดสอบ 8 ข้อ ตอบได้ข้อละครั้งเดียว','An 8-question checkpoint, one attempt per question'),T('3.2.4–3.2.5 ทั้งหัวข้อ','All of 3.2.4–3.2.5')]},
+ stages:[
+  ['A',['l2'],T('ให้นักเรียนทำนายในด่าน 2 ว่าหลอดไฟจะสว่างหรือไม่ ก่อนกดทดสอบทุกตัวอย่าง และใช้ด่าน 4 ของเกม "บันไดพลังงานไอออนิก" เป็นการฝึกดึงความรู้เรื่องพลังงานแลตทิซ','In level 2, students predict whether the bulb lights before each test. Use level 4 of "Born–Haber Ladder" as retrieval practice on lattice energy')],
+  ['T',['l1','l2','l3','l4'],T('ชั่วโมงแรกและชั่วโมงที่สอง: ทุกคู่เล่นด่าน 1–2 แล้วแบ่งด่าน 3 และ 4 ให้คู่ ก และคู่ ข ก่อนแลกข้อมูลกัน','First and second lessons: every pair plays levels 1–2, then pair A and pair B split levels 3 and 4 and swap findings')],
+  ['O',['l2','l4'],T('ใช้เป็นข้อมูลท้าทายกฎ: NaCl(s) ไม่นำไฟฟ้าแต่ NaCl(aq) นำ สารละลายน้ำตาลไม่นำ และ NH₄NO₃ ละลายแล้วน้ำเย็นลง ให้กลุ่มสร้างกฎการนำไฟฟ้าและกฎพลังงานของการละลายเอง','Rule-challenging data: NaCl(s) does not conduct but NaCl(aq) does, sugar solution does not, and dissolving NH₄NO₃ cools the water. Groups write their own rules for conductivity and for the energy of dissolving')],
+  ['T',['l5'],T('ชั่วโมงสุดท้าย: หัวข้อ 3.2.5 ผสมสารละลายแล้วเขียนสมการไอออนิกสุทธิ','Last lesson: topic 3.2.5, mixing solutions and writing net ionic equations')],
+  ['M',['l3','l5'],T('ถ่ายโยงสู่สารที่ไม่มีในเกม เช่น ทำนายจุดหลอมเหลวของ CaF₂ หรือผลของการผสม AgNO₃ กับ KBr','Transfer to substances not in the game, e.g. predict the melting point of CaF₂ or what happens when AgNO₃ meets KBr')],
+  ['S',['l6'],T('ใช้แบบทดสอบท้ายเกมเป็นการประเมินท้ายแผน','Use the checkpoint as the end-of-plan check')],
+  ['นอกห้อง|Homework',['l2','l5'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ เล่นซ้ำแล้วบันทึกเกียรติบัตรหรือแคปหน้าจอผลส่งครู','Use in the spaced retrieval sets; replay and save the certificate or a screenshot for the teacher')]],
+ mis:[
+  [T('NaCl ที่เป็นของแข็งนำไฟฟ้าได้เพราะมีไอออนอยู่แล้ว','Solid NaCl conducts because it already contains ions'),['l2'],T('วงจรทดสอบ NaCl(s) หลอดไฟไม่สว่าง แต่ NaCl(l) และ NaCl(aq) สว่าง','In the circuit, NaCl(s) leaves the bulb dark while NaCl(l) and NaCl(aq) light it')],
+  [T('สารทุกชนิดที่ละลายน้ำได้ทำให้สารละลายนำไฟฟ้า','Every substance that dissolves makes a conducting solution'),['l2'],T('สารละลายน้ำตาลละลายได้แต่ไม่นำไฟฟ้า','Sugar dissolves but its solution does not conduct')],
+  [T('สารประกอบไอออนิกเปราะเพราะพันธะไอออนิกอ่อน','Ionic compounds are brittle because the ionic bond is weak'),['l1','l3'],T('ด่านทุบผลึกแสดงแรงผลักระหว่างไอออนประจุเหมือนกันเมื่อชั้นเลื่อน และด่าน 3 แสดงจุดหลอมเหลวที่สูง','The hammer level shows like charges repelling when a layer slides, and level 3 shows how high the melting points are')],
+  [T('การละลายของสารประกอบไอออนิกคายพลังงานเสมอ น้ำจึงร้อนขึ้นทุกครั้ง','Dissolving an ionic compound always releases energy, so the water always warms'),['l4'],T('NaOH และ CaCl₂ ทำให้น้ำร้อนขึ้น แต่ NH₄NO₃ และ NH₄Cl ทำให้น้ำเย็นลง','NaOH and CaCl₂ warm the water, but NH₄NO₃ and NH₄Cl cool it')],
+  [T('สารประกอบไอออนิกละลายน้ำได้ดีทุกชนิด และผสมสารละลายใดก็เกิดตะกอน','All ionic compounds dissolve well, and any two solutions give a precipitate'),['l5','l6'],T('คู่ NaCl กับ KNO₃ ไม่เกิดตะกอน และข้อสอบเรื่อง CaCO₃ ละลายน้ำได้น้อยมาก','NaCl with KNO₃ gives no precipitate, and the quiz item notes CaCO₃ barely dissolves')],
+  [T('สมการไอออนิกสุทธิต้องเขียนไอออนทุกตัว','A net ionic equation must include every ion'),['l5'],T('ขั้นตัดไอออนที่ไม่ได้ทำปฏิกิริยาออกก่อนได้ Ag⁺(aq) + Cl⁻(aq) → AgCl(s)','The step that cancels spectator ions before reaching Ag⁺(aq) + Cl⁻(aq) → AgCl(s)')]],
+ tools:[T('ด่าน 2 เป็นวงจรทดสอบการนำไฟฟ้าที่หลอดไฟสว่างหรือดับตามตัวอย่าง ด่าน 4 มีเทอร์โมมิเตอร์ ด่าน 5 แสดงสีตะกอน เช่น PbI₂ สีเหลือง','Level 2 is a conductivity circuit whose bulb lights or not, level 4 has a thermometer, and level 5 shows precipitate colours such as yellow PbI₂'),T('อุณหภูมิในด่าน 4 เป็นค่าจำลองเพื่อแสดงแนวโน้ม','Temperatures in level 4 are simulated to show the trend')],
+ prep:[T('ถ้ามีอุปกรณ์ ให้ทำการทดลองจริงคู่กับเกม เช่น ชุดทดสอบการนำไฟฟ้า หรือการละลาย NH₄Cl ในน้ำ แล้วเทียบผลกับเกม','If equipment is available, run a real test alongside the game, such as a conductivity tester or dissolving NH₄Cl, and compare'),T('ถ้าทดลองละลาย NaOH จริง ให้สวมแว่นตานิรภัยและถุงมือ เพราะร้อนและกัดกร่อน','If students dissolve real NaOH, they need safety glasses and gloves; it gets hot and is corrosive')]
+}};
+const lvEn=c=>c.replace('ด่าน','Level');
+function SL(id){const s=STATIONS.find(x=>x.id===id);return s?(L==='en'?`${lvEn(s.code)} ${s.en}`:`${s.code} ${s.th}`):id}
+function spec(){
+  const c=CFG[GAME.id],H=TGuide.H,S=STATIONS,N=S.length,nm=L==='en'?GAME.en:GAME.th;
+  const align=S.map(s=>{const r=c.st[s.id]||[];return [L==='en'?lvEn(s.code):s.code,L==='en'?s.en:s.th,R(r[0]),R(r[1])]});
+  const stRows=c.stages.map(([st,ids,how])=>[st.includes('|')?st.split('|')[L==='en'?1:0]:st,ids.map(SL).join('<br>'),R(how)]);
+  const misRows=c.mis.map(([m,ids,ev])=>[R(m),ids.map(SL).join('<br>'),R(ev)]);
+  const series=SERIES.map(g=>[g[0]===String(GAME.no)?`<b>${g[0]}. ${R(g[1])}</b>`:`${g[0]}. ${R(g[1])}`,g[2],R(g[3])]);
+  const score=[
+    [R(T('ภารกิจในด่าน','Tasks in a level')),R(T('ตามป้ายแต่ละข้อ','shown on each item')),R(T('ตอบถูกครั้งแรกได้เต็ม ครั้งที่ 2 ได้ร้อยละ 70 ครั้งที่ 3 ได้ร้อยละ 50 หลังจากนั้นได้ร้อยละ 30 ลองใหม่ได้จนถูก','Right first time earns full points, second try 70%, third try 50%, after that 30%. Students may keep trying until correct'))],
+    [R(T('แบบทดสอบท้ายเกม','Checkpoint quiz')),R(T('ข้อละ 10','10 each')),R(T('ตอบได้ข้อละครั้งเดียว ถ้าตอบผิดข้อนั้นได้ 0 และเกมแสดงเหตุผลให้อ่านก่อนไปข้อถัดไป','One attempt per question. A wrong answer scores 0, and the game shows the reasoning before the next question'))],
+    [R(T('ทั้งด่าน','Whole level')),'100',R(T('คะแนนทุกด่านปรับเป็นเต็ม 100 · ทอง 85 ขึ้นไป · เงิน 65 ขึ้นไป · ทองแดง 40 ขึ้นไป · ต่ำกว่านั้นได้ "ผ่านการเรียนรู้" เกมเก็บคะแนนที่ดีที่สุดของแต่ละด่าน','Every level is scaled to 100 · gold 85+ · silver 65+ · bronze 40+ · below that "Completed". The game keeps each level’s best score'))]];
+  const notes=[
+    T(`ทุกด่านมีเกียรติบัตร PNG และมี "เกียรติบัตรพิชิตเกม" เมื่อเล่นครบทั้ง ${N} ด่าน (เล่นด่านใดก่อนก็ได้)`,`Every level has a PNG certificate, plus a "game complete" certificate once all ${N} levels are played (any order)`),
+    T('ครูตั้งชื่อโรงเรียน ชื่อครู ผู้อำนวยการ ผู้พัฒนาเกม และแนบลายเซ็นได้ที่ปุ่ม "ตั้งค่าเกียรติบัตร" ค่าที่บันทึกใช้ร่วมกันทั้ง 4 เกมพันธะไอออนิกในเครื่องเดียวกัน','Set the school, teacher, director and developer names and add signatures with the "certificate settings" button. The settings are shared by all 4 ionic games on the same device'),
+    T('หลักฐาน: ให้นักเรียนใส่ชื่อบนหน้าหลัก แล้วบันทึกเกียรติบัตรรายด่านหรือแคปหน้าจอผลด่านส่งครู ผลเก็บไว้ในเบราว์เซอร์ของเครื่องที่เล่นเท่านั้น ถ้าใช้เครื่องร่วมกัน ให้กด "ล้างความคืบหน้าเกมนี้" ในหน้าตั้งค่าก่อนเปลี่ยนคน','Evidence: students type their name on the home screen, then save level certificates or screenshot the results. Progress stays in that browser only; on shared devices press "clear this game’s progress" in settings before the next student')];
+  const ms=(window.IonicAR?IonicAR.models(GAME.id):[]);
+  const arList=T(ms.map((x,i)=>`${i+1}) ${x.n} (${x.t})`).join(' '),ms.map((x,i)=>`${i+1}) ${x.e} (${x.t})`).join(' '));
+  const AR=[T(`ปุ่ม "ดูแบบ AR" บนหน้าหลักและบนหัวทุกด่าน เปิดห้อง AR ที่แสดงแบบจำลองสามมิติลอยบนภาพจากกล้องหลัง เกมนี้มี ${ms.length} แบบจำลอง: ${R(arList)} ปุ่มบนแต่ละด่านเปิดแบบจำลองที่ตรงกับด่านนั้นก่อน`,`The "ดูแบบ AR" (View in AR) button on the home screen and at the top of every level opens an AR room with 3D models floating over the rear-camera view. This game has ${ms.length} models: ${R(arList)}. The button in each level opens the matching model first`),
+    T('ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย เอียงเครื่องเพื่อมองจากมุมอื่น และกด "ถ่ายภาพ AR" เพื่อบันทึกภาพที่มีชื่อแบบจำลอง ชื่อนักเรียน และวันที่ ใช้เป็นหลักฐานได้','Drag to rotate, pinch to zoom, tilt the device to see another side, and press "ถ่ายภาพ AR" (capture AR) to save a picture showing the model, the student’s name and the date, which works as evidence'),
+    T('กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari ถ้าเปิดผ่านลิงก์หรือเปิดกล้องไม่ได้ ให้เลือกฉากหลังเป็นภาพถ่ายห้องเรียนหรือฉากโต๊ะแล็บแทน iPhone และ iPad จะขออนุญาตใช้กล้องและเซนเซอร์การเคลื่อนไหว ให้กดอนุญาต และให้นักเรียนนั่งกับที่ขณะใช้กล้อง','The camera works when the .html file is opened directly in Chrome or Safari. Through a link, or if the camera is unavailable, choose a classroom photo or the lab bench as the background. iPhone and iPad ask for camera and motion permission; tap Allow, and keep students seated while using the camera')];
+  const tools=[...AR,...c.tools,T('เกมแสดงภาษาไทยเป็นหลักและมีคำภาษาอังกฤษกำกับ ส่วนคู่มือนี้สลับภาษาได้ที่ปุ่มด้านบน','The game is in Thai with English glosses; this guide switches language with the button at the top'),T('เปิดไฟล์ .html ได้ทั้งบนโทรศัพท์ แท็บเล็ต และคอมพิวเตอร์ ใน Chrome หรือ Safari โดยไม่ต้องต่ออินเทอร์เน็ตหลังโหลดไฟล์แล้ว','The .html file runs on phones, tablets and computers in Chrome or Safari, with no internet needed once loaded')];
+  const prep=[...c.prep,T('จัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน และโหลดไฟล์หรือแชร์ลิงก์ไว้ล่วงหน้า','Plan one device per two students and load the file or share the link in advance')];
+  return {
+    eyebrow:`${R(UI.eyebrow)} · ${nm}`,title:R(UI.title),printLbl:R(UI.print),closeLbl:R(UI.close),navLbl:R(UI.nav),langLbl:R(UI.lang),onLang:()=>{L=L==='th'?'en':'th';TGuide.open(spec())},
+    sections:[
+      {nav:R(UI.n1),h:R(UI.h1),html:H.list([`<b>${R(UI.useWith)}</b> ${R(c.plan)}`,`<b>${R(UI.role)}</b> ${R(c.role)}`,`<b>${R(UI.size)}</b> ${R(T(`${N} ด่าน ด่านละ 100 คะแนน รวม ${N*100} คะแนน`,`${N} levels, 100 points each, ${N*100} in total`))} · ${R(c.time)}`,`<b>${R(UI.flow)}</b> ${R(FLOW)}`])},
+      {nav:R(UI.n2),h:R(UI.h2),html:H.table([R(UI.thLv),R(UI.thName),R(UI.thAct),R(UI.thBook)],align,[0])+H.note(R(LO))+`<p><b>${R(T('ชุดเกมพันธะไอออนิก 4 เกม (หัวข้อ 3.2)','The 4 ionic bonding games (topic 3.2)'))}</b></p>`+H.table([R(UI.thGame),R(UI.thTopic),R(UI.thPlan)],series,[1])},
+      {nav:R(UI.n3),h:R(UI.h3),html:H.table([R(UI.thStage),R(UI.thLvs),R(UI.thUse)],stRows,[0])+H.note(R(SUGGEST))},
+      {nav:R(UI.n4),h:R(UI.h4),html:H.table([R(UI.thMis),R(UI.thLvs),R(UI.thEv)],misRows,[1])},
+      {nav:R(UI.n5),h:R(UI.h5),html:H.table([R(UI.thStep),R(UI.thPts),R(UI.thRule)],score,[1])+H.list(notes.map(R))},
+      {nav:R(UI.n6),h:R(UI.h6),html:H.list([...tools,...prep].map(R))}],
+    credit:R(CREDIT)};
+}
+window.IonicGuide={open:()=>TGuide.open(spec()),plan:()=>{const c=CFG[GAME&&GAME.id];return c?c.plan.th:''},spec};
+})();
+</script>
+<script>
+"use strict";
+/* ---------- utilities ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+let KEY,P,SET,GAME,STATIONS;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const saveP=()=>store.set(KEY+':p',P), saveS=()=>store.set(KEY+':s',SET);
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fm(s){ // "Ca3(PO4)2", "SO4^2-", "Na^+(aq)"
+  const k=s.indexOf('^'); let body=k<0?s:s.slice(0,k), ch=k<0?'':s.slice(k+1), rest='';
+  let h=body.replace(/([A-Za-z\)])(\d+)/g,'$1<sub>$2</sub>');
+  if(ch){const m=ch.match(/^(\d*[+\-])(.*)$/); if(m){h+='<sup>'+m[1].replace('-','−')+'</sup>';rest=m[2]}else rest=ch}
+  return h+rest;
+}
+const eq=s=>s.split(' ').map(t=>/^[A-Za-z(½\d]/.test(t)?fm(t):t).join(' ');
+const ANIMS=new Set(); const stopAnims=()=>{ANIMS.forEach(f=>f());ANIMS.clear()};
+const PRAISE=[['ยอดเยี่ยม!','Excellent!'],['เก่งมาก!','Great job!'],['ถูกต้อง แม่นยำมาก','Spot on!'],['สุดยอดเลย!','Brilliant!'],['เยี่ยมไปเลย!','Nice work!'],['คิดได้ถูกต้อง!','Well reasoned!']];
+const praise=()=>{const p=PRAISE[Math.random()*PRAISE.length|0];return `<b>${p[0]}</b> <span class="en">${p[1]}</span>`};
+const tryPts=(max,f)=>Math.round(max*[1,.7,.5,.3][Math.min(f,3)]);
+function fb(el,kind,html){el.hidden=false;el.className='fb '+kind;el.innerHTML=html}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+function confetti(){if(RM)return;const cols=['var(--cat)','var(--an)','var(--accent)','var(--gold)'];for(let i=0;i<40;i++){const d=document.createElement('i');d.className='confetti';d.style.left=Math.random()*100+'vw';d.style.background=cols[i%4];d.style.animationDelay=(Math.random()*.6)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
+const starStr=n=>'★'.repeat(n)+`<span class="off">${'★'.repeat(3-n)}</span>`;
+const medalOf=s=>s>=85?['เหรียญทอง','Gold',3]:s>=65?['เหรียญเงิน','Silver',2]:s>=40?['เหรียญทองแดง','Bronze',1]:['ผ่านการเรียนรู้','Completed',0];
+function thaiDate(){try{return new Date().toLocaleDateString('th-TH-u-ca-buddhist',{day:'numeric',month:'long',year:'numeric'})}catch(e){return new Date().toLocaleDateString()}}
+
+/* ---------- 3D rock-salt lattice ---------- */
+function crystal(cv,opt={}){
+  const n=opt.n||1, pts=[];
+  for(let x=-n;x<=n;x++)for(let y=-n;y<=n;y++)for(let z=-n;z<=n;z++)pts.push({x,y,z,c:Math.abs(x+y+z)%2===0?1:-1});
+  const bonds=[];for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j];if(Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+Math.abs(a.z-b.z)===1)bonds.push([i,j])}
+  const ctr=pts.findIndex(p=>!p.x&&!p.y&&!p.z), nb=new Set([ctr]);pts.forEach((p,i)=>{if(Math.abs(p.x)+Math.abs(p.y)+Math.abs(p.z)===1)nb.add(i)});
+  let ax=opt.ax??-.45, ay=opt.ay??.6, hl=false, raf=0, drag=false, lx=0, ly=0, auto=!RM&&opt.auto!==false;
+  const ctx=cv.getContext('2d'), D=(n+1)*6;
+  function draw(){
+    const w=cv.clientWidth,h=cv.clientHeight,d=devicePixelRatio||1;if(!w)return;
+    if(cv.width!==Math.round(w*d)){cv.width=Math.round(w*d);cv.height=Math.round(h*d)}
+    ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);
+    const cs=getComputedStyle(cv),C={cat:cs.getPropertyValue('--cat').trim(),an:cs.getPropertyValue('--an').trim(),line:cs.getPropertyValue('--line').trim()};
+    const s=Math.min(w,h)/(2*n+1.6)*(opt.scale||1),cy=Math.cos(ay),sy=Math.sin(ay),cx=Math.cos(ax),sx=Math.sin(ax);
+    const Q=pts.map((p,i)=>{let X=p.x*cy+p.z*sy,Z=-p.x*sy+p.z*cy,Y=p.y*cx-Z*sx;Z=p.y*sx+Z*cx;const f=D/(D-Z);return{X:w/2+X*s*f,Y:h/2+Y*s*f,Z,f,p,i}});
+    ctx.lineWidth=1.6;ctx.strokeStyle=C.line;
+    bonds.forEach(([i,j])=>{ctx.globalAlpha=hl&&!(nb.has(i)&&nb.has(j)&&(i===ctr||j===ctr))?.18:.9;ctx.beginPath();ctx.moveTo(Q[i].X,Q[i].Y);ctx.lineTo(Q[j].X,Q[j].Y);ctx.stroke()});
+    Q.slice().sort((a,b)=>a.Z-b.Z).forEach(q=>{
+      const r=(q.p.c>0?.2:.3)*s*q.f, col=q.p.c>0?C.cat:C.an;
+      ctx.globalAlpha=hl&&!nb.has(q.i)?.2:1;
+      const g=ctx.createRadialGradient(q.X-r*.35,q.Y-r*.4,r*.1,q.X,q.Y,r);g.addColorStop(0,'#ffffff');g.addColorStop(.28,col);g.addColorStop(1,col);
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(q.X,q.Y,r,0,7);ctx.fill();
+      if(hl&&q.i===ctr){ctx.strokeStyle='#e5668f';ctx.lineWidth=3;ctx.stroke();ctx.lineWidth=1.6;ctx.strokeStyle=C.line}
+      if(opt.signs&&r>7){ctx.fillStyle='#fff';ctx.font=`700 ${Math.round(r*.9)}px "Chakra Petch",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(q.p.c>0?'+':'−',q.X,q.Y+1)}
+    });ctx.globalAlpha=1;
+  }
+  function tick(){if(auto&&!drag)ay+=.005;draw();raf=requestAnimationFrame(tick)}
+  if(opt.interactive){
+    cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(e.pointerId)});
+    cv.addEventListener('pointermove',e=>{if(!drag)return;ay+=(e.clientX-lx)*.01;ax=Math.max(-1.4,Math.min(1.4,ax+(e.clientY-ly)*.01));lx=e.clientX;ly=e.clientY;if(!auto)draw()});
+    cv.addEventListener('pointerup',()=>drag=false);cv.addEventListener('pointercancel',()=>drag=false);
+  }
+  if(auto)raf=requestAnimationFrame(tick);else requestAnimationFrame(draw);
+  ANIMS.add(()=>cancelAnimationFrame(raf));
+  return{setHL(v){hl=v;draw()},draw};
+}
+
+/* ---------- chemistry data ---------- */
+const EL={
+  Na:{th:'โซเดียม',conf:[2,8,1],m:1},K:{th:'โพแทสเซียม',conf:[2,8,8,1],m:1},Mg:{th:'แมกนีเซียม',conf:[2,8,2],m:1},
+  Ca:{th:'แคลเซียม',conf:[2,8,8,2],m:1},Al:{th:'อะลูมิเนียม',conf:[2,8,3],m:1},
+  Cl:{th:'คลอรีน',ion:'คลอไรด์',conf:[2,8,7]},O:{th:'ออกซิเจน',ion:'ออกไซด์',conf:[2,6]},F:{th:'ฟลูออรีน',ion:'ฟลูออไรด์',conf:[2,7]},N:{th:'ไนโตรเจน',ion:'ไนไตรด์',conf:[2,5]}
+};
+const val=e=>EL[e].conf[EL[e].conf.length-1];
+const chg=(q,s)=>(q===1?'':q)+s;
+
+/* ---------- 3.2.1 electron transfer ---------- */
+function slotPos(cx,cy,cnt,R=40){const out=[];for(let k=0;k<cnt;k++){const side=k%4,onSide=(cnt>side?1:0)+(cnt>side+4?1:0),o=onSide===2?(k<4?-7:7):0;out.push(side===0?[cx+o,cy-R]:side===1?[cx+R,cy+o]:side===2?[cx+o,cy+R]:[cx-R,cy+o])}return out}
+function actTransfer(R){return function(box,api,done){
+  api.reg('tr',R.length*10);let r=0;
+  function round(){
+    const[m,n]=R[r],vm=val(m),need=8-val(n);let mc=1,nc=1,fails=0,solved=false,busy=false,M,N;
+    const reset=()=>{M=Array.from({length:mc},()=>({left:vm}));N=Array.from({length:nc},()=>({got:0}))};reset();
+    box.innerHTML=`<div class="roundTag">รอบที่ ${r+1}/${R.length} · ROUND ${r+1}</div>
+    <h3 class="stepTitle">${EL[m].th} <span class="c">${m}</span> (${EL[m].conf.join(',')}) กับ ${EL[n].th} <span class="a">${n}</span> (${EL[n].conf.join(',')})</h3>
+    <p class="stepLead">แตะเวเลนซ์อิเล็กตรอน<span class="c">สีส้ม</span>ของโลหะเพื่อส่งให้อโลหะ ปรับจำนวนอะตอมจนโลหะเหลือ 0 และอโลหะครบ 8 <span class="en">Tap metal electrons to transfer them. Adjust atom counts until every atom reaches a noble-gas configuration.</span></p>
+    <div class="stage"><div class="row" style="justify-content:space-between;margin-bottom:6px">
+      <div class="row"><span class="c">${m}</span><span class="stepper"><button id="mMinus" aria-label="ลดโลหะ">−</button><output id="mOut">1</output><button id="mPlus" aria-label="เพิ่มโลหะ">+</button></span></div>
+      <div class="row"><span class="a">${n}</span><span class="stepper"><button id="nMinus" aria-label="ลดอโลหะ">−</button><output id="nOut">1</output><button id="nPlus" aria-label="เพิ่มอโลหะ">+</button></span></div></div>
+      <div id="sv"></div>
+      <div class="row" style="justify-content:center;margin-top:6px"><button class="btn sm quiet" id="rs">เริ่มรอบนี้ใหม่</button><button class="btn primary" id="ck">ตรวจคำตอบ <span class="en" style="color:inherit">Check</span></button></div>
+    </div><div class="fb" hidden id="f"></div><div id="after"></div>`;
+    const f=$('#f',box);
+    const geo=()=>{const xs=c=>Array.from({length:c},(_,i)=>180+(i-(c-1)/2)*112);return{mx:xs(mc),nx:xs(nc),my:70,ny:192}};
+    function draw(){
+      const g=geo();let h=`<svg viewBox="0 0 360 262" role="img" aria-label="แบบจำลองการถ่ายโอนอิเล็กตรอน">`;
+      M.forEach((a,i)=>{const x=g.mx[i],y=g.my;
+        if(solved){h+=`<circle cx="${x}" cy="${y}" r="22" fill="var(--surface)" stroke="var(--cat)" stroke-width="3"/><text x="${x}" y="${y+6}" text-anchor="middle" class="svgd" font-size="18" font-weight="700">${m}</text><text x="${x+26}" y="${y-16}" class="svgd" font-size="15" fill="var(--cat)" style="fill:var(--cat)" font-weight="700">${chg(vm,'+')}</text><text x="${x}" y="${y+60}" text-anchor="middle" class="svgt" font-size="12">(${EL[m].conf.slice(0,-1).join(',')})</text>`}
+        else{h+=`<circle cx="${x}" cy="${y}" r="26" fill="var(--surface2)" stroke="var(--cat)" stroke-width="2"/><text x="${x}" y="${y+7}" text-anchor="middle" class="svgd" font-size="20" font-weight="700">${m}</text>`;
+          slotPos(x,y,a.left).forEach(([ex,ey])=>{h+=`<g class="em" data-i="${i}" style="cursor:pointer"><circle cx="${ex}" cy="${ey}" r="13" fill="transparent"/><circle cx="${ex}" cy="${ey}" r="6" fill="var(--cat)" stroke="var(--surface)" stroke-width="1.5"/></g>`});
+          h+=`<text x="${x}" y="${y+62}" text-anchor="middle" class="svgt" font-size="12">(${EL[m].conf.slice(0,-1).concat(a.left).filter((v,k,ar)=>!(k===ar.length-1&&v===0&&ar.length>1)).join(',')})</text>`}
+      });
+      N.forEach((b,j)=>{const x=g.nx[j],y=g.ny,tot=val(n)+b.got;
+        h+=`<circle cx="${x}" cy="${y}" r="26" fill="var(--surface2)" stroke="var(--an)" stroke-width="2"/><text x="${x}" y="${y+7}" text-anchor="middle" class="svgd" font-size="20" font-weight="700">${n}</text>`;
+        slotPos(x,y,tot).forEach(([ex,ey],k)=>{h+=`<circle cx="${ex}" cy="${ey}" r="6" fill="${k<val(n)?'var(--an)':'var(--cat)'}" stroke="var(--surface)" stroke-width="1.5"/>`});
+        if(solved)h+=`<path d="M${x-50} ${y-50}h-6v100h6M${x+50} ${y-50}h6v100h-6" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="${x+60}" y="${y-44}" class="svgd" font-size="15" font-weight="700" style="fill:var(--an)">${chg(need,'−')}</text>`;
+        else h+=`<text x="${x}" y="${y+64}" text-anchor="middle" class="svgt" font-size="12">${tot}/8</text>`;
+      });
+      h+='</svg>';$('#sv',box).innerHTML=h;
+      $$('.em',box).forEach(e=>e.onclick=()=>send(+e.dataset.i,e));
+      $('#mOut',box).value=mc;$('#nOut',box).value=nc;
+    }
+    function send(i,el){
+      if(solved||busy)return;const j=N.findIndex(b=>b.got<need);
+      if(j<0){fb(f,'no',`อโลหะทุกอะตอมครบ 8 แล้ว แต่ <b>${m}</b> ยังมีอิเล็กตรอนเหลือ ลองเพิ่มจำนวนอะตอม <b>${n}</b> <span class="en">No atom can accept more electrons — add another ${n}.</span>`);return}
+      busy=true;const g=geo(),c=el.querySelectorAll('circle')[1],sx=+c.getAttribute('cx'),sy=+c.getAttribute('cy');
+      const[tx,ty]=slotPos(g.nx[j],g.ny,val(n)+N[j].got+1)[val(n)+N[j].got];
+      const svg=$('#sv svg',box),dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r','6');dot.setAttribute('fill','var(--cat)');svg.appendChild(dot);c.setAttribute('opacity','0');
+      const t0=performance.now(),T=RM?1:380;
+      (function step(t){const k=Math.min(1,(t-t0)/T),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;dot.setAttribute('cx',sx+(tx-sx)*e);dot.setAttribute('cy',sy+(ty-sy)*e-Math.sin(k*Math.PI)*30);
+        if(k<1)requestAnimationFrame(step);else{M[i].left--;N[j].got++;busy=false;draw()}})(t0);
+    }
+    const setC=(dm,dn)=>{if(solved)return;mc=Math.max(1,Math.min(3,mc+dm));nc=Math.max(1,Math.min(3,nc+dn));reset();f.hidden=true;draw()};
+    $('#mMinus',box).onclick=()=>setC(-1,0);$('#mPlus',box).onclick=()=>setC(1,0);$('#nMinus',box).onclick=()=>setC(0,-1);$('#nPlus',box).onclick=()=>setC(0,1);
+    $('#rs',box).onclick=()=>{if(!solved){reset();f.hidden=true;draw()}};
+    $('#ck',box).onclick=()=>{
+      if(solved)return;const left=M.some(a=>a.left>0),short=N.some(b=>b.got<need);
+      if(left||short){fails++;fb(f,'no',(left&&!short?`โลหะ ${m} ยังมีเวเลนซ์อิเล็กตรอนเหลือ ต้องเพิ่มอะตอม ${n} มารับ`:short&&!left?`อโลหะ ${n} บางอะตอมยังไม่ครบ 8 ต้องเพิ่มอะตอม ${m} มาให้อิเล็กตรอน`:'ยังถ่ายโอนอิเล็กตรอนไม่ครบ แตะอิเล็กตรอนสีส้มต่อ')+` <span class="en">Not balanced yet.</span>`);return}
+      if(gcd(mc,nc)>1){fails++;fb(f,'no',`ถ่ายโอนลงตัวแล้ว แต่จำนวนอะตอม ${mc}:${nc} ยังไม่ใช่อัตราส่วนอย่างต่ำ ลองลดจำนวนลง <span class="en">Use the lowest whole-number ratio.</span>`);return}
+      solved=true;const pts=tryPts(10,fails);api.give('tr',pts);draw();
+      const formula=m+(mc>1?mc:'')+n+(nc>1?nc:'');
+      fb(f,'ok',`${praise()} +${pts} คะแนน`);
+      $('#ck',box).disabled=true;$('#rs',box).disabled=true;$$('.stepper button',box).forEach(b=>b.disabled=true);
+      $('#after',box).innerHTML=`<div class="lcard" style="margin-top:12px"><p class="eq">${eq(`${m} (${EL[m].conf.join(',')})`)} → ${fm(m+'^'+chg(vm,'+'))} (${EL[m].conf.slice(0,-1).join(',')}) + ${vm>1?vm:''}e<sup>−</sup></p>
+      <p class="eq">${fm(n)} (${EL[n].conf.join(',')}) + ${need>1?need:''}e<sup>−</sup> → ${fm(n+'^'+chg(need,'-'))} (${EL[n].conf.slice(0,-1).concat(8).join(',')})</p>
+      <p>${m} ${mc} อะตอมให้ ${mc*vm} อิเล็กตรอน = ${n} ${nc} อะตอมรับ ${nc*need} อิเล็กตรอน → สูตร <span class="big">${fm(formula)}</span> (${EL[m].th}${EL[n].ion})</p></div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn primary" id="nx">${r<R.length-1?'รอบถัดไป →':'ทำครบทุกรอบแล้ว ✓'}</button></div>`;
+      $('#nx',box).onclick=()=>{if(r<R.length-1){r++;round()}else{$('#nx',box).disabled=true;done()}};
+    };
+    draw();
+  }
+  round();
+}}
+
+/* ---------- 3.2.1 lattice puzzle & 3D crystal ---------- */
+function actLatticePuzzle(box,api,done){
+  const PZ=[{g:['+...','..-.','....','...+'],c:['Na⁺','Cl⁻'],lab:['Na','Cl']},{g:['....-','..+..','.....','+....','....-'],c:['Mg²⁺','O²⁻'],lab:['Mg','O']}];
+  api.reg('pz',20);let k=0;
+  function play(){
+    const p=PZ[k],N=p.g.length;let S=p.g.join('').split('').map(ch=>ch==='+'?1:ch==='-'?-1:0);const fix=S.map(v=>v!==0);let fails=0,solved=false;
+    box.innerHTML=`<div class="roundTag">ปริศนาที่ ${k+1}/2 · PUZZLE ${k+1}</div><h3 class="stepTitle">วางไอออน <span class="c">${p.c[0]}</span> และ <span class="a">${p.c[1]}</span> ให้เต็มชั้นผลึก</h3>
+    <p class="stepLead">แตะช่องว่างเพื่อสลับ ว่าง → ไอออนบวก → ไอออนลบ ไอออนที่อยู่ติดกัน (บน ล่าง ซ้าย ขวา) ต้องมีประจุตรงข้ามกันทุกคู่ ช่องที่มีขอบเข้มเป็นไอออนที่วางไว้ให้แล้ว <span class="en">Fill the layer so every neighbour has the opposite charge.</span></p>
+    <div class="stage"><div class="grid" id="gd" style="grid-template-columns:repeat(${N},1fr)"></div>
+    <div class="row" style="justify-content:center;margin-top:8px"><button class="btn primary" id="ck">ตรวจชั้นผลึก <span class="en" style="color:inherit">Check</span></button></div></div><div class="fb" hidden id="f"></div><div id="after"></div>`;
+    const f=$('#f',box),gd=$('#gd',box);
+    const bad=()=>{const B=new Set();for(let i=0;i<N;i++)for(let j=0;j<N;j++){const v=S[i*N+j];if(!v)continue;[[0,1],[1,0]].forEach(([a,b])=>{const ii=i+a,jj=j+b;if(ii<N&&jj<N&&S[ii*N+jj]===v){B.add(i*N+j);B.add(ii*N+jj)}})}return B};
+    function draw(){const B=bad();gd.innerHTML=S.map((v,i)=>`<button class="cell ${v>0?'p':v<0?'m':''} ${fix[i]?'fix':''} ${B.has(i)?'bad':''}" data-i="${i}" aria-label="ช่อง ${i+1}">${v>0?p.lab[0]+'<sup>+</sup>':v<0?p.lab[1]+'<sup>−</sup>':''}</button>`).join('');
+      $$('.cell',gd).forEach(c=>c.onclick=()=>{const i=+c.dataset.i;if(fix[i]||solved)return;S[i]=S[i]===0?1:S[i]===1?-1:0;draw()})}
+    draw();
+    $('#ck',box).onclick=()=>{if(solved)return;
+      if(S.includes(0)){fails++;fb(f,'no','ยังมีช่องว่างอยู่ ผลึกจริงไม่มีช่องว่างในตำแหน่งของไอออน <span class="en">Fill every site.</span>');return}
+      if(bad().size){fails++;fb(f,'no','มีไอออนประจุเหมือนกันอยู่ติดกัน (ขอบสีแดง) ซึ่งจะผลักกัน ผลึกจึงอยู่ไม่ได้ <span class="en">Like charges are touching.</span>');return}
+      solved=true;const pts=tryPts(10,fails);api.give('pz',pts);fb(f,'ok',`${praise()} +${pts} คะแนน · ไอออนแต่ละตัวถูกล้อมด้วยไอออนประจุตรงข้ามในแนวราบ 4 ตัว และเมื่อซ้อนชั้นบน–ล่างอีก 2 ตัว รวมเป็น 6`);
+      $('#after',box).innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn primary" id="nx">${k===0?'ปริศนาถัดไป →':'สำเร็จทั้งสองชั้น ✓'}</button></div>`;
+      $('#nx',box).onclick=()=>{if(k===0){k=1;play()}else{$('#nx',box).disabled=true;done()}};
+    };
+  }
+  play();
+}
+function actCrystal3D(box,api,done){
+  api.reg('cr',40);
+  box.innerHTML=`<h3 class="stepTitle">หมุนผลึกเกลือหิน NaCl</h3><p class="stepLead">ลากนิ้วบนภาพเพื่อหมุนผลึก ไอออน <span class="c">Na⁺ (เล็ก สีส้ม)</span> และ <span class="a">Cl⁻ (ใหญ่ สีเขียวน้ำทะเล)</span> <span class="en">Drag to rotate the rock-salt lattice.</span></p>
+  <div class="stage"><canvas class="cr" id="cv" aria-label="แบบจำลองผลึก NaCl สามมิติ"></canvas><div class="row" style="justify-content:center"><button class="btn sm" id="hl">ไฮไลต์ Na⁺ ตรงกลางและเพื่อนบ้าน</button></div></div><div id="qs" style="margin-top:12px"></div>`;
+  const cr=crystal($('#cv',box),{n:1,interactive:true,signs:true});let on=false;
+  $('#hl',box).onclick=()=>{on=!on;cr.setHL(on);$('#hl',box).textContent=on?'แสดงผลึกทั้งหมด':'ไฮไลต์ Na⁺ ตรงกลางและเพื่อนบ้าน'};
+  const Q=[
+    {q:'Na⁺ ตรงกลางผลึก (กดไฮไลต์) อยู่ติดกับ Cl⁻ กี่ไอออน <span class="en">How many Cl⁻ touch the central Na⁺?</span>',o:['6 ไอออน','4 ไอออน','8 ไอออน','12 ไอออน'],x:'บน ล่าง ซ้าย ขวา หน้า หลัง รวม 6 ไอออน เรียกว่าเลขโคออร์ดิเนชันเท่ากับ 6'},
+    {q:'ในก้อนผลึกจำลองนี้นับได้ Na⁺ 13 ไอออน และ Cl⁻ 14 ไอออน เหตุใดสูตรจึงเป็น NaCl',o:['ผลึกจริงต่อเนื่องไปทุกทิศ อัตราส่วนอย่างต่ำของไอออนทั้งหมดคือ 1 : 1','เพราะ Na 1 อะตอมสร้างพันธะกับ Cl 1 อะตอมเป็นโมเลกุล','ควรเขียนสูตรเป็น Na<sub>13</sub>Cl<sub>14</sub> จึงจะถูก','เพราะ Cl⁻ ส่วนเกินระเหยไปเป็นแก๊ส'],x:'สูตรของสารประกอบไอออนิกเป็นสูตรเอมพิริคัล บอกอัตราส่วนอย่างต่ำ ไม่ใช่สูตรโมเลกุล'},
+    {q:'ไอออนที่อยู่ติดกันโดยตรงในผลึก NaCl มีลักษณะอย่างไร',o:['มีประจุตรงข้ามกันเสมอ','มีประจุเหมือนกันเสมอ','เป็นอะตอมที่ไม่มีประจุ','สลับกันแบบสุ่ม'],x:'การจัดเรียงแบบสลับทำให้แรงดึงดูดมากกว่าแรงผลัก ผลึกจึงเสถียร'},
+    {q:'ผลึก CaF₂ มีอัตราส่วน Ca²⁺ : F⁻ เท่าใด และเพราะอะไร',o:['1 : 2 เพราะประจุ +2 ต้องดุลกับ −1 สองไอออน','2 : 1 เพราะ Ca ใหญ่กว่า F','1 : 1 เพราะผลึกไอออนิกทุกชนิดเป็น 1 : 1','1 : 3 เพราะ F อยู่หมู่ 7'],x:'ผลรวมประจุในผลึกต้องเป็นศูนย์: (+2)×1 + (−1)×2 = 0'}
+  ];let c=0;Q.forEach((it,i)=>mcq($('#qs',box),it,{key:'cr',max:10,api,onDone:()=>{if(++c===Q.length)done()}}));
+}
+
+/* ---------- 3.2.2 formula builder & naming ---------- */
+const poly=s=>/\d|[A-Z][a-z]?[A-Z]/.test(s);
+const part=(s,k)=>k===1?s:poly(s)?`(${s})${k}`:s+k;
+function actFormula(I){return function(box,api,done){
+  api.reg('fo',I.length*5);let r=0;
+  function round(){
+    const it=I[r];let x=1,y=1,fails=0,solved=false;
+    box.innerHTML=`<div class="roundTag">ข้อ ${r+1}/${I.length} · FORMULA ${r+1}</div><h3 class="stepTitle">เขียนสูตรจากไอออน <span class="c">${fm(it.c+'^'+chg(it.cq,'+'))}</span> และ <span class="a">${fm(it.a+'^'+chg(it.aq,'-'))}</span></h3>
+    <p class="stepLead">ปรับจำนวนไอออนแต่ละชนิดจนประจุบวกรวมเท่ากับประจุลบรวม และเป็นอัตราส่วนอย่างต่ำ <span class="en">Balance the total charge with the smallest whole numbers.</span></p>
+    <div class="stage"><div class="row" style="justify-content:space-around">
+      <div style="text-align:center"><div class="big c">${fm(it.c+'^'+chg(it.cq,'+'))}</div><span class="stepper"><button id="xm">−</button><output id="xo">1</output><button id="xp">+</button></span></div>
+      <div style="text-align:center"><div class="big a">${fm(it.a+'^'+chg(it.aq,'-'))}</div><span class="stepper"><button id="ym">−</button><output id="yo">1</output><button id="yp">+</button></span></div></div>
+      <div id="bal" style="margin:14px 0 6px"></div><div style="text-align:center">สูตร <span class="big" id="fo"></span></div>
+      <div class="row" style="justify-content:center;margin-top:8px"><button class="btn primary" id="ck">ตรวจสูตร <span class="en" style="color:inherit">Check</span></button></div></div><div class="fb" hidden id="f"></div><div id="after"></div>`;
+    const f=$('#f',box);
+    function draw(){$('#xo',box).value=x;$('#yo',box).value=y;const P=x*it.cq,Nn=y*it.aq,u=n=>Array.from({length:n},()=>'').join('');
+      const bx=(n,col,s)=>Array.from({length:n},()=>`<span style="display:inline-flex;width:22px;height:22px;border-radius:4px;background:${col};color:#fff;align-items:center;justify-content:center;font-weight:700;margin:1px">${s}</span>`).join('');
+      $('#bal',box).innerHTML=`<div class="row" style="justify-content:space-between;align-items:flex-start"><div><div class="en">ประจุบวกรวม +${P}</div>${bx(P,'var(--cat)','+')}</div><div style="text-align:right"><div class="en">ประจุลบรวม −${Nn}</div>${bx(Nn,'var(--an)','−')}</div></div>`;
+      $('#fo',box).innerHTML=fm(part(it.c,x)+part(it.a,y))}
+    const set=(dx,dy)=>{if(solved)return;x=Math.max(1,Math.min(4,x+dx));y=Math.max(1,Math.min(4,y+dy));f.hidden=true;draw()};
+    $('#xm',box).onclick=()=>set(-1,0);$('#xp',box).onclick=()=>set(1,0);$('#ym',box).onclick=()=>set(0,-1);$('#yp',box).onclick=()=>set(0,1);draw();
+    $('#ck',box).onclick=()=>{if(solved)return;
+      if(x*it.cq!==y*it.aq){fails++;fb(f,'no',`ประจุยังไม่ดุล (+${x*it.cq} กับ −${y*it.aq}) ผลรวมประจุของสารประกอบต้องเป็นศูนย์ <span class="en">Total charge must be zero.</span>`);return}
+      if(gcd(x,y)>1){fails++;fb(f,'no','ประจุดุลแล้ว แต่ต้องลดเป็นอัตราส่วนอย่างต่ำ <span class="en">Reduce to the lowest ratio.</span>');return}
+      solved=true;const pts=tryPts(5,fails);api.give('fo',pts);$('#ck',box).disabled=true;$$('.stepper button',box).forEach(b=>b.disabled=true);
+      fb(f,'ok',`${praise()} +${pts} คะแนน<br><span class="big">${fm(part(it.c,x)+part(it.a,y))}</span> อ่านว่า <b>${it.n}</b> <span class="en">${it.e}</span>${poly(it.c)&&x>1||poly(it.a)&&y>1?'<br>ไอออนกลุ่มอะตอมที่มีมากกว่า 1 กลุ่ม ต้องใส่วงเล็บก่อนเขียนตัวเลขห้อย':''}`);
+      $('#after',box).innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn primary" id="nx">${r<I.length-1?'ข้อถัดไป →':'ครบทุกข้อ ✓'}</button></div>`;
+      $('#nx',box).onclick=()=>{if(r<I.length-1){r++;round()}else{$('#nx',box).disabled=true;done()}};
+    };
+  }
+  round();
+}}
+function actNaming(box,api,done){
+  api.reg('nm',30);
+  box.innerHTML=`<h3 class="stepTitle">ติดฉลากชื่อสารให้ถูกต้อง</h3><p class="stepLead">เลือกชื่อภาษาไทยของสารแต่ละขวด จำไว้ว่าสารประกอบไอออนิกไม่ใช้คำบอกจำนวน (ได ไตร) และโลหะที่มีได้หลายประจุต้องบอกประจุด้วยเลขโรมัน <span class="en">Name each ionic compound.</span></p><div id="qs"></div>`;
+  const Q=[
+    {q:`<span class="big">${fm('K2S')}</span>`,o:['โพแทสเซียมซัลไฟด์','ไดโพแทสเซียมซัลไฟด์','โพแทสเซียมซัลเฟต','โพแทสเซียมซัลเฟอร์'],x:'K⁺ กับ S²⁻ ชื่ออโลหะเปลี่ยนท้ายเป็น -ไอด์ (potassium sulfide)'},
+    {q:`<span class="big">${fm('CuSO4')}</span>`,o:['คอปเปอร์(II) ซัลเฟต','คอปเปอร์(I) ซัลเฟต','คอปเปอร์ซัลไฟด์','คอปเปอร์เตตระซัลเฟต'],x:'SO₄²⁻ มีประจุ −2 ดังนั้นทองแดงเป็น Cu²⁺ จึงใช้ (II) (copper(II) sulfate)'},
+    {q:`<span class="big">${fm('FeCl3')}</span>`,o:['ไอร์ออน(III) คลอไรด์','ไอร์ออนไตรคลอไรด์','ไอร์ออน(II) คลอไรด์','ไอร์ออนคลอไรด์'],x:'Cl⁻ 3 ไอออนรวม −3 ดังนั้น Fe มีประจุ +3 (iron(III) chloride)'},
+    {q:`<span class="big">${fm('Mg(NO3)2')}</span>`,o:['แมกนีเซียมไนเตรต','แมกนีเซียมไนไตรต์','แมกนีเซียมไดไนเตรต','แมกนีเซียมไนไตรด์'],x:'NO₃⁻ ชื่อไนเตรต ส่วน NO₂⁻ คือไนไตรต์ และ N³⁻ คือไนไตรด์ (magnesium nitrate)'},
+    {q:`<span class="big">${fm('NaHCO3')}</span>`,o:['โซเดียมไฮโดรเจนคาร์บอเนต','โซเดียมคาร์บอเนต','โซเดียมไฮดรอกไซด์','โซเดียมคาร์ไบด์'],x:'HCO₃⁻ คือไฮโดรเจนคาร์บอเนต หรือเบกกิ้งโซดา (sodium hydrogen carbonate)'},
+    {q:`<span class="big">${fm('Al2O3')}</span>`,o:['อะลูมิเนียมออกไซด์','ไดอะลูมิเนียมไตรออกไซด์','อะลูมิเนียม(III) ออกไซด์','อะลูมิเนียมไตรออกไซด์'],x:'Al มีประจุ +3 ได้แบบเดียว จึงไม่ต้องใส่เลขโรมัน (aluminium oxide)'}
+  ];let c=0;Q.forEach(it=>mcq($('#qs',box),it,{key:'nm',max:5,api,onDone:()=>{if(++c===Q.length)done()}}));
+}
+
+/* ---------- 3.2.3 Born–Haber ---------- */
+const BH={sub:{e:'Na(s) → Na(g)',th:'การระเหิดของ Na',v:107},dis:{e:'½Cl2(g) → Cl(g)',th:'การแตกพันธะใน Cl₂ (ครึ่งโมล)',v:122},ie:{e:'Na(g) → Na^+(g) + e^-',th:'พลังงานไอออไนเซชันของ Na',v:496},ea:{e:'Cl(g) + e^- → Cl^-(g)',th:'สัมพรรคภาพอิเล็กตรอนของ Cl',v:-349},lat:{e:'Na^+(g) + Cl^-(g) → NaCl(s)',th:'ไอออนแก๊สรวมเป็นผลึก (พลังงานแลตทิซ)',v:-787}};
+let BHorder=['sub','dis','ie','ea','lat'];
+function ladderSVG(order,showTotal,signs=true){
+  const lv=[0];order.forEach(k=>lv.push(lv[lv.length-1]+BH[k].v));const mx=Math.max(...lv),mn=Math.min(...lv),T=34,H=236,y=v=>T+(mx-v)/(mx-mn)*H;
+  const ax=i=>70+i*56;let h=`<svg viewBox="0 0 420 300" role="img" aria-label="แผนภาพระดับพลังงาน">`;
+  h+=`<line x1="10" x2="400" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="12" y="${y(0)-6}" class="svgt" font-size="11">Na(s) + ½Cl₂(g) · 0</text>`;
+  lv.forEach((v,i)=>{if(!i)return;const x1=ax(i-1)-14,x2=i<5?ax(i)+14:ax(4)+44;h+=`<line x1="${x1}" x2="${x2}" y1="${y(v)}" y2="${y(v)}" stroke="var(--ink)" stroke-width="2"/>`});
+  order.forEach((k,i)=>{const v=BH[k].v,a=y(lv[i]),b=y(lv[i+1]),col=v>0?'var(--endo)':'var(--exo)',x=ax(i),dir=b>a?1:-1;
+    h+=`<line x1="${x}" x2="${x}" y1="${a}" y2="${b-dir*7}" stroke="${col}" stroke-width="3" style="stroke:${col}"/><path d="M${x-6} ${b-dir*9}L${x} ${b}L${x+6} ${b-dir*9}Z" style="fill:${col}"/>`;
+    h+=`<text x="${x+5}" y="${(a+b)/2+4}" class="svgd" font-size="11.5" font-weight="700" style="fill:${col}">${signs?(v>0?'+':'−'):''}${Math.abs(v)}</text>`;
+    h+=`<text x="${x}" y="${292}" text-anchor="middle" class="svgt" font-size="10">${i+1}</text>`});
+  h+=`<text x="${ax(4)+44}" y="${y(lv[5])+15}" text-anchor="end" class="svgt" font-size="11">NaCl(s)</text>`;
+  const tx=394;h+=`<line x1="${tx}" x2="${tx}" y1="${y(0)}" y2="${y(lv[5])-7}" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="5 4"/><path d="M${tx-6} ${y(lv[5])-9}L${tx} ${y(lv[5])}L${tx+6} ${y(lv[5])-9}Z" fill="var(--accent)"/>`;
+  h+=`<text x="${tx-6}" y="${(y(0)+y(lv[5]))/2}" text-anchor="end" class="svgd" font-size="13" font-weight="700" style="fill:var(--accent)">ΔH = ${showTotal?'−411':'?'}</text></svg>`;
+  return h;
+}
+function actOrder(box,api,done){
+  api.reg('or',15);let seq=[],fails=0;const pool=shuffle(Object.keys(BH));
+  box.innerHTML=`<h3 class="stepTitle">เรียงขั้นการเกิด NaCl(s) จาก Na(s) และ Cl₂(g)</h3><p class="stepLead">แตะบัตรเพื่อเรียงลำดับขั้นย่อยทั้ง 5 ขั้น (แตะบัตรในลำดับเพื่อนำออก) อะตอมต้องเป็นแก๊สก่อนจึงจะกลายเป็นไอออน และไอออนแก๊สรวมกันเป็นผลึกในขั้นสุดท้าย <span class="en">Order the Born–Haber steps.</span></p>
+  <div class="stage"><div class="en" style="margin-bottom:6px">บัตรขั้นตอน · Step cards</div><div class="tiles" id="pool"></div><div class="en" style="margin:12px 0 6px">ลำดับของฉัน · My sequence</div><div class="seq" id="seq"></div>
+  <div class="row" style="justify-content:center;margin-top:10px"><button class="btn primary" id="ck" disabled>ตรวจลำดับ <span class="en" style="color:inherit">Check</span></button></div></div><div class="fb" hidden id="f"></div><div id="after"></div>`;
+  const f=$('#f',box);let solved=false;
+  function draw(){$('#pool',box).innerHTML=pool.map(k=>`<button class="tile ${seq.includes(k)?'used':''}" data-k="${k}" ${seq.includes(k)?'disabled':''}>${eq(BH[k].e)}<br><span class="en">${BH[k].th}</span></button>`).join('');
+    $('#seq',box).innerHTML=seq.length?seq.map((k,i)=>`<button class="tile" data-k="${k}"><b>${i+1}</b><span>${eq(BH[k].e)}</span></button>`).join(''):'<span class="en">ยังไม่มีบัตร แตะบัตรด้านบน</span>';
+    $$('#pool .tile',box).forEach(b=>b.onclick=()=>{if(!solved){seq.push(b.dataset.k);draw()}});
+    $$('#seq .tile',box).forEach(b=>b.onclick=()=>{if(!solved){seq=seq.filter(k=>k!==b.dataset.k);draw()}});
+    $('#ck',box).disabled=seq.length<5||solved}
+  draw();
+  $('#ck',box).onclick=()=>{const p=k=>seq.indexOf(k);
+    if(p('lat')!==4){fails++;fb(f,'no','ขั้นการรวมไอออนแก๊สเป็นผลึกต้องอยู่สุดท้าย เพราะต้องมี Na⁺(g) และ Cl⁻(g) ก่อน');return}
+    if(p('sub')>p('ie')){fails++;fb(f,'no','Na ต้องเป็นแก๊สก่อน (ระเหิด) จึงจะดึงอิเล็กตรอนออกได้');return}
+    if(p('dis')>p('ea')){fails++;fb(f,'no','ต้องแตกพันธะ Cl₂ ให้ได้อะตอม Cl(g) ก่อน จึงจะรับอิเล็กตรอนได้');return}
+    solved=true;BHorder=seq.slice();const pts=tryPts(15,fails);api.give('or',pts);draw();
+    fb(f,'ok',`${praise()} +${pts} คะแนน · ลำดับที่ถูกต้องมีได้มากกว่าหนึ่งแบบ ขอเพียงอะตอมกลายเป็นแก๊สก่อนเป็นไอออน และการเกิดผลึกอยู่สุดท้าย`);done()};
+}
+function actClassify(box,api,done){
+  api.reg('cl',15);let left=5;
+  box.innerHTML=`<h3 class="stepTitle">ขั้นใดดูดพลังงาน ขั้นใดคายพลังงาน</h3><p class="stepLead">เลือกให้ครบทุกขั้น เมื่อถูกต้อง ลูกศรจะปรากฏบนแผนภาพระดับพลังงาน (หน่วย kJ/mol) <span class="en">Classify each step as endothermic (+) or exothermic (−).</span></p>
+  <div class="stage" id="list"></div><div class="stage" style="margin-top:12px" id="lad"></div><div class="fb" hidden id="f"></div>`;
+  const done5=new Set();
+  function lad(){const ord=BHorder.filter(k=>done5.has(k));$('#lad',box).innerHTML=done5.size===5?ladderSVG(BHorder,false):`<p class="en" style="text-align:center;margin:8px">ทำถูก ${done5.size}/5 ขั้น แผนภาพจะสมบูรณ์เมื่อครบ</p>`}
+  $('#list',box).innerHTML=BHorder.map((k,i)=>`<div class="cls" data-k="${k}"><div><b>${i+1}.</b> <span class="eq">${eq(BH[k].e)}</span><br><span class="en">${BH[k].th} · |ΔH| = ${Math.abs(BH[k].v)} kJ</span></div><div class="tog"><button class="btn sm" data-s="1">ดูด (+)</button><button class="btn sm" data-s="-1">คาย (−)</button></div></div>`).join('');
+  const fails={};
+  $$('.cls',box).forEach(row=>{const k=row.dataset.k;fails[k]=0;$$('button',row).forEach(b=>b.onclick=()=>{if(done5.has(k))return;
+    if(Math.sign(BH[k].v)===+b.dataset.s){b.classList.add('on-ok');done5.add(k);const p=tryPts(3,fails[k]);api.give('cl',p);
+      fb($('#f',box),'ok',`${praise()} ${BH[k].v>0?'ต้องใช้พลังงานเพื่อแยกอนุภาคหรือดึงอิเล็กตรอนออก':'ระบบปล่อยพลังงานออกมาเมื่อเกิดแรงดึงดูด'}`);lad();if(done5.size===5)done()}
+    else{b.classList.add('on-no');fails[k]++;fb($('#f',box),'no','ลองคิดใหม่: การแยกอนุภาคออกจากกันต้องใช้พลังงาน ส่วนการที่อนุภาคดึงดูดกันจะคายพลังงาน')}})});
+  lad();
+}
+function actTotal(box,api,done){
+  api.reg('to',15);let fails=0,solved=false;
+  box.innerHTML=`<h3 class="stepTitle">คำนวณ ΔH ของการเกิด NaCl(s)</h3><p class="stepLead">รวมพลังงานทุกขั้นตามกฎของเฮสส์ ใส่เครื่องหมายด้วย <span class="en">Sum all steps (Hess’s law). Include the sign.</span></p>
+  <div class="stage" id="lad">${ladderSVG(BHorder,false)}</div>
+  <div class="stage" style="margin-top:12px"><p class="eq" style="margin-top:0">ΔH = (+107) + (+122) + (+496) + (−349) + (−787) = ?</p><div class="row"><div class="field" style="flex:0 1 200px"><label for="dh">ΔH (kJ/mol)</label><input type="text" id="dh" inputmode="text" placeholder="เช่น −250"></div><button class="btn primary" id="ck" style="align-self:flex-end">ตรวจคำตอบ</button></div></div><div class="fb" hidden id="f"></div>`;
+  $('#ck',box).onclick=()=>{if(solved)return;const v=parseFloat($('#dh',box).value.replace(/[−–]/g,'-').replace(/[^\d.\-+]/g,''));
+    if(Math.abs(v+411)<=1.5){solved=true;const p=tryPts(15,fails);api.give('to',p);$('#lad',box).innerHTML=ladderSVG(BHorder,true);
+      fb($('#f',box),'ok',`${praise()} +${p} คะแนน · ΔH = −411 kJ/mol เป็นค่าลบ แปลว่าการเกิด NaCl(s) จากธาตุคายพลังงาน สารประกอบจึงเสถียรกว่าธาตุตั้งต้น ขั้นที่ทำให้ผลรวมเป็นลบมากที่สุดคือการเกิดผลึก (−787)`);done()}
+    else if(Math.abs(v-411)<=1.5){fails++;fb($('#f',box),'no','ตัวเลขถูก แต่เครื่องหมายผิด ผลรวมพลังงานคายออกมากกว่าดูดเข้า')}
+    else{fails++;fb($('#f',box),'no','ยังไม่ถูก ลองรวมขั้นดูด 107 + 122 + 496 แล้วลบด้วยขั้นคาย 349 + 787')}};
+}
+function actLattice(box,api,done){
+  api.reg('la',15);box.innerHTML=`<h3 class="stepTitle">เปรียบเทียบพลังงานแลตทิซ</h3><p class="stepLead">แรงดึงดูดระหว่างไอออนขึ้นกับขนาดประจุและระยะห่างระหว่างไอออน <span class="en">Compare lattice energies.</span></p><div id="qs"></div>`;
+  const Q=[{q:'ผลึกใดคายพลังงานแลตทิซมากกว่ากัน ระหว่าง MgO กับ NaCl',o:['MgO เพราะ Mg²⁺ และ O²⁻ มีประจุมากกว่า และไอออนมีขนาดเล็ก','NaCl เพราะ Na และ Cl มีมวลมากกว่า','เท่ากัน เพราะเป็นอัตราส่วน 1 : 1 ทั้งคู่','NaCl เพราะละลายน้ำได้ดีกว่า'],x:'ไอออนประจุมากและอยู่ใกล้กันดึงดูดกันแรงกว่า พลังงานแลตทิซของ MgO จึงสูงกว่า NaCl หลายเท่า'},
+    {q:'ถ้าโลหะชนิดหนึ่งมีพลังงานไอออไนเซชันสูงมาก การเกิดสารประกอบไอออนิกจะเป็นอย่างไร',o:['เกิดได้ยากขึ้น เพราะพลังงานรวมเป็นลบน้อยลงหรืออาจเป็นบวก','เกิดได้ง่ายขึ้น เพราะดึงอิเล็กตรอนได้แรง','ไม่มีผล เพราะ IE ไม่อยู่ในวัฏจักร','พลังงานแลตทิซจะเป็นบวก'],x:'IE เป็นขั้นดูดพลังงาน ยิ่ง IE สูง ผลรวม ΔH ยิ่งเป็นลบน้อยลง'}];
+  let c=0;Q.forEach(it=>mcq($('#qs',box),it,{key:'la',max:7.5,api,onDone:()=>{if(++c===Q.length)done()}}));
+}
+
+/* ---------- 3.2.4 properties ---------- */
+function actShear(box,api,done){
+  api.reg('sh',15);
+  box.innerHTML=`<h3 class="stepTitle">ทุบผลึกด้วยค้อน</h3><p class="stepLead">ลากแถบเลื่อนเพื่อให้แรงทุบดันชั้นบนของผลึกเลื่อนไปทีละน้อย สังเกตว่าไอออนชนิดใดมาอยู่ตรงกัน <span class="en">Slide the top layer and watch the charges line up.</span></p>
+  <div class="stage"><div id="sv"></div><div class="field" style="max-width:420px;margin:6px auto 0"><label for="sl">แรงทุบ · Hammer force</label><input type="range" id="sl" min="0" max="100" value="0"></div></div><div id="qs" style="margin-top:12px"></div>`;
+  let asked=false;
+  function draw(s){const cell=48,x0=54,sh=s*cell,rep=s>.85;let h=`<svg viewBox="0 0 360 190" role="img" aria-label="การเลื่อนชั้นของผลึกไอออนิก">`;
+    for(let i=0;i<6;i++){const c=i%2?-1:1,x=x0+i*cell;h+=`<circle cx="${x}" cy="130" r="${c>0?14:19}" style="fill:${c>0?'var(--cat)':'var(--an)'}"/><text x="${x}" y="136" text-anchor="middle" fill="#fff" font-size="16" font-weight="700" class="svgd" style="fill:#fff">${c>0?'+':'−'}</text>`}
+    h+=`<g transform="translate(${sh} ${rep?-10:0}) rotate(${rep?-4:0} 180 70)">`;
+    for(let i=0;i<6;i++){const c=i%2?1:-1,x=x0+i*cell;h+=`<circle cx="${x}" cy="76" r="${c>0?14:19}" style="fill:${c>0?'var(--cat)':'var(--an)'}"/><text x="${x}" y="82" text-anchor="middle" font-size="16" font-weight="700" class="svgd" style="fill:#fff">${c>0?'+':'−'}</text>`}
+    h+='</g>';
+    if(rep){for(let i=0;i<5;i++){const x=x0+(i+1)*cell;h+=`<path d="M${x-8} 100 L${x} 92 L${x+8} 100 M${x-8} 106 L${x} 114 L${x+8} 106" fill="none" stroke="var(--bad)" stroke-width="2.5"/>`}
+      h+=`<path d="M8 103 L60 99 L110 107 L170 98 L230 108 L290 99 L352 104" fill="none" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 4"/><text x="180" y="22" text-anchor="middle" class="svgt" font-size="14" font-weight="700" style="fill:var(--bad)">ประจุเหมือนกันมาตรงกัน → ผลักกัน → ผลึกแตก</text>`}
+    else h+=`<path d="M${180+sh} 18 v20 M${170+sh} 30 l10 10 l10 -10" fill="none" stroke="var(--muted)" stroke-width="2"/><text x="${180+sh}" y="14" text-anchor="middle" class="svgt" font-size="12">แรงทุบ</text>`;
+    $('#sv',box).innerHTML=h+'</svg>';
+    if(rep&&!asked){asked=true;mcq($('#qs',box),{q:'เหตุใดสารประกอบไอออนิกจึงเปราะ แตกเมื่อถูกทุบ',o:['ชั้นของไอออนเลื่อน ทำให้ไอออนประจุเหมือนกันมาอยู่ตรงกันและผลักกัน','อิเล็กตรอนอิสระหลุดออกจากผลึก','พันธะโคเวเลนต์ระหว่างโมเลกุลขาด','ไอออนกลายเป็นอะตอมที่เป็นกลาง'],x:'ต่างจากโลหะที่มีทะเลอิเล็กตรอนช่วยยึด ชั้นโลหะจึงเลื่อนได้โดยไม่แตก'},{key:'sh',max:15,api,onDone:done})}}
+  $('#sl',box).oninput=e=>draw(e.target.value/100);draw(0);
+}
+function actConduct(box,api,done){
+  const S=[{n:'NaCl(s)',th:'เกลือแกงของแข็ง',st:'s',c:0,x:'ไอออนถูกตรึงอยู่ในโครงผลึก เคลื่อนที่ไม่ได้ จึงไม่นำไฟฟ้า'},{n:'NaCl(l)',th:'เกลือแกงหลอมเหลว (801 °C)',st:'l',c:1,x:'เมื่อหลอมเหลว โครงผลึกถูกทำลาย Na⁺ และ Cl⁻ เคลื่อนที่ได้อิสระจึงนำไฟฟ้า'},{n:'NaCl(aq)',th:'สารละลายเกลือแกง',st:'aq',c:1,x:'NaCl แตกตัวเป็น Na⁺(aq) และ Cl⁻(aq) ที่เคลื่อนที่ได้ในน้ำ'},{n:'C12H22O11(aq)',th:'สารละลายน้ำตาลทราย',st:'m',c:0,x:'น้ำตาลเป็นสารโคเวเลนต์ ละลายเป็นโมเลกุล ไม่แตกตัวเป็นไอออน'},{n:'KNO3(aq)',th:'สารละลายโพแทสเซียมไนเตรต',st:'aq',c:1,x:'แตกตัวเป็น K⁺(aq) และ NO₃⁻(aq) จึงนำไฟฟ้า'}];
+  api.reg('co',S.length*5);let i=0;
+  function circuit(s,on){const fill=s.st==='s'?'none':s.st==='l'?'color-mix(in srgb,var(--cat) 30%,var(--surface))':'color-mix(in srgb,var(--exo) 18%,var(--surface))';
+    let h=`<svg viewBox="0 0 320 210" role="img" aria-label="วงจรทดสอบการนำไฟฟ้า"><rect x="130" y="14" width="56" height="22" rx="3" fill="var(--surface2)" stroke="var(--ink)"/><text x="158" y="30" text-anchor="middle" class="svgt" font-size="12">− ถ่าน +</text>
+    <path d="M130 25 H110 V80 M186 25 H250 V40 M250 74 V60 M250 74 V90 H210 V80" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="250" cy="57" r="15" class="bulb ${on?'on':''}" fill="var(--surface2)" stroke="var(--ink)" stroke-width="2"/>
+    <path d="M70 92 V190 H250 V92" fill="none" stroke="var(--ink)" stroke-width="2.5"/><rect x="72" y="${s.st==='s'?150:110}" width="176" height="${s.st==='s'?38:78}" style="fill:${fill}"/>`;
+    if(s.st==='s'){for(let k=0;k<9;k++)for(let r=0;r<2;r++){const c=(k+r)%2;h+=`<circle cx="${84+k*19}" cy="${160+r*17}" r="${c?7:5}" style="fill:${c?'var(--an)':'var(--cat)'}"/>`}}
+    else if(s.st==='m'){for(let k=0;k<7;k++)h+=`<ellipse cx="${88+k*23}" cy="${135+(k%2)*28}" rx="9" ry="6" fill="var(--muted)" opacity=".7"/>`}
+    else{for(let k=0;k<8;k++){const c=k%2;h+=`<circle class="${c?'mv1':'mv2'}" cx="${88+k*21}" cy="${128+(k%3)*20}" r="${c?7:5}" style="fill:${c?'var(--an)':'var(--cat)'}"/>`}}
+    h+=`<rect x="106" y="80" width="8" height="${s.st==='s'?70:96}" fill="var(--muted)"/><rect x="206" y="80" width="8" height="${s.st==='s'?70:96}" fill="var(--muted)"/></svg>`;return h}
+  function round(){const s=S[i];
+    box.innerHTML=`<div class="roundTag">ตัวอย่าง ${i+1}/${S.length} · SAMPLE ${i+1}</div><h3 class="stepTitle">${eq(s.n)} <span class="en">${s.th}</span></h3><p class="stepLead">ทำนายก่อนทดสอบ: หลอดไฟจะสว่างหรือไม่ <span class="en">Predict, then test.</span></p>
+    <div class="stage"><div id="cc">${circuit(s,false)}</div><div class="row" style="justify-content:center;margin-top:8px"><button class="btn" data-p="1">💡 นำไฟฟ้า</button><button class="btn" data-p="0">ไม่นำไฟฟ้า</button></div></div><div class="fb" hidden id="f"></div><div id="after"></div>`;
+    let ans=false;$$('[data-p]',box).forEach(b=>b.onclick=()=>{if(ans)return;ans=true;const ok=+b.dataset.p===s.c;if(ok)api.give('co',5);$$('[data-p]',box).forEach(x=>x.disabled=true);
+      $('#cc',box).innerHTML=circuit(s,!!s.c);fb($('#f',box),ok?'ok':'no',(ok?praise()+' +5 คะแนน · ':'ผลจริงคือ'+(s.c?'นำไฟฟ้า':'ไม่นำไฟฟ้า')+' · ')+s.x);
+      $('#after',box).innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn primary" id="nx">${i<S.length-1?'ตัวอย่างถัดไป →':'ทดสอบครบแล้ว ✓'}</button></div>`;
+      $('#nx',box).onclick=()=>{if(i<S.length-1){i++;round()}else{$('#nx',box).disabled=true;done()}}})}
+  round();
+}
+function actMelt(box,api,done){
+  api.reg('me',20);const C=[{f:'MgO',t:2852},{f:'NaCl',t:801},{f:'KI',t:681}];let seq=[],fails=0,solved=false;const pool=shuffle(C);
+  box.innerHTML=`<h3 class="stepTitle">เรียงจุดหลอมเหลวจากสูงไปต่ำ</h3><p class="stepLead">แตะสารตามลำดับจากจุดหลอมเหลวสูงที่สุดไปต่ำที่สุด ใช้ประจุและขนาดไอออนช่วยคิด <span class="en">Order by melting point, highest first.</span></p>
+  <div class="stage"><div class="tiles" id="pool"></div><div class="seq" id="seq" style="margin-top:10px"></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm quiet" id="clr">ล้าง</button><button class="btn primary" id="ck" disabled>ตรวจลำดับ</button></div></div><div class="fb" hidden id="f"></div><div id="qs" style="margin-top:12px"></div>`;
+  function draw(){$('#pool',box).innerHTML=pool.map(c=>`<button class="tile ${seq.includes(c.f)?'used':''}" data-f="${c.f}" ${seq.includes(c.f)?'disabled':''}><span class="big">${fm(c.f)}</span></button>`).join('');
+    $('#seq',box).innerHTML=seq.length?seq.map((f,k)=>`<div class="tile"><b>${k+1}</b> ${fm(f)}${solved?` · ${C.find(c=>c.f===f).t} °C`:''}</div>`).join(''):'<span class="en">สูงสุด → ต่ำสุด</span>';
+    $$('#pool .tile',box).forEach(b=>b.onclick=()=>{if(!solved){seq.push(b.dataset.f);draw()}});$('#ck',box).disabled=seq.length<3||solved}
+  draw();$('#clr',box).onclick=()=>{if(!solved){seq=[];draw()}};
+  $('#ck',box).onclick=()=>{if(seq.join()==='MgO,NaCl,KI'){solved=true;const p=tryPts(10,fails);api.give('me',p);draw();fb($('#f',box),'ok',`${praise()} +${p} คะแนน`);
+      mcq($('#qs',box),{q:'เหตุใด MgO จึงมีจุดหลอมเหลวสูงกว่า NaCl มาก',o:['Mg²⁺ และ O²⁻ มีประจุมากกว่าและขนาดเล็กกว่า แรงดึงดูดระหว่างไอออนจึงแรงกว่า','MgO มีมวลโมเลกุลมากกว่า','MgO มีพันธะไฮโดรเจน','NaCl ละลายน้ำได้ จึงหลอมเหลวง่าย'],x:'การหลอมเหลวต้องเอาชนะแรงดึงดูดทางไฟฟ้าสถิตในผลึก ซึ่งแรงขึ้นตามประจุและลดลงตามระยะห่าง'},{key:'me',max:10,api,onDone:done})}
+    else{fails++;seq=[];draw();fb($('#f',box),'no','ยังไม่ถูก ไอออนที่มีประจุ 2 หน่วยดึงดูดกันแรงกว่า และไอออนที่ใหญ่ (I⁻, K⁺) อยู่ห่างกันมากกว่า ลองใหม่')}};
+}
+
+/* ---------- 3.2.5 reactions ---------- */
+function actDissolve(box,api,done){
+  const S=[{f:'NaOH',th:'โซเดียมไฮดรอกไซด์',T:41,ex:1},{f:'NH4NO3',th:'แอมโมเนียมไนเตรต',T:13,ex:0},{f:'CaCl2',th:'แคลเซียมคลอไรด์',T:36,ex:1},{f:'NH4Cl',th:'แอมโมเนียมคลอไรด์',T:18,ex:0}];
+  api.reg('ds',20);let i=0;
+  const therm=(t,f)=>{const y=v=>178-v/50*140;let h=`<svg viewBox="0 0 300 220" role="img" aria-label="เทอร์โมมิเตอร์"><rect x="44" y="26" width="18" height="160" rx="9" fill="var(--surface2)" stroke="var(--ink)"/><circle cx="53" cy="192" r="15" fill="var(--endo)" style="fill:var(--endo)"/><rect x="48" y="${y(t)}" width="10" height="${192-y(t)}" style="fill:var(--endo)"/>`;
+    for(let v=0;v<=50;v+=10)h+=`<line x1="64" x2="72" y1="${y(v)}" y2="${y(v)}" stroke="var(--ink)"/><text x="76" y="${y(v)+4}" class="svgt" font-size="11">${v}</text>`;
+    h+=`<line x1="34" x2="44" y1="${y(25)}" y2="${y(25)}" stroke="var(--accent)" stroke-width="2"/><text x="30" y="${y(25)+4}" text-anchor="end" class="svgt" font-size="10" style="fill:var(--accent)">เริ่ม</text>`;
+    h+=`<path d="M140 90 L150 200 H250 L260 90" fill="none" stroke="var(--ink)" stroke-width="2.5"/><rect x="146" y="120" width="108" height="78" style="fill:color-mix(in srgb,var(--exo) 20%,var(--surface))"/><text x="200" y="165" text-anchor="middle" class="svgd" font-size="15">${f?fm(f)+'(aq)':'H<tspan baseline-shift="sub" font-size="10">2</tspan>O'}</text>`;
+    return h+`<text x="200" y="60" text-anchor="middle" class="svgd" font-size="26" font-weight="700">${t.toFixed(1)} °C</text></svg>`};
+  function round(){const s=S[i];
+    box.innerHTML=`<div class="roundTag">สารที่ ${i+1}/${S.length}</div><h3 class="stepTitle">ละลาย ${fm(s.f)} <span class="en">${s.th}</span> 5 g ในน้ำ 50 mL ที่ 25 °C</h3><p class="stepLead">กดละลาย สังเกตอุณหภูมิ แล้วตัดสินว่าการละลายดูดหรือคายพลังงาน (ค่าในเกมเป็นค่าจำลอง) <span class="en">Dissolve, observe, decide.</span></p>
+    <div class="stage"><div id="th">${therm(25,'')}</div><div class="row" style="justify-content:center"><button class="btn primary" id="go">เติม ${fm(s.f)} ลงในน้ำ</button></div></div><div id="cls" hidden class="row" style="justify-content:center;margin-top:10px"><button class="btn" data-e="0">ดูดพลังงาน (น้ำเย็นลง)</button><button class="btn" data-e="1">คายพลังงาน (น้ำร้อนขึ้น)</button></div><div class="fb" hidden id="f"></div><div id="after"></div>`;
+    $('#go',box).onclick=()=>{$('#go',box).disabled=true;const t0=performance.now(),T=RM?1:1400;(function st(t){const k=Math.min(1,(t-t0)/T);$('#th',box).innerHTML=therm(25+(s.T-25)*(1-Math.pow(1-k,3)),s.f);if(k<1)requestAnimationFrame(st);else $('#cls',box).hidden=false})(t0)};
+    let fails=0,ok=false;$$('[data-e]',box).forEach(b=>b.onclick=()=>{if(ok)return;
+      if(+b.dataset.e===s.ex){ok=true;const p=tryPts(5,fails);api.give('ds',p);b.classList.add('on-ok');
+        fb($('#f',box),'ok',`${praise()} +${p} คะแนน · ${s.ex?'พลังงานที่คายออกเมื่อน้ำล้อมรอบไอออน (ไฮเดรชัน) มากกว่าพลังงานที่ใช้แยกไอออนออกจากผลึก':'พลังงานที่ใช้แยกไอออนออกจากผลึกมากกว่าพลังงานที่คายออกเมื่อน้ำล้อมรอบไอออน จึงดึงความร้อนจากน้ำ'}`);
+        $('#after',box).innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn primary" id="nx">${i<S.length-1?'สารถัดไป →':'ครบแล้ว ✓'}</button></div>`;$('#nx',box).onclick=()=>{if(i<S.length-1){i++;round()}else{$('#nx',box).disabled=true;done()}}}
+      else{fails++;b.disabled=true;fb($('#f',box),'no','ดูอุณหภูมิอีกครั้ง ถ้าน้ำเย็นลง แปลว่าระบบดึงความร้อนจากน้ำ')}})}
+  round();
+}
+const MIX=[
+  {a:'AgNO3',b:'NaCl',mol:'AgNO3(aq) + NaCl(aq) → AgCl(s) + NaNO3(aq)',o:['เกิดตะกอน AgCl สีขาว','เกิดตะกอน NaNO₃','ไม่เกิดตะกอน'],ppt:'#eef0f2',L:[['Ag^+(aq)','Ag'],['NO3^-(aq)','NO3'],['Na^+(aq)','Na'],['Cl^-(aq)','Cl']],Rr:[['AgCl(s)','AgCl'],['Na^+(aq)','Na'],['NO3^-(aq)','NO3']],sp:['Na','NO3'],net:'Ag^+(aq) + Cl^-(aq) → AgCl(s)'},
+  {a:'BaCl2',b:'Na2SO4',mol:'BaCl2(aq) + Na2SO4(aq) → BaSO4(s) + 2NaCl(aq)',o:['เกิดตะกอน BaSO₄ สีขาว','เกิดตะกอน NaCl','ไม่เกิดตะกอน'],ppt:'#f5f6f7',L:[['Ba^2+(aq)','Ba'],['2Cl^-(aq)','Cl'],['2Na^+(aq)','Na'],['SO4^2-(aq)','SO4']],Rr:[['BaSO4(s)','BaSO4'],['2Na^+(aq)','Na'],['2Cl^-(aq)','Cl']],sp:['Na','Cl'],net:'Ba^2+(aq) + SO4^2-(aq) → BaSO4(s)'},
+  {a:'Pb(NO3)2',b:'KI',mol:'Pb(NO3)2(aq) + 2KI(aq) → PbI2(s) + 2KNO3(aq)',o:['เกิดตะกอน PbI₂ สีเหลือง','เกิดตะกอน KNO₃','ไม่เกิดตะกอน'],ppt:'#f2c230',L:[['Pb^2+(aq)','Pb'],['2NO3^-(aq)','NO3'],['2K^+(aq)','K'],['2I^-(aq)','I']],Rr:[['PbI2(s)','PbI2'],['2K^+(aq)','K'],['2NO3^-(aq)','NO3']],sp:['K','NO3'],net:'Pb^2+(aq) + 2I^-(aq) → PbI2(s)'},
+  {a:'NaCl',b:'KNO3',mol:'NaCl(aq) + KNO3(aq) → ไม่เกิดปฏิกิริยา',o:['ไม่เกิดตะกอน','เกิดตะกอน KCl','เกิดตะกอน NaNO₃'],ppt:null}
+];
+const RULES=`<details class="rules"><summary>กฎการละลายน้ำอย่างย่อ · Solubility hints</summary><ul style="margin:6px 0 0;padding-left:20px">
+<li>สารประกอบของ Na⁺, K⁺, NH₄⁺ และ NO₃⁻ ละลายน้ำได้เกือบทั้งหมด</li><li>Cl⁻, I⁻ ละลายได้ ยกเว้นเมื่ออยู่กับ Ag⁺ และ Pb²⁺</li><li>SO₄²⁻ ละลายได้ ยกเว้นเมื่ออยู่กับ Ba²⁺, Pb²⁺ (Ca²⁺ ละลายได้น้อย)</li><li>CO₃²⁻, PO₄³⁻, OH⁻ ส่วนใหญ่ไม่ละลาย ยกเว้นเมื่ออยู่กับ Na⁺, K⁺, NH₄⁺</li></ul></details>`;
+function beakers(m,mixed){const B=(x,lab,fill,ppt)=>`<path d="M${x} 60 L${x+6} 150 H${x+74} L${x+80} 60" fill="none" stroke="var(--ink)" stroke-width="2.5"/><rect x="${x+4}" y="90" width="72" height="58" style="fill:${fill}"/>${ppt?Array.from({length:22},(_,k)=>`<circle cx="${x+12+(k*13)%60}" cy="${141-(k%3)*4}" r="3.4" fill="${ppt}" stroke="var(--ink)" stroke-width=".6"/>`).join(''):''}<text x="${x+40}" y="176" text-anchor="middle" class="svgd" font-size="13">${lab}</text>`;
+  const w='color-mix(in srgb,var(--exo) 16%,var(--surface))';
+  return `<svg viewBox="0 0 330 190" role="img" aria-label="การผสมสารละลาย">${B(10,fm(m.a)+'(aq)',w)}<text x="104" y="110" class="svgd" font-size="22">+</text>${B(120,fm(m.b)+'(aq)',w)}${mixed?`<text x="214" y="110" class="svgd" font-size="22">→</text>${B(236,mixed==='none'?'ใส ไม่มีตะกอน':'มีตะกอน',w,mixed==='none'?null:m.ppt)}`:''}</svg>`.replace('viewBox="0 0 330 190"','viewBox="0 0 330 190"')}
+function actPrecip(box,api,done){
+  api.reg('pr',40);let i=0;
+  function round(){const m=MIX[i];
+    box.innerHTML=`<div class="roundTag">การทดลองที่ ${i+1}/${MIX.length} · MIX ${i+1}</div><h3 class="stepTitle">ผสม ${fm(m.a)}(aq) กับ ${fm(m.b)}(aq)</h3>${RULES}
+    <div class="stage"><div id="bk">${beakers(m,null)}</div></div><div id="qs" style="margin-top:12px"></div><div id="net"></div><div id="after"></div>`;
+    mcq($('#qs',box),{q:'ทำนายผลการผสม <span class="en">Predict the result</span>',o:m.o,x:''},{key:'pr',max:5,api,onDone:()=>{
+      $('#bk',box).innerHTML=beakers(m,m.ppt?'ppt':'none');
+      const nx=()=>{$('#after',box).innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn primary" id="nx">${i<MIX.length-1?'การทดลองถัดไป →':'ครบทุกการทดลอง ✓'}</button></div>`;$('#nx',box).onclick=()=>{if(i<MIX.length-1){i++;round()}else{$('#nx',box).disabled=true;done()}}};
+      if(!m.ppt){api.give('pr',5);$('#net',box).innerHTML=`<div class="fb info">${eq(m.mol)}<br>ไอออน Na⁺, Cl⁻, K⁺, NO₃⁻ ยังคงอยู่ในสารละลายทั้งหมด ไม่มีคู่ไอออนที่รวมกันเป็นสารไม่ละลายน้ำ จึงไม่มีสมการไอออนิกสุทธิ (+5 คะแนน)</div>`;nx();return}
+      netIonic($('#net',box),m,nx)}});
+  }
+  function netIonic(host,m,next){let X=new Set(),fails=0,ok=false;
+    host.innerHTML=`<div class="q"><p class="qtext">สมการโมเลกุล: <span class="eq">${eq(m.mol)}</span></p><p class="qtext">แตะไอออนที่ไม่ได้ทำปฏิกิริยา (spectator ions) เพื่อขีดฆ่าออก แล้วตรวจสมการไอออนิกสุทธิ <span class="en">Strike out the spectator ions.</span></p><div id="tk"></div><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn primary" id="ck">ตรวจสมการ</button></div><div class="fb" hidden id="f2"></div></div>`;
+    const draw=()=>{const tok=(t,side)=>`<button class="tok ${X.has(t[1])?'x':''} ${/\(s\)/.test(t[0])?'fixed':''}" data-k="${t[1]}">${eq(t[0])}</button>`;
+      $('#tk',host).innerHTML=m.L.map(t=>tok(t)).join(' + ')+' <b>→</b> '+m.Rr.map(t=>tok(t)).join(' + ');
+      $$('.tok',host).forEach(b=>b.onclick=()=>{if(ok||b.classList.contains('fixed'))return;const k=b.dataset.k;X.has(k)?X.delete(k):X.add(k);draw()})};draw();
+    $('#ck',host).onclick=()=>{if(ok)return;const good=m.sp.length===X.size&&m.sp.every(k=>X.has(k));
+      if(good){ok=true;const p=tryPts(5,fails);api.give('pr',p);fb($('#f2',host),'ok',`${praise()} +${p} คะแนน<br>สมการไอออนิกสุทธิ: <span class="eq">${eq(m.net)}</span>`);next()}
+      else{fails++;fb($('#f2',host),'no','ไอออนที่ไม่ได้ทำปฏิกิริยาคือไอออนที่ปรากฏเหมือนเดิมทั้งสองข้างของสมการ ส่วนไอออนที่รวมกันเป็นตะกอนต้องเหลืออยู่')}}}
+  round();
+}
+
+/* ---------- generic MCQ ---------- */
+function mcq(host,it,{retry=true,max=10,key,api,onDone}){
+  const w=document.createElement('div');w.className='q';const ord=shuffle(it.o.map((t,i)=>({t,i})));
+  w.innerHTML=`<p class="qtext">${it.q}</p><div class="opts">${ord.map(o=>`<button class="opt" data-i="${o.i}">${o.t}</button>`).join('')}</div><div class="fb" hidden></div>`;host.appendChild(w);
+  let f=0,fin=false;const F=$('.fb',w);
+  $$('.opt',w).forEach(b=>b.onclick=()=>{if(fin)return;const i=+b.dataset.i;
+    if(i===0){fin=true;b.classList.add('ok');const p=retry?tryPts(max,f):max;api.give(key,p);$$('.opt',w).forEach(x=>x.disabled=true);fb(F,'ok',`${praise()} +${Math.round(p*10)/10} คะแนน${it.x?'<br>'+it.x:''}`);onDone&&onDone(true)}
+    else{b.classList.add('no');b.disabled=true;f++;
+      if(!retry){fin=true;$$('.opt',w).forEach(x=>{x.disabled=true;if(+x.dataset.i===0)x.classList.add('ok')});api.give(key,0);fb(F,'no',`คำตอบที่ถูกคือ “${it.o[0]}”${it.x?'<br>'+it.x:''}`);onDone&&onDone(false)}
+      else fb(F,'no','ยังไม่ใช่ ลองอีกครั้ง <span class="en">Try again.</span>')}});
+}
+
+/* ---------- content bank ---------- */
+const LC={
+ give:['โลหะให้ อโลหะรับ','<p>โลหะมีพลังงานไอออไนเซชันต่ำ เสียเวเลนซ์อิเล็กตรอนได้ง่ายกลายเป็น<span class="c">ไอออนบวก</span> อโลหะมีค่าอิเล็กโทรเนกาติวิตีสูง รับอิเล็กตรอนกลายเป็น<span class="a">ไอออนลบ</span></p><span class="k">Na (2,8,1) → Na⁺ (2,8) + e⁻</span><br><span class="k">Cl (2,8,7) + e⁻ → Cl⁻ (2,8,8)</span>'],
+ noble:['ไปให้ถึงแก๊สมีตระกูล','<p>ไอออนที่เกิดขึ้นมักมีการจัดเรียงอิเล็กตรอนเหมือนแก๊สมีตระกูล (ครบออกเตต) เช่น Na⁺ เหมือน Ne และ Cl⁻ เหมือน Ar</p>'],
+ attract:['พันธะไอออนิกคือแรงดึงดูด','<p>พันธะไอออนิก คือแรงยึดเหนี่ยวระหว่างไอออนบวกกับไอออนลบด้วย<b>แรงดึงดูดทางไฟฟ้าสถิต</b> มักเกิดระหว่างโลหะกับอโลหะที่มีผลต่างอิเล็กโทรเนกาติวิตีมาก</p>'],
+ balance:['อิเล็กตรอนที่ให้ = ที่รับ','<p>Mg ให้ 2 อิเล็กตรอน แต่ Cl รับได้ 1 จึงต้องใช้ Cl 2 อะตอม ได้สูตร MgCl₂ ทำนองเดียวกัน Al ให้ 3 แต่ O รับ 2 จึงต้องใช้ Al 2 อะตอมกับ O 3 อะตอม (Al₂O₃)</p><span class="en">Electrons lost must equal electrons gained.</span>'],
+ nomol:['ไม่มีโมเลกุล มีแต่โครงผลึก','<p>ไอออนบวกและไอออนลบจัดเรียงสลับกันต่อเนื่องเป็นโครงผลึกสามมิติ ไม่มีหน่วยที่เป็นโมเลกุลแยกออกมา</p>'],
+ coord:['ล้อมรอบด้วยประจุตรงข้าม','<p>ในผลึก NaCl ไอออน Na⁺ แต่ละไอออนถูกล้อมรอบด้วย Cl⁻ 6 ไอออน และ Cl⁻ แต่ละไอออนถูกล้อมรอบด้วย Na⁺ 6 ไอออน แรงดึงดูดจึงเกิดทุกทิศทาง</p>'],
+ empirical:['สูตรบอกอัตราส่วนอย่างต่ำ','<p>สูตรของสารประกอบไอออนิกเป็น<b>สูตรเอมพิริคัล</b> บอกอัตราส่วนอย่างต่ำของไอออน</p><span class="k">NaCl 1:1 · CaF₂ 1:2 · Al₂O₃ 2:3</span>'],
+ halite:['เกลือหินใต้ที่ราบสูงโคราช','<p>ใต้ภาคอีสานมีชั้นเกลือหิน (halite, NaCl) ของหมวดหินมหาสารคาม ผลึกเกลือหินมักแตกเป็นรูปทรงลูกบาศก์ ซึ่งสะท้อนการจัดเรียงไอออนแบบลูกบาศก์ภายในผลึก</p>'],
+ fWrite:['เขียนสูตรให้ประจุรวมเป็นศูนย์','<p>เขียนไอออนบวกไว้หน้า ไอออนลบไว้หลัง ปรับจำนวนไอออนให้ผลรวมประจุเป็นศูนย์ แล้วทำให้เป็นอัตราส่วนอย่างต่ำ</p><span class="k">Al³⁺ + O²⁻ → Al₂O₃</span>'],
+ fPoly:['ไอออนกลุ่มอะตอม','<table class="ions"><tr><td>NH₄⁺</td><td>แอมโมเนียม</td></tr><tr><td>OH⁻</td><td>ไฮดรอกไซด์</td></tr><tr><td>NO₃⁻</td><td>ไนเตรต</td></tr><tr><td>HCO₃⁻</td><td>ไฮโดรเจนคาร์บอเนต</td></tr><tr><td>SO₄²⁻</td><td>ซัลเฟต</td></tr><tr><td>CO₃²⁻</td><td>คาร์บอเนต</td></tr><tr><td>PO₄³⁻</td><td>ฟอสเฟต</td></tr></table><p>ถ้ามีมากกว่า 1 กลุ่มให้ใส่วงเล็บ เช่น Ca₃(PO₄)₂</p>'],
+ fName:['เรียกชื่อ','<p>อ่านชื่อไอออนบวก (ชื่อโลหะ) ตามด้วยชื่อไอออนลบ อโลหะเปลี่ยนท้ายเป็น <b>-ไอด์</b> และ<b>ไม่ใช้</b>คำบอกจำนวน (ได ไตร)</p><span class="k">MgCl₂ แมกนีเซียมคลอไรด์</span>'],
+ fRoman:['โลหะที่มีหลายประจุ','<p>บอกประจุของไอออนบวกด้วยเลขโรมันในวงเล็บ หาประจุได้จากประจุรวมของไอออนลบ</p><span class="k">FeCl₂ ไอร์ออน(II) คลอไรด์</span><br><span class="k">FeCl₃ ไอร์ออน(III) คลอไรด์</span>'],
+ bhSteps:['ไม่ได้เกิดในขั้นเดียว','<p>การเกิด NaCl(s) จาก Na(s) และ Cl₂(g) แยกพิจารณาเป็นขั้นย่อยได้ เรียกว่าวัฏจักรบอร์น–ฮาเบอร์ อะตอมต้องเป็นแก๊สก่อนจึงเป็นไอออน และไอออนแก๊สรวมกันเป็นผลึกในขั้นสุดท้าย</p>'],
+ bhEndo:['ขั้นที่ดูดพลังงาน (+)','<p>ระเหิดโลหะให้เป็นแก๊ส · แตกพันธะอโลหะ · ดึงอิเล็กตรอนออก (IE)</p><span class="k" style="color:var(--endo)">+107 · +122 · +496 kJ/mol</span>'],
+ bhExo:['ขั้นที่คายพลังงาน (−)','<p>อะตอมอโลหะรับอิเล็กตรอน (EA) · ไอออนแก๊สรวมกันเป็นผลึก (พลังงานแลตทิซ)</p><span class="k" style="color:var(--exo)">−349 · −787 kJ/mol</span>'],
+ bhSum:['ผลรวม = ΔH ของการเกิด','<p>ตามกฎของเฮสส์ พลังงานรวมเท่ากับผลรวมของทุกขั้น ถ้าเป็นลบ สารประกอบเสถียรกว่าธาตุตั้งต้น</p>'],
+ latFactor:['อะไรทำให้พลังงานแลตทิซมาก','<p>ไอออนประจุมาก ขนาดเล็ก อยู่ใกล้กัน ดึงดูดกันแรง พลังงานแลตทิซจึงมาก เช่น MgO มากกว่า NaCl หลายเท่า พลังงานแลตทิซที่คายออกมามากเป็นเหตุผลหลักที่สารประกอบไอออนิกเกิดได้ แม้ขั้น IE จะดูดพลังงาน</p>'],
+ mp:['จุดหลอมเหลวสูง','<p>ต้องใช้พลังงานมากเพื่อเอาชนะแรงดึงดูดทางไฟฟ้าสถิตในผลึก จึงเป็นของแข็งที่อุณหภูมิห้อง NaCl หลอมเหลวที่ 801 °C</p>'],
+ brittle:['เปราะ','<p>เมื่อถูกทุบ ชั้นของไอออนเลื่อนไป ทำให้ไอออนประจุเหมือนกันมาอยู่ตรงกันและผลักกัน ผลึกจึงแตก</p>'],
+ conduct:['นำไฟฟ้าเมื่อไอออนเคลื่อนที่ได้','<p>ของแข็งไม่นำไฟฟ้า แต่เมื่อหลอมเหลวหรือละลายน้ำ ไอออนเคลื่อนที่ได้ จึงนำไฟฟ้า</p>'],
+ solu:['การละลายและสมบัติของสารละลาย','<p>สารประกอบไอออนิกละลายน้ำได้แตกต่างกัน เช่น NaCl ละลายได้ดี แต่ CaCO₃ ละลายได้น้อยมาก สารละลายอาจเป็นกลาง กรด หรือเบส เช่น NaCl เป็นกลาง Na₂CO₃ เป็นเบส NH₄Cl เป็นกรด</p>'],
+ dissolve:['การละลายคือการแยกไอออน','<p>เมื่อละลายน้ำ ไอออนแยกออกจากโครงผลึกและถูกโมเลกุลน้ำล้อมรอบ</p><span class="k">NaCl(s) → Na⁺(aq) + Cl⁻(aq)</span>'],
+ dissE:['ดูดหรือคายพลังงาน','<p>ใช้พลังงานเพื่อแยกไอออนออกจากผลึก (พลังงานแลตทิซ) และคายพลังงานเมื่อน้ำล้อมรอบไอออน (พลังงานไฮเดรชัน) ถ้าดูดมากกว่าคาย การละลายเป็นแบบดูดพลังงาน น้ำจะเย็นลง</p>'],
+ ppt:['ปฏิกิริยาการตกตะกอน','<p>เมื่อผสมสารละลายสองชนิด ไอออนบางคู่รวมกันเป็นสารที่ไม่ละลายน้ำ เกิดเป็นตะกอน</p><span class="k">AgNO₃(aq) + NaCl(aq) → AgCl(s) + NaNO₃(aq)</span>'],
+ net:['สมการไอออนิกสุทธิ','<p>ตัดไอออนที่ไม่ได้ทำปฏิกิริยา (spectator ions) ซึ่งปรากฏเหมือนกันทั้งสองข้างออก</p><span class="k">Ag⁺(aq) + Cl⁻(aq) → AgCl(s)</span>']
+};
+const QB={
+ s1:[{q:'ธาตุคู่ใดรวมกันแล้วเกิดพันธะไอออนิก',o:['K กับ Br','C กับ O','N กับ H','Cl กับ Cl'],x:'K เป็นโลหะหมู่ 1 Br เป็นอโลหะหมู่ 17 ผลต่าง EN มาก'},
+  {q:'ไอออน Mg²⁺ มีการจัดเรียงอิเล็กตรอนเหมือนแก๊สมีตระกูลใด',o:['Ne','Ar','He','Kr'],x:'Mg (2,8,2) เสีย 2e⁻ เหลือ (2,8) เหมือน Ne'},
+  {q:'ข้อใดอธิบายพันธะไอออนิกได้ถูกต้อง',o:['แรงดึงดูดทางไฟฟ้าสถิตระหว่างไอออนบวกกับไอออนลบ','การใช้เวเลนซ์อิเล็กตรอนร่วมกันระหว่างอโลหะ','แรงดึงดูดระหว่างโมเลกุลมีขั้ว','แรงยึดระหว่างไอออนบวกกับทะเลอิเล็กตรอน'],x:'ข้อสุดท้ายคือพันธะโลหะ ส่วนการใช้อิเล็กตรอนร่วมกันคือพันธะโคเวเลนต์'},
+  {q:'ธาตุ X (2,8,8,2) รวมกับธาตุ Y (2,8,7) จะได้สารประกอบสูตรใด',o:['XY₂','X₂Y','XY','X₂Y₃'],x:'X ให้ 2e⁻ เป็น X²⁺ Y รับ 1e⁻ เป็น Y⁻ จึงต้องใช้ Y 2 ไอออน'}],
+ s2:[{q:'ข้อความใดถูกต้องเกี่ยวกับ NaCl(s)',o:['ไม่มีโมเลกุล NaCl อยู่จริง สูตรบอกอัตราส่วนอย่างต่ำของไอออน','ประกอบด้วยโมเลกุล NaCl จำนวนมากเรียงกัน','Na กับ Cl ใช้อิเล็กตรอนร่วมกัน 1 คู่','Na⁺ 1 ไอออนยึดกับ Cl⁻ ได้เพียง 1 ไอออน'],x:'ผลึกไอออนิกเป็นโครงสร้างต่อเนื่อง'},
+  {q:'ในผลึก NaCl ไอออน Cl⁻ 1 ไอออนถูกล้อมรอบด้วย Na⁺ กี่ไอออน',o:['6','4','8','12'],x:'โครงสร้างแบบเกลือหินมีเลขโคออร์ดิเนชัน 6 ทั้ง Na⁺ และ Cl⁻'},
+  {q:'เหตุใดแรงยึดเหนี่ยวในผลึกไอออนิกจึงแข็งแรง',o:['ไอออนแต่ละตัวถูกไอออนประจุตรงข้ามรอบตัวดึงดูดทุกทิศทาง','มีพันธะโคเวเลนต์ซ้อนอยู่','มีพันธะไฮโดรเจนระหว่างไอออน','ไอออนมีขนาดใหญ่มาก'],x:'แรงดึงดูดทางไฟฟ้าสถิตไม่มีทิศทางเฉพาะ จึงยึดไอออนรอบตัวได้ทั้งหมด'},
+  {q:'สูตร CaCl₂ หมายความว่าอย่างไร',o:['ในผลึกมี Ca²⁺ : Cl⁻ เท่ากับ 1 : 2','1 โมเลกุลมี 3 อะตอม','Ca สร้างพันธะโคเวเลนต์ 2 พันธะ','ผลึกมี Cl₂ แทรกอยู่'],x:'สูตรเอมพิริคัลบอกอัตราส่วนจำนวนไอออน'}],
+ s3:[{q:'สูตรเคมีของแคลเซียมไนเตรตคือข้อใด',o:['Ca(NO₃)₂','CaNO₃','Ca₂NO₃','Ca(NO₂)₂'],x:'Ca²⁺ ต้องใช้ NO₃⁻ 2 กลุ่ม และใส่วงเล็บ'},
+  {q:'Fe₂O₃ มีชื่อว่าอะไร',o:['ไอร์ออน(III) ออกไซด์','ไอร์ออน(II) ออกไซด์','ไดไอร์ออนไตรออกไซด์','ไอร์ออนออกไซด์'],x:'O²⁻ 3 ไอออนรวม −6 แบ่งให้ Fe 2 ไอออน ได้ +3'},
+  {q:'ไอออน M²⁺ รวมกับไอออน X³⁻ ได้สูตรใด',o:['M₃X₂','M₂X₃','MX','M₃X'],x:'(+2)×3 = (−3)×2 = 6'},
+  {q:'NH₄Cl มีชื่อว่าอะไร',o:['แอมโมเนียมคลอไรด์','แอมโมเนียคลอไรด์','ไนโตรเจนเตตระไฮไดรด์คลอไรด์','แอมโมเนียมคลอเรต'],x:'NH₄⁺ คือแอมโมเนียม (ต่างจาก NH₃ แอมโมเนีย)'},
+  {q:'Na₃PO₄ มีชื่อว่าอะไร',o:['โซเดียมฟอสเฟต','ไตรโซเดียมฟอสเฟต','โซเดียมฟอสไฟด์','โซเดียม(III) ฟอสเฟต'],x:'Na มีประจุ +1 แบบเดียว จึงไม่ใช้เลขโรมันหรือคำบอกจำนวน'},
+  {q:'สูตรเคมีของอะลูมิเนียมซัลเฟตคือข้อใด',o:['Al₂(SO₄)₃','AlSO₄','Al₃(SO₄)₂','Al₂SO₄₃'],x:'(+3)×2 = (−2)×3 = 6 และใส่วงเล็บที่ SO₄'}],
+ s4:[{q:'ขั้นใดคือการคายพลังงานแลตทิซ',o:['Na⁺(g) + Cl⁻(g) → NaCl(s)','Na(s) → Na(g)','Na(g) → Na⁺(g) + e⁻','Cl(g) + e⁻ → Cl⁻(g)'],x:'พลังงานแลตทิซเกี่ยวกับไอออนในสถานะแก๊สรวมกันเป็นผลึก'},
+  {q:'การเกิด NaCl(s) จาก Na(s) และ Cl₂(g) มี ΔH = −411 kJ/mol แสดงว่า',o:['เป็นปฏิกิริยาคายพลังงาน NaCl เสถียรกว่าธาตุตั้งต้น','เป็นปฏิกิริยาดูดพลังงาน','ไม่เกิดปฏิกิริยา','ต้องให้พลังงาน 411 kJ ตลอดเวลา'],x:'ค่าลบหมายถึงระบบคายพลังงานออกสู่สิ่งแวดล้อม'},
+  {q:'ข้อใดเป็นขั้นที่ดูดพลังงานทั้งหมด',o:['การระเหิด การแตกพันธะ และการดึงอิเล็กตรอนออก','การรับอิเล็กตรอนและการเกิดผลึก','การเกิดผลึกเท่านั้น','ทุกขั้นดูดพลังงาน'],x:'การแยกอนุภาคหรือดึงอิเล็กตรอนออกต้องใช้พลังงาน'},
+  {q:'ปัจจัยใดทำให้พลังงานแลตทิซมีค่ามาก',o:['ไอออนมีประจุมากและขนาดเล็ก','ไอออนมีประจุน้อยและขนาดใหญ่','สารละลายน้ำได้ดี','สารมีมวลโมเลกุลสูง'],x:'แรงดึงดูดแปรผันตรงกับผลคูณประจุ และผกผันกับระยะห่าง'},
+  {q:'ในวัฏจักรบอร์น–ฮาเบอร์ของ NaCl ขั้นใดคายพลังงานมากที่สุด',o:['ไอออนแก๊สรวมกันเป็นผลึก (−787 kJ/mol)','Cl รับอิเล็กตรอน (−349 kJ/mol)','การระเหิดของ Na','การดึงอิเล็กตรอนออกจาก Na'],x:'พลังงานแลตทิซที่คายออกมามากพอจะชดเชยขั้นที่ดูดพลังงานทั้งหมด'},
+  {q:'Na(s) → Na(g) ใช้พลังงาน 107 kJ/mol เป็นกระบวนการแบบใด',o:['ดูดพลังงาน เพราะต้องแยกอะตอมโลหะออกจากกัน','คายพลังงาน เพราะได้แก๊ส','ไม่มีการเปลี่ยนแปลงพลังงาน','คายพลังงาน เพราะ Na เป็นโลหะ'],x:'ต้องเอาชนะพันธะโลหะที่ยึดอะตอมไว้ในของแข็ง'}],
+ s5:[{q:'NaCl ที่เป็นของแข็งไม่นำไฟฟ้าเพราะอะไร',o:['ไอออนถูกตรึงอยู่ในโครงผลึก เคลื่อนที่ไม่ได้','ไม่มีไอออนอยู่ในผลึก','ไม่มีอิเล็กตรอนเลย','เป็นสารโคเวเลนต์'],x:'การนำไฟฟ้าต้องมีอนุภาคที่มีประจุและเคลื่อนที่ได้'},
+  {q:'ข้อใดถูกต้องเกี่ยวกับการละลายน้ำของสารประกอบไอออนิก',o:['ละลายน้ำได้แตกต่างกัน บางชนิดละลายได้น้อยมาก เช่น CaCO₃','ละลายน้ำได้ดีทุกชนิด','ไม่ละลายน้ำเลย','ละลายแล้วเป็นโมเลกุล'],x:'ความสามารถในการละลายขึ้นกับพลังงานแลตทิซกับพลังงานไฮเดรชัน'},
+  {q:'สารใดน่าจะมีจุดหลอมเหลวสูงที่สุด',o:['CaO','KCl','NaF','CO₂'],x:'Ca²⁺ และ O²⁻ มีประจุ 2 หน่วย (CaO ประมาณ 2,613 °C) ส่วน CO₂ เป็นสารโคเวเลนต์โมเลกุลเล็ก'},
+  {q:'สารละลายของสารใดมีสมบัติเป็นเบส',o:['Na₂CO₃','NaCl','NH₄Cl','KNO₃'],x:'Na₂CO₃ (โซดาแอช) ละลายน้ำแล้วเป็นเบส NH₄Cl เป็นกรด ส่วน NaCl และ KNO₃ เป็นกลาง'}],
+ s6:[{q:'สมการการละลายน้ำของ CaCl₂ ข้อใดถูกต้อง',o:['CaCl₂(s) → Ca²⁺(aq) + 2Cl⁻(aq)','CaCl₂(s) → Ca²⁺(aq) + Cl₂²⁻(aq)','CaCl₂(s) → Ca(s) + Cl₂(g)','CaCl₂(s) → Ca⁺(aq) + 2Cl⁻(aq)'],x:'ไอออนคลอไรด์แยกเป็น Cl⁻ 2 ไอออน ไม่ได้รวมกันเป็น Cl₂'},
+  {q:'การละลาย NH₄NO₃ ทำให้น้ำเย็นลง แสดงว่าอะไร',o:['การละลายดูดพลังงาน พลังงานที่ใช้แยกไอออนมากกว่าพลังงานไฮเดรชัน','การละลายคายพลังงาน','NH₄NO₃ ไม่ละลายน้ำ','พลังงานไฮเดรชันมากกว่าพลังงานที่ใช้แยกไอออน'],x:'ระบบดึงความร้อนจากน้ำไปใช้ อุณหภูมิของน้ำจึงลดลง'},
+  {q:'เมื่อผสม AgNO₃(aq) กับ KCl(aq) ไอออนใดไม่ได้ทำปฏิกิริยา',o:['K⁺ และ NO₃⁻','Ag⁺ และ Cl⁻','Ag⁺ และ K⁺','Cl⁻ และ NO₃⁻'],x:'Ag⁺ กับ Cl⁻ รวมกันเป็นตะกอน AgCl ส่วน K⁺ และ NO₃⁻ ยังอยู่ในสารละลาย'},
+  {q:'ผสมสารละลายคู่ใดแล้วเกิดตะกอน',o:['BaCl₂ กับ K₂SO₄','NaNO₃ กับ KCl','NH₄Cl กับ NaNO₃','KNO₃ กับ NaCl'],x:'Ba²⁺ กับ SO₄²⁻ ได้ BaSO₄ ซึ่งไม่ละลายน้ำ'}]
+};
+function actMCQ(title,lead,items,max=10){return function(box,api,done){
+  api.reg('m',items.length*max);box.innerHTML=`<h3 class="stepTitle">${title}</h3><p class="stepLead">${lead}</p><div id="qs"></div>`;
+  let c=0;items.forEach(it=>mcq($('#qs',box),it,{key:'m',max,api,onDone:()=>{if(++c===items.length)done()}}))}}
+const SERIES=[['1','ถ่ายโอนสู่ผลึก','3.2.1'],['2','โรงติดฉลากเกลือ','3.2.2'],['3','บันไดพลังงานไอออนิก','3.2.3'],['4','ห้องทดสอบเกลือ','3.2.4–3.2.5']];
+
+/* ---------- views ---------- */
+function bar(active){
+  $('#bar').innerHTML=`<button class="chip home ${active==='home'?'on':''}" data-go="home"><span>⌂ หน้าหลัก</span></button>`+STATIONS.map(s=>{const p=P.st[s.id];return `<button class="chip ${active===s.id?'on':''} ${p?'done':''}" data-go="${s.id}"><b>${s.code}</b><span>${s.short}</span><i>${p?('★'.repeat(p.stars)||'✓'):''}</i></button>`}).join('');
+  $$('[data-go]',$('#bar')).forEach(b=>b.onclick=()=>go(b.dataset.go));
+  const on=$('.chip.on',$('#bar'));if(on)on.scrollIntoView({inline:'center',block:'nearest'});
+}
+function go(id){stopAnims();if(id==='home')home();else station(id);scrollTo(0,0)}
+function totals(){let s=0,d=0;STATIONS.forEach(x=>{const p=P.st[x.id];if(p){s+=p.score;d++}});return{s,d,n:STATIONS.length}}
+function home(){
+  RUN=null;bar('home');const{s,d,n}=totals();
+  $('#app').innerHTML=`<header class="hero"><canvas id="hc" aria-hidden="true"></canvas><div class="wrap"><div class="eyebrow">ชุดเกมพันธะไอออนิก · เกมที่ ${GAME.no}/4 · หัวข้อ ${GAME.topics}</div>
+  <h1>${GAME.th}<small>${GAME.en.toUpperCase()}</small></h1><p>${GAME.intro}</p>${IonicAR.homeBtn()}</div></header>
+  <div class="wrap section"><div class="panel"><div class="row" style="align-items:flex-end">
+    <div class="field"><label for="sn">ชื่อ–นามสกุลนักเรียน (แสดงบนเกียรติบัตร)</label><input type="text" id="sn" value="${esc(P.student)}" placeholder="เช่น นายสมชาย ใจดี ม.4/1"></div>
+    <div style="flex:1 1 200px;min-width:0"><div class="row" style="justify-content:space-between"><span>ผ่านแล้ว <b class="num">${d}/${n}</b> ด่าน</span><span class="num"><b>${s}</b>/${n*100} คะแนน</span></div><div class="meter" style="margin-top:6px"><i style="width:${s/n}%"></i></div></div></div>
+    <div class="row" style="margin-top:12px"><button class="btn primary" id="allc" ${d<n?'disabled':''}>🏅 เกียรติบัตรพิชิตเกม (ครบ ${n} ด่าน)</button><span class="en">เล่นด่านใดก่อนก็ได้ ทุกด่านมีเกียรติบัตร</span></div></div></div>
+  <div class="wrap"><ol class="strata">${STATIONS.map(st=>{const p=P.st[st.id];return `<li class="stratum ${p?'done':''}"><div class="card"><div><div class="depth">${st.code} · หัวข้อ ${st.topic}</div><h3>${st.th}</h3><div class="place">${st.desc} · <span class="en">${st.en}</span></div>${p?`<div class="stars" style="margin-top:4px">${starStr(p.stars)} <span class="en num">${p.score}/100</span></div>`:''}</div>
+    <div class="row">${p?`<button class="btn sm" data-cert="${st.id}">เกียรติบัตร</button>`:''}<button class="btn ${p?'':'primary'}" data-go="${st.id}">${p?'เล่นอีกครั้ง':'เริ่มด่าน →'}</button></div></div></li>`}).join('')}</ol></div>
+  <div class="wrap section"><div class="panel"><div class="tg-mount"><div><h3 style="margin:0 0 4px">สำหรับครู</h3><p>${IonicGuide.plan()}</p></div><button class="btn" id="tgBtn">คู่มือครู · ความสอดคล้องกับแผนการสอน</button></div></div></div>
+  <div class="wrap"><div class="foot"><div class="row" style="margin-bottom:10px"><button class="btn sm" id="setb">ตั้งค่าเกียรติบัตร</button></div>
+  <p style="margin:0 0 6px">ชุดเกมพันธะไอออนิก 4 เกม: ${SERIES.map(g=>g[0]===String(GAME.no)?`<b>${g[0]}. ${g[1]} (${g[2]})</b>`:`${g[0]}. ${g[1]} (${g[2]})`).join(' · ')}</p>พัฒนาเกมโดย ${esc(SET.dev)} · เนื้อหาตามหนังสือเรียนรายวิชาเพิ่มเติมเคมี หัวข้อ 3.2 พันธะไอออนิก</div></div>`;
+  crystal($('#hc'),{n:2,scale:1.05});
+  $('#sn').oninput=e=>{P.student=e.target.value;saveP()};
+  $$('[data-go]',$('#app')).forEach(b=>b.onclick=()=>go(b.dataset.go));
+  $$('[data-cert]').forEach(b=>b.onclick=()=>certModal(b.dataset.cert));
+  $('#allc').onclick=()=>certModal('all');$('#tgBtn').onclick=()=>IonicGuide.open();$('#setb').onclick=settings;
+}
+let RUN=null;
+function station(id){
+  const st=STATIONS.find(s=>s.id===id);bar(id);
+  const steps=[];if(st.learn)steps.push({t:'บัตรสรุป',en:'Key ideas',r:learnStep});
+  steps.push(st.quiz?{t:'แบบทดสอบ',en:'Checkpoint',r:quizStep}:{t:'ภารกิจ',en:st.en,r:st.act});steps.push({t:'ผลคะแนน',en:'Result',r:resultStep});
+  RUN={st,steps,earn:{},max:{},i:0};
+  $('#app').innerHTML=`<div class="wrap"><div class="st-head"><div class="code">${GAME.th} · ${st.code} · หัวข้อ ${st.topic}</div><h2>${st.th}</h2><div class="en">${st.en}</div>${IonicAR.stBtn(st.id)}<div class="pips" id="pips"></div></div><div id="sb"></div><div class="nav" id="nav"><button class="btn primary" id="next" disabled>ถัดไป</button></div></div>`;
+  $('#next').onclick=()=>show(RUN.i+1);show(0);
+}
+const api={reg(k,m){RUN.max[k]=m},give(k,p){RUN.earn[k]=(RUN.earn[k]||0)+p}};
+function show(i){
+  RUN.i=i;const S=RUN.steps;stopAnims();
+  $('#pips').innerHTML=S.map((s,k)=>`<span class="pip ${k===i?'on':k<i?'ok':''}">${k<i?'✓ ':''}${s.t}</span>`).join('');
+  const b=$('#sb');b.innerHTML='';const nx=$('#next');nx.disabled=true;$('#nav').hidden=i===S.length-1;
+  nx.innerHTML=i===S.length-2?'ดูผลคะแนน <span class="en" style="color:inherit">Result →</span>':'เริ่มภารกิจ <span class="en" style="color:inherit">Start →</span>';
+  const box=document.createElement('div');b.appendChild(box);
+  S[i].r(box,api,()=>{nx.disabled=false;toast(praise())});
+  if(i)$('.st-head').scrollIntoView({behavior:RM?'auto':'smooth'});
+}
+function learnStep(box){
+  const L=RUN.st.learn;box.innerHTML=`<h3 class="stepTitle">บัตรสรุปความรู้</h3><p class="stepLead">อ่านบัตร ${L.length} ใบ แล้วกดเริ่มภารกิจ <span class="en">Read the key ideas, then start.</span></p><div class="cards">${L.map(([t,h])=>`<div class="lcard"><h3>${t}</h3>${h}</div>`).join('')}</div>`;
+  $('#next').disabled=false;
+}
+function quizStep(box,api){
+  const Q=RUN.st.quiz;api.reg('qz',Q.length*10);
+  box.innerHTML=`<h3 class="stepTitle">แบบทดสอบ ${Q.length} ข้อ</h3><p class="stepLead">ตอบได้ข้อละ 1 ครั้ง อ่านคำอธิบายหลังตอบทุกข้อ <span class="en">One attempt per question.</span></p><div id="qs"></div>`;
+  let c=0;Q.forEach((it,k)=>{mcq($('#qs',box),{...it,q:`${k+1}. ${it.q}`},{retry:false,max:10,key:'qz',api,onDone:()=>{if(++c===Q.length){$('#next').disabled=false;toast('ตอบครบทุกข้อแล้ว')}}})});
+}
+function resultStep(box){
+  const st=RUN.st,E=Object.values(RUN.earn).reduce((a,b)=>a+b,0),M=Object.values(RUN.max).reduce((a,b)=>a+b,0)||1,score=Math.min(100,Math.round(100*E/M)),[md,mde,stars]=medalOf(score);
+  const prev=P.st[st.id];if(!prev||score>=prev.score){P.st[st.id]={score,stars,date:thaiDate()};saveP()}bar(st.id);
+  const best=P.st[st.id],msg=stars===3?'ยอดเยี่ยม! เข้าใจเนื้อหาด่านนี้อย่างแม่นยำ':stars===2?'ทำได้ดีมาก เหลืออีกนิดเดียวก็ได้เหรียญทอง':stars===1?'ผ่านด่านนี้แล้ว ทบทวนบัตรสรุปแล้วเล่นอีกครั้งเพื่อเหรียญที่สูงขึ้น':'ได้เรียนรู้ครบทุกขั้นแล้ว ลองเล่นอีกครั้งเพื่อเก็บคะแนนเพิ่ม';
+  const nextSt=STATIONS[STATIONS.indexOf(st)+1],t=totals();
+  box.innerHTML=`<div class="panel result"><div class="en">คะแนน${st.code}</div><div class="score">${score}<span style="font-size:.4em;color:var(--muted)">/100</span></div><div class="stars">${starStr(stars)}</div><div class="medal">${md} · ${mde}</div><p>${msg}${best.score>score?`<br><span class="en">คะแนนสูงสุดที่บันทึกไว้: ${best.score}</span>`:''}${t.d===t.n?'<br><b>ผ่านครบทุกด่านแล้ว รับเกียรติบัตรพิชิตเกมได้ที่หน้าหลัก</b>':''}</p>
+  <div class="row" style="justify-content:center"><button class="btn primary" id="ce">🏅 รับเกียรติบัตรด่านนี้</button><button class="btn" id="re">เล่นอีกครั้ง</button>${nextSt?`<button class="btn" id="nx">${nextSt.code} →</button>`:''}<button class="btn quiet" id="hm">กลับหน้าหลัก</button></div></div>`;
+  if(stars>=2)confetti();
+  $('#ce',box).onclick=()=>certModal(st.id);$('#re',box).onclick=()=>go(st.id);$('#hm',box).onclick=()=>go('home');if(nextSt)$('#nx',box).onclick=()=>go(nextSt.id);
+}
+
+/* ---------- modals ---------- */
+function modal(html){const r=$('#modalRoot');r.innerHTML=`<div class="modal" role="dialog" aria-modal="true"><div class="box">${html}</div></div>`;const m=$('.modal',r);const close=()=>r.innerHTML='';m.onclick=e=>{if(e.target===m)close()};$$('[data-close]',r).forEach(b=>b.onclick=close);return{root:$('.box',r),close}}
+function shrink(file,cb){const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,420/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/png'))};im.src=fr.result};fr.readAsDataURL(file)}
+function settings(){
+  const F=(id,l)=>`<div class="field"><label for="${id}">${l}</label><input type="text" id="${id}" value="${esc(SET[id])}"></div>`;
+  const{root,close}=modal(`<h2>ตั้งค่าเกียรติบัตร</h2><p class="en">ข้อมูลนี้เก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น</p>${F('school','ชื่อโรงเรียน')}<div class="row">${F('teacher','ชื่อครูผู้สอน')}${F('teacherPos','ตำแหน่งครู')}</div><div class="sig"><label class="btn sm">แนบลายเซ็นครู (รูปภาพ)<input type="file" accept="image/*" id="fT" hidden></label><span id="pT">${SET.sigT?`<img src="${SET.sigT}" alt="ลายเซ็นครู">`:'<span class="en">ยังไม่มี</span>'}</span></div>
+  <div class="row">${F('director','ชื่อผู้อำนวยการ')}${F('directorPos','ตำแหน่งผู้อำนวยการ')}</div><div class="sig"><label class="btn sm">แนบลายเซ็นผู้อำนวยการ<input type="file" accept="image/*" id="fD" hidden></label><span id="pD">${SET.sigD?`<img src="${SET.sigD}" alt="ลายเซ็นผู้อำนวยการ">`:'<span class="en">ยังไม่มี</span>'}</span></div>
+  ${F('dev','ผู้พัฒนาเกม')}<div class="row" style="justify-content:space-between"><button class="btn sm quiet" id="rst">ล้างความคืบหน้าเกมนี้</button><div class="row"><button class="btn" data-close>ยกเลิก</button><button class="btn primary" id="sv">บันทึก</button></div></div>`);
+  let sT=SET.sigT,sD=SET.sigD;
+  $('#fT',root).onchange=e=>e.target.files[0]&&shrink(e.target.files[0],u=>{sT=u;$('#pT',root).innerHTML=`<img src="${u}" alt="">`});
+  $('#fD',root).onchange=e=>e.target.files[0]&&shrink(e.target.files[0],u=>{sD=u;$('#pD',root).innerHTML=`<img src="${u}" alt="">`});
+  let arm=false;$('#rst',root).onclick=e=>{if(!arm){arm=true;e.target.textContent='กดอีกครั้งเพื่อยืนยันการล้าง';return}P={student:P.student,st:{}};saveP();close();go('home');toast('ล้างความคืบหน้าแล้ว')};
+  $('#sv',root).onclick=()=>{['school','teacher','teacherPos','director','directorPos','dev'].forEach(k=>SET[k]=$('#'+k,root).value.trim());SET.sigT=sT;SET.sigD=sD;saveS();store.set('ionic-series:s',SET);close();toast('บันทึกการตั้งค่าแล้ว');if(!RUN)home()};
+}
+function loadImg(src){return new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})}
+async function drawCert(id){
+  try{await Promise.all(['700 80px "Chakra Petch"','600 40px "Chakra Petch"','400 30px Sarabun','700 60px Sarabun'].map(f=>document.fonts.load(f)))}catch(e){}
+  const W=1754,H=1240,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const all=id==='all',st=STATIONS.find(s=>s.id===id),t=totals(),score=all?t.s:P.st[id].score,[md,mde,stars]=medalOf(all?Math.round(t.s/t.n):score);
+  x.fillStyle='#fbfcfd';x.fillRect(0,0,W,H);
+  x.fillStyle='#16212c';x.fillRect(0,0,W,30);x.fillRect(0,H-30,W,30);x.fillRect(0,0,30,H);x.fillRect(W-30,0,30,H);
+  for(let k=0;k<40;k++){const px=60+k*(W-120)/39;[[px,62],[px,H-62]].forEach(([a,b],j)=>{x.fillStyle=(k+j)%2?'#0c7a6e':'#b5600b';x.beginPath();x.arc(a,b,(k+j)%2?11:8,0,7);x.fill()})}
+  for(let k=1;k<27;k++){const py=62+k*(H-124)/27;[[62,py],[W-62,py]].forEach(([a,b],j)=>{x.fillStyle=(k+j)%2?'#0c7a6e':'#b5600b';x.beginPath();x.arc(a,b,(k+j)%2?11:8,0,7);x.fill()})}
+  x.strokeStyle='#c8d0d8';x.lineWidth=2;x.strokeRect(100,100,W-200,H-200);
+  x.textAlign='center';x.fillStyle='#16212c';x.font='600 34px Sarabun';x.fillText(SET.school||'',W/2,170);
+  x.fillStyle='#ad2f5a';x.font='700 104px "Chakra Petch"';x.fillText('เกียรติบัตร',W/2,290);
+  x.fillStyle='#56636f';x.font='600 28px "Chakra Petch"';x.fillText('CERTIFICATE OF ACHIEVEMENT · '+GAME.en.toUpperCase(),W/2,338);
+  x.fillStyle='#18212a';x.font='400 34px Sarabun';x.fillText('ขอมอบเกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า',W/2,410);
+  x.font='700 66px Sarabun';x.fillText(P.student||'..............................................',W/2,500);
+  x.strokeStyle='#c8d0d8';x.beginPath();x.moveTo(W/2-420,520);x.lineTo(W/2+420,520);x.stroke();
+  x.font='400 34px Sarabun';x.fillText(all?`พิชิตเกม “${GAME.th}” ครบทั้ง ${t.n} ด่าน`:`ผ่าน${st.code} ${st.th}`,W/2,585);
+  x.font='400 30px Sarabun';x.fillStyle='#56636f';x.fillText(`เกม${GAME.th} · หัวข้อ ${all?GAME.topics:st.topic} พันธะไอออนิก · รายวิชาเพิ่มเติมเคมี ชั้นมัธยมศึกษาปีที่ 4`,W/2,632);
+  x.fillStyle='#18212a';x.font='700 40px "Chakra Petch"';x.fillText(`คะแนน ${score}/${all?t.n*100:100}  ·  ${md} (${mde})`,W/2,705);
+  x.fillStyle='#c99a1c';x.font='700 54px Sarabun';x.fillText('★'.repeat(stars)+'☆'.repeat(3-stars),W/2,768);
+  x.fillStyle='#56636f';x.font='400 28px Sarabun';x.fillText('ให้ไว้ ณ วันที่ '+thaiDate(),W/2,822);
+  const[iT,iD]=await Promise.all([loadImg(SET.sigT),loadImg(SET.sigD)]);
+  [[W*.3,iT,SET.teacher,SET.teacherPos],[W*.7,iD,SET.director,SET.directorPos]].forEach(([cx,im,nm,pos])=>{
+    if(im){const k=Math.min(300/im.width,110/im.height);x.drawImage(im,cx-im.width*k/2,975-im.height*k,im.width*k,im.height*k)}
+    x.strokeStyle='#56636f';x.lineWidth=1.5;x.beginPath();x.moveTo(cx-190,985);x.lineTo(cx+190,985);x.stroke();
+    x.fillStyle='#18212a';x.font='400 30px Sarabun';x.fillText(nm?`(${nm})`:'(......................................................)',cx,1030);x.fillStyle='#56636f';x.font='400 26px Sarabun';x.fillText(pos||'',cx,1070)});
+  x.fillStyle='#8a96a1';x.font='400 21px Sarabun';x.fillText('พัฒนาเกมโดย '+(SET.dev||''),W/2,1122);
+  x.save();x.translate(W-250,250);x.fillStyle=stars===3?'#c99a1c':stars===2?'#9aa6b2':stars===1?'#b5733b':'#0c7a6e';x.beginPath();x.arc(0,0,78,0,7);x.fill();x.fillStyle='#fff';x.font='700 26px "Chakra Petch"';x.fillText(all?'ALL':st.code,0,-4);x.font='600 22px Sarabun';x.fillText(mde.toUpperCase(),0,30);x.restore();
+  return c.toDataURL('image/png');
+}
+function certModal(id){
+  const{root}=modal(`<h2>เกียรติบัตร</h2>${P.student?'':`<div class="field"><label for="cn">ใส่ชื่อนักเรียนก่อนรับเกียรติบัตร</label><input type="text" id="cn" placeholder="ชื่อ–นามสกุล ชั้น/ห้อง"></div><button class="btn primary" id="cg">สร้างเกียรติบัตร</button>`}<div id="ci"></div><div class="row" style="justify-content:flex-end"><button class="btn" data-close>ปิด</button></div>`);
+  const make=async()=>{$('#ci',root).innerHTML='<p class="en">กำลังสร้างเกียรติบัตร…</p>';const url=await drawCert(id);
+    $('#ci',root).innerHTML=`<img class="cert" src="${url}" alt="เกียรติบัตร"><p class="en">บันทึกภาพ: แตะค้างที่ภาพ (มือถือ) หรือคลิกขวา › บันทึกรูปภาพ (คอมพิวเตอร์) </p>${location.protocol==='file:'?`<a class="btn primary" href="${url}" download="certificate-${GAME.id}-${id}.png">ดาวน์โหลด PNG</a>`:''}`};
+  if(P.student)make();else $('#cg',root).onclick=()=>{const v=$('#cn',root).value.trim();if(!v){$('#cn',root).focus();return}P.student=v;saveP();if($('#sn'))$('#sn').value=v;$('#cg',root).remove();$('.field',root).remove();make()};
+}
+function boot(g){
+  GAME=g;STATIONS=g.levels;KEY='ionic-'+g.id+'-v1';
+  P=Object.assign({student:'',st:{}},store.get(KEY+':p',{}));
+  SET=Object.assign({school:'โรงเรียนธาตุพนม',teacher:'นางมัณฑนา ไชยสงค์',teacherPos:'ครูผู้สอนรายวิชาเคมี',director:'',directorPos:'ผู้อำนวยการโรงเรียน',sigT:'',sigD:'',dev:'นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม'},store.get('ionic-series:s',{}),store.get(KEY+':s',{}));
+  home();
+}
+
+const GAMES={
+g1:{id:'g1',no:1,file:'ionic-1-transfer-to-crystal.html',th:'ถ่ายโอนสู่ผลึก',en:'Transfer to Crystal',topics:'3.2.1',
+ intro:'ส่งอิเล็กตรอนจากโลหะไปให้อโลหะด้วยมือของเราเอง ดูไอออนบวกและไอออนลบเกิดขึ้น แล้วนำไอออนมาเรียงเป็นผลึกเกลือหินแบบเดียวกับที่ฝังอยู่ใต้ที่ราบสูงโคราช',
+ guide:'เกมนี้ครอบคลุมหัวข้อ 3.2.1 การเกิดพันธะไอออนิก (รวมการจัดเรียงไอออนในผลึก) เหมาะกับแผนการจัดการเรียนรู้ 1 แผน (2–3 คาบ) ด่าน 1–2 ใช้ในชั่วโมงแรก ด่าน 3–4 ใช้ในชั่วโมงถัดไป และด่าน 5 ใช้เป็นการประเมินท้ายแผน',
+ levels:[
+  {id:'l1',code:'ด่าน 1',topic:'3.2.1',short:'ให้–รับ e⁻',th:'โลหะให้ อโลหะรับ',en:'Electron transfer · 1 : 1',desc:'ส่งอิเล็กตรอนให้ครบออกเตต NaCl, MgO, KF',learn:[LC.give,LC.noble,LC.attract],act:actTransfer([['Na','Cl'],['Mg','O'],['K','F']])},
+  {id:'l2',code:'ด่าน 2',topic:'3.2.1',short:'ดุลอิเล็กตรอน',th:'ให้เท่ากับรับ',en:'Balancing electrons',desc:'ปรับจำนวนอะตอมให้อิเล็กตรอนลงตัว CaCl₂, Na₂O, AlF₃, Mg₃N₂',learn:[LC.balance,LC.noble],act:actTransfer([['Ca','Cl'],['Na','O'],['Al','F'],['Mg','N']])},
+  {id:'l3',code:'ด่าน 3',topic:'3.2.1',short:'ชั้นผลึก',th:'ปริศนาชั้นผลึก',en:'Lattice layer puzzle',desc:'วางไอออนให้ประจุตรงข้ามอยู่ติดกันทุกคู่',learn:[LC.nomol,LC.coord],act:actLatticePuzzle},
+  {id:'l4',code:'ด่าน 4',topic:'3.2.1',short:'ผลึก 3 มิติ',th:'สำรวจผลึกเกลือหิน',en:'3D rock-salt lattice',desc:'หมุนผลึก NaCl นับไอออนล้อมรอบ และเหตุผลของสูตรเอมพิริคัล',learn:[LC.empirical,LC.halite],act:actCrystal3D},
+  {id:'l5',code:'ด่าน 5',topic:'3.2.1',short:'ทดสอบรวม',th:'แบบทดสอบท้ายเกม',en:'Final checkpoint',desc:'ข้อสอบ 8 ข้อ',quiz:[...QB.s1,...QB.s2]}
+ ]},
+g2:{id:'g2',no:2,file:'ionic-2-salt-label-works.html',th:'โรงติดฉลากเกลือ',en:'Salt Label Works',topics:'3.2.2',
+ intro:'ขวดสารในโรงงานหลุดฉลากหมด ช่วยประกอบสูตรเคมีจากไอออนให้ประจุดุลกัน แล้วติดชื่อภาษาไทยให้ถูกตามหลักการเรียกชื่อสารประกอบไอออนิก',
+ guide:'เกมนี้ครอบคลุมหัวข้อ 3.2.2 สูตรเคมีและชื่อของสารประกอบไอออนิก เหมาะกับแผนการจัดการเรียนรู้ 1 แผน (2 คาบ) ด่าน 1–2 ฝึกเขียนสูตร ด่าน 3–4 ฝึกเรียกชื่อ ด่าน 5 ใช้ประเมินท้ายแผน',
+ levels:[
+  {id:'l1',code:'ด่าน 1',topic:'3.2.2',short:'สูตรพื้นฐาน',th:'สูตรจากไอออนอะตอมเดี่ยว',en:'Simple ions',desc:'MgCl₂, Al₂O₃, K₂S, Ca₃N₂',learn:[LC.fWrite],act:actFormula([{c:'Mg',cq:2,a:'Cl',aq:1,n:'แมกนีเซียมคลอไรด์',e:'magnesium chloride'},{c:'Al',cq:3,a:'O',aq:2,n:'อะลูมิเนียมออกไซด์',e:'aluminium oxide'},{c:'K',cq:1,a:'S',aq:2,n:'โพแทสเซียมซัลไฟด์',e:'potassium sulfide'},{c:'Ca',cq:2,a:'N',aq:3,n:'แคลเซียมไนไตรด์',e:'calcium nitride'}])},
+  {id:'l2',code:'ด่าน 2',topic:'3.2.2',short:'ไอออนกลุ่มอะตอม',th:'สูตรที่มีไอออนกลุ่มอะตอม',en:'Polyatomic ions',desc:'Ca₃(PO₄)₂, (NH₄)₂SO₄, Fe(OH)₃, Na₂CO₃, Al₂(SO₄)₃',learn:[LC.fPoly],act:actFormula([{c:'Ca',cq:2,a:'PO4',aq:3,n:'แคลเซียมฟอสเฟต',e:'calcium phosphate'},{c:'NH4',cq:1,a:'SO4',aq:2,n:'แอมโมเนียมซัลเฟต',e:'ammonium sulfate'},{c:'Fe',cq:3,a:'OH',aq:1,n:'ไอร์ออน(III) ไฮดรอกไซด์',e:'iron(III) hydroxide'},{c:'Na',cq:1,a:'CO3',aq:2,n:'โซเดียมคาร์บอเนต',e:'sodium carbonate'},{c:'Al',cq:3,a:'SO4',aq:2,n:'อะลูมิเนียมซัลเฟต',e:'aluminium sulfate'}])},
+  {id:'l3',code:'ด่าน 3',topic:'3.2.2',short:'ติดฉลากชื่อ',th:'ติดฉลากชื่อสาร',en:'Naming compounds',desc:'เลือกชื่อภาษาไทยที่ถูกต้อง 6 ขวด',learn:[LC.fName,LC.fRoman],act:actNaming},
+  {id:'l4',code:'ด่าน 4',topic:'3.2.2',short:'ไขประจุโลหะ',th:'ไขประจุโลหะทรานซิชัน',en:'Roman numerals',desc:'หาประจุของโลหะจากสูตร แล้วเรียกชื่อด้วยเลขโรมัน',learn:[LC.fRoman],act:actMCQ('ไขประจุโลหะทรานซิชัน','หาประจุของไอออนโลหะจากประจุรวมของไอออนลบ แล้วเลือกชื่อที่ถูกต้อง <span class="en">Work out the metal’s charge, then name it.</span>',[
+    {q:`<span class="big">${fm('Cu2O')}</span> ไอออนโลหะมีประจุเท่าใด และชื่อสารคืออะไร`,o:['Cu⁺ · คอปเปอร์(I) ออกไซด์','Cu²⁺ · คอปเปอร์(II) ออกไซด์','Cu²⁺ · ไดคอปเปอร์ออกไซด์','Cu⁺ · คอปเปอร์ออกไซด์'],x:'O²⁻ มีประจุ −2 แบ่งให้ Cu 2 ไอออน ไอออนละ +1'},
+    {q:`<span class="big">${fm('FeSO4')}</span> ไอออนโลหะมีประจุเท่าใด และชื่อสารคืออะไร`,o:['Fe²⁺ · ไอร์ออน(II) ซัลเฟต','Fe³⁺ · ไอร์ออน(III) ซัลเฟต','Fe²⁺ · ไอร์ออนซัลไฟด์','Fe⁴⁺ · ไอร์ออน(IV) ซัลเฟต'],x:'SO₄²⁻ มีประจุ −2 ดังนั้น Fe มีประจุ +2'},
+    {q:`<span class="big">${fm('Fe2(SO4)3')}</span> ไอออนโลหะมีประจุเท่าใด และชื่อสารคืออะไร`,o:['Fe³⁺ · ไอร์ออน(III) ซัลเฟต','Fe²⁺ · ไอร์ออน(II) ซัลเฟต','Fe⁶⁺ · ไอร์ออน(VI) ซัลเฟต','Fe³⁺ · ไดไอร์ออนไตรซัลเฟต'],x:'SO₄²⁻ 3 กลุ่มรวม −6 แบ่งให้ Fe 2 ไอออน ไอออนละ +3'},
+    {q:`<span class="big">${fm('PbO2')}</span> ไอออนโลหะมีประจุเท่าใด และชื่อสารคืออะไร`,o:['Pb⁴⁺ · เลด(IV) ออกไซด์','Pb²⁺ · เลด(II) ออกไซด์','Pb⁴⁺ · เลดไดออกไซด์','Pb²⁺ · เลดไดออกไซด์'],x:'O²⁻ 2 ไอออนรวม −4 ดังนั้น Pb มีประจุ +4'},
+    {q:`<span class="big">${fm('CuCl2')}</span> ไอออนโลหะมีประจุเท่าใด และชื่อสารคืออะไร`,o:['Cu²⁺ · คอปเปอร์(II) คลอไรด์','Cu⁺ · คอปเปอร์(I) คลอไรด์','Cu²⁺ · คอปเปอร์ไดคลอไรด์','Cu⁺ · คอปเปอร์คลอไรด์'],x:'Cl⁻ 2 ไอออนรวม −2 ดังนั้น Cu มีประจุ +2'}])},
+  {id:'l5',code:'ด่าน 5',topic:'3.2.2',short:'ทดสอบรวม',th:'แบบทดสอบท้ายเกม',en:'Final checkpoint',desc:'ข้อสอบ 6 ข้อ',quiz:QB.s3}
+ ]},
+g3:{id:'g3',no:3,file:'ionic-3-born-haber-ladder.html',th:'บันไดพลังงานไอออนิก',en:'Born–Haber Ladder',topics:'3.2.3',
+ intro:'ไต่บันไดพลังงานจากโลหะโซเดียมและแก๊สคลอรีนลงไปจนถึงผลึกเกลือแกง เรียงขั้นย่อย ตัดสินว่าขั้นใดดูดหรือคายพลังงาน แล้วคำนวณพลังงานรวมด้วยกฎของเฮสส์',
+ guide:'เกมนี้ครอบคลุมหัวข้อ 3.2.3 พลังงานกับการเกิดสารประกอบไอออนิก เหมาะกับแผนการจัดการเรียนรู้ 1 แผน (2 คาบ) ควรเล่นด่าน 1–3 ตามลำดับ เพราะแผนภาพระดับพลังงานในด่าน 2–3 ใช้ลำดับที่นักเรียนเรียงไว้ในด่าน 1 ค่าพลังงานเป็นค่าเดียวกับหนังสือเรียน (ΔH = −411 kJ/mol)',
+ levels:[
+  {id:'l1',code:'ด่าน 1',topic:'3.2.3',short:'เรียงขั้น',th:'เรียงขั้นการเกิด NaCl',en:'Order the steps',desc:'เรียงขั้นย่อยทั้ง 5 ของวัฏจักรบอร์น–ฮาเบอร์',learn:[LC.bhSteps],act:actOrder},
+  {id:'l2',code:'ด่าน 2',topic:'3.2.3',short:'ดูดหรือคาย',th:'ขั้นใดดูด ขั้นใดคาย',en:'Endo or exo?',desc:'จำแนกขั้นดูดและคายพลังงาน สร้างแผนภาพระดับพลังงาน',learn:[LC.bhEndo,LC.bhExo],act:actClassify},
+  {id:'l3',code:'ด่าน 3',topic:'3.2.3',short:'คำนวณ ΔH',th:'คำนวณพลังงานรวม',en:'Hess’s law',desc:'รวมพลังงานทุกขั้นหา ΔH ของการเกิด NaCl(s)',learn:[LC.bhSum],act:actTotal},
+  {id:'l4',code:'ด่าน 4',topic:'3.2.3',short:'พลังงานแลตทิซ',th:'เปรียบเทียบพลังงานแลตทิซ',en:'Lattice energy',desc:'ผลของประจุ ขนาดไอออน และพลังงานไอออไนเซชัน',learn:[LC.latFactor],act:actLattice},
+  {id:'l5',code:'ด่าน 5',topic:'3.2.3',short:'ทดสอบรวม',th:'แบบทดสอบท้ายเกม',en:'Final checkpoint',desc:'ข้อสอบ 6 ข้อ',quiz:QB.s4}
+ ]},
+g4:{id:'g4',no:4,file:'ionic-4-salt-test-lab.html',th:'ห้องทดสอบเกลือ',en:'Salt Test Lab',topics:'3.2.4–3.2.5',
+ intro:'ทดสอบสารประกอบไอออนิกเหมือนอยู่ในห้องปฏิบัติการ ทุบผลึก ต่อวงจรวัดการนำไฟฟ้า ละลายสารแล้ววัดอุณหภูมิ และผสมสารละลายเพื่อดูการตกตะกอน',
+ guide:'เกมนี้ครอบคลุมหัวข้อ 3.2.4 สมบัติของสารประกอบไอออนิก (รวมพลังงานกับการละลาย) และ 3.2.5 สมการไอออนิกและสมการไอออนิกสุทธิ เหมาะกับแผนการจัดการเรียนรู้ 1 แผน (2–3 คาบ) ด่าน 1–4 ใช้กับหัวข้อ 3.2.4 ด่าน 5 ใช้กับหัวข้อ 3.2.5 และด่าน 6 ใช้ประเมินท้ายแผน ค่าอุณหภูมิในด่าน 4 เป็นค่าจำลองเพื่อแสดงแนวโน้ม',
+ levels:[
+  {id:'l1',code:'ด่าน 1',topic:'3.2.4',short:'ทุบผลึก',th:'ทุบผลึกด้วยค้อน',en:'Brittleness',desc:'เลื่อนชั้นไอออนแล้วสังเกตแรงผลัก',learn:[LC.brittle],act:actShear},
+  {id:'l2',code:'ด่าน 2',topic:'3.2.4',short:'การนำไฟฟ้า',th:'วงจรทดสอบการนำไฟฟ้า',en:'Conductivity tester',desc:'ทำนายแล้วทดสอบ 5 ตัวอย่าง',learn:[LC.conduct],act:actConduct},
+  {id:'l3',code:'ด่าน 3',topic:'3.2.4',short:'จุดหลอมเหลว',th:'เรียงจุดหลอมเหลว',en:'Melting points',desc:'MgO, NaCl, KI และเหตุผลเรื่องประจุกับขนาดไอออน',learn:[LC.mp,LC.solu],act:actMelt},
+  {id:'l4',code:'ด่าน 4',topic:'3.2.4',short:'ร้อนหรือเย็น',th:'ละลายแล้วร้อนหรือเย็น',en:'Energy of dissolving',desc:'ละลาย 4 สาร วัดอุณหภูมิ จำแนกดูด/คายพลังงาน',learn:[LC.dissolve,LC.dissE],act:actDissolve},
+  {id:'l5',code:'ด่าน 5',topic:'3.2.5',short:'ตกตะกอน',th:'ผสมแล้วตกตะกอนไหม',en:'Precipitation lab',desc:'ผสมสารละลาย 4 คู่ เขียนสมการไอออนิกสุทธิ',learn:[LC.ppt,LC.net],act:actPrecip},
+  {id:'l6',code:'ด่าน 6',topic:'3.2.4–3.2.5',short:'ทดสอบรวม',th:'แบบทดสอบท้ายเกม',en:'Final checkpoint',desc:'ข้อสอบ 8 ข้อ',quiz:[...QB.s5,...QB.s6]}
+ ]}
+};
+
+boot(GAMES.g1);
+</script>
+
+</body></html>

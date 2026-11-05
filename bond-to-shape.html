@@ -1,0 +1,1910 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>จากพันธะสู่รูปร่าง</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=Charm:wght@700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a dark lab bench is the stage; light notebook panels sit around it. Model-kit (CPK) atom colours and amber electrons carry the identity. */
+:root{
+  --paper:#ECF0F2; --sheet:#FFFFFF; --ink:#17212B; --muted:#56656F; --rule:#CBD4DB; --rule-soft:#E0E6EA;
+  --accent:#E89A00; --accent-ink:#8A5600; --accent-soft:#FFF0CC; --on-accent:#1E1400;
+  --ok:#1D7748; --ok-soft:#DCF1E4; --bad:#B42F2E; --bad-soft:#FAE2E1;
+  --bench:#1B252F; --bench-2:#243140; --bench-ink:#E6EDF2; --bench-muted:#8FA2B2; --electron:#FFB627;
+  --display:"Chakra Petch","Anuphan",system-ui,sans-serif;
+  --body:"Anuphan","Noto Sans Thai","Leelawadee UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10161B; --sheet:#172028; --ink:#E3EAF0; --muted:#98A8B5; --rule:#2B3743; --rule-soft:#222C35;
+  --accent:#FFB627; --accent-ink:#FFC85C; --accent-soft:#33270C; --on-accent:#1E1400;
+  --ok:#5BCB8D; --ok-soft:#14301F; --bad:#FF807C; --bad-soft:#3A1817;
+  --bench:#0D1318; --bench-2:#18232D; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#10161B; --sheet:#172028; --ink:#E3EAF0; --muted:#98A8B5; --rule:#2B3743; --rule-soft:#222C35;
+  --accent:#FFB627; --accent-ink:#FFC85C; --accent-soft:#33270C; --on-accent:#1E1400;
+  --ok:#5BCB8D; --ok-soft:#14301F; --bad:#FF807C; --bad-soft:#3A1817;
+  --bench:#0D1318; --bench-2:#18232D; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--paper)}
+body{color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+sub{font-size:.62em;vertical-align:-.28em;line-height:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.muted{color:var(--muted)}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.05rem;background:none;border:0;padding:0}
+.brand svg{width:40px;height:22px}
+.topr{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:3px;background:var(--sheet);gap:2px}
+.seg button{border:0;background:none;border-radius:999px;padding:5px 12px;font-size:.88rem;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.btn{border:1px solid var(--rule);background:var(--sheet);border-radius:8px;padding:8px 14px;font-weight:600;font-size:.92rem;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.big{padding:12px 20px;font-size:1rem;border-radius:10px}
+
+/* level rail */
+.rail{padding-block:12px 10px;border-bottom:1px solid var(--rule)}
+.rail-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+.rail-msg{font-family:var(--display);font-weight:600;font-size:1rem}
+.rail-count{font-family:var(--mono);font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.rail-bar{height:6px;background:var(--rule-soft);border-radius:99px;overflow:hidden;margin:8px 0 10px}
+.rail-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--accent));border-radius:99px;transition:width .5s}
+.rail-track{display:flex;gap:14px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.rg{display:flex;flex-direction:column;gap:4px;flex:none}
+.rg-l{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rg-n{display:flex;gap:5px}
+.rn{width:66px;border:1px solid var(--rule);background:var(--sheet);border-radius:9px;padding:4px 2px 3px;display:flex;flex-direction:column;align-items:center;line-height:1.15;flex:none}
+.rn:hover{border-color:var(--ink)}
+.rn .n{font-family:var(--mono);font-size:.62rem;color:var(--muted)}
+.rn .f{font-family:var(--display);font-weight:700;font-size:.95rem}
+.rn .s{font-size:.6rem;color:var(--accent);letter-spacing:1px;min-height:.8rem}
+.rn .s .off{color:var(--rule)}
+.rn.done{background:var(--ok-soft);border-color:var(--ok)}
+.rn.done .n{color:var(--ok)}
+.rn.now{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent);background:var(--accent-soft)}
+.rn.next{border-style:dashed;border-color:var(--accent)}
+.praise{font-family:var(--display);font-weight:700;font-size:1.3rem;line-height:1.3;color:var(--ok);margin:4px 0 6px;text-wrap:balance}
+.finale{background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;margin-top:10px}
+.finale b{display:block;font-family:var(--display);font-size:1.1rem;line-height:1.35}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding-block:44px 36px}
+.hero h1{font-size:clamp(2.3rem,5.4vw,3.8rem);font-weight:700;letter-spacing:-.01em;margin-top:10px}
+.hero h1 .en{display:block;font-size:.42em;font-weight:600;color:var(--muted);letter-spacing:.02em;margin-top:6px}
+.hero p.lead{font-size:1.08rem;max-width:56ch;margin:16px 0 22px;color:var(--ink)}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:26px;padding-top:18px;border-top:1px solid var(--rule)}
+.stat b{display:block;font-family:var(--mono);font-size:1.5rem;font-variant-numeric:tabular-nums;font-weight:600}
+.stat span{font-size:.82rem;color:var(--muted)}
+.showcase{background:var(--bench);border-radius:16px;padding:18px;color:var(--bench-ink);
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:22px 22px}
+.sc-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.sc-row svg{width:100%;height:190px}
+.sc-row canvas{width:100%;height:190px;display:block}
+.sc-arrow{font-family:var(--mono);color:var(--electron);font-size:1.4rem}
+.sc-lab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.72rem;color:var(--bench-muted);letter-spacing:.06em;text-transform:uppercase}
+.sc-cap{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}
+.sc-cap .f{font-family:var(--display);font-size:1.5rem;font-weight:700}
+.sc-cap .axe{font-family:var(--mono);color:var(--electron)}
+
+/* sections */
+section.block{padding-block:28px}
+.sechead{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.sechead h2{font-size:1.6rem}
+.howto{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;list-style:none;margin:0;padding:0;counter-reset:h}
+.howto li{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;counter-increment:h;min-width:0}
+.howto li::before{content:counter(h);font-family:var(--mono);font-weight:600;color:var(--accent-ink);display:block;font-size:.85rem;margin-bottom:4px}
+.chap{margin-bottom:26px}
+.chap h3{font-size:1.15rem;display:flex;gap:10px;align-items:baseline;margin-bottom:10px}
+.chap h3 .eyebrow{font-size:.7rem}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}
+.tile{position:relative;background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px 12px;min-height:132px;display:flex;flex-direction:column;gap:2px}
+.tile:hover{border-color:var(--ink)}
+.tile .go{position:absolute;inset:0;border:0;background:none;border-radius:var(--r)}
+.tile .num{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.tile .f{font-family:var(--display);font-weight:700;font-size:1.7rem;line-height:1.1}
+.tile .nm{font-size:.86rem;color:var(--muted)}
+.tile .shape{font-size:.82rem;color:var(--ok);font-weight:600;margin-top:auto}
+.tile .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;gap:6px}
+.stars{color:var(--accent);letter-spacing:1px;font-size:.95rem}
+.stars .off{color:var(--rule)}
+.tile .cert{position:relative;z-index:1;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;font-size:.74rem;padding:2px 8px;font-weight:600}
+.tile .cert:hover{border-color:var(--accent);color:var(--accent-ink)}
+.tile.done{border-color:color-mix(in srgb,var(--ok) 45%,var(--rule))}
+.grandbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--sheet);border:1px dashed var(--rule);border-radius:var(--r);padding:12px 16px}
+.vtable{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.vcell{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:10px 12px 12px;min-width:0}
+.vcell canvas{width:100%;height:120px;display:block;background:var(--bench);border-radius:8px}
+.vcell .axe{font-family:var(--mono);font-weight:600;color:var(--accent-ink);margin-top:8px}
+.vcell .nm{font-weight:600;line-height:1.3}
+.vcell .en{font-size:.8rem;color:var(--muted)}
+.vcell .meta{font-size:.82rem;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+.vnote{font-size:.9rem;color:var(--muted);max-width:70ch;margin:0 0 14px}
+
+/* play */
+.playbar{display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap;padding-block:14px;border-bottom:1px solid var(--rule)}
+.pl-title{display:flex;flex-direction:column;min-width:0}
+.pl-title h2{font-size:2rem;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pl-title h2 small{font-family:var(--body);font-size:1rem;font-weight:500;color:var(--muted)}
+.stepper{display:flex;gap:6px;list-style:none;margin:0 0 0 auto;padding:0;flex-wrap:wrap}
+.stepper li{font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);background:var(--sheet)}
+.stepper li.now{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.stepper li.done{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.plscore{font-family:var(--mono);font-size:.86rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.plscore b{color:var(--ink);font-size:1.1rem}
+.playgrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;padding-top:16px;align-items:start}
+.stage{display:flex;flex-direction:column;gap:10px;min-width:0}
+.stagebar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.bench{position:relative;background:var(--bench);border-radius:14px;color:var(--bench-ink);min-height:360px;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:24px 24px;overflow:hidden}
+.bench.solved{box-shadow:inset 0 0 0 3px var(--ok)}
+.board svg{display:block;width:100%;height:auto;max-height:520px;touch-action:manipulation}
+.three{position:relative}
+.three canvas{display:block;width:100%;height:440px;cursor:grab;touch-action:none}
+.threelab{position:absolute;left:14px;top:12px;right:14px;pointer-events:none;font-size:.86rem;display:flex;flex-direction:column;gap:2px}
+.threelab .big{font-family:var(--display);font-size:1.25rem;font-weight:700}
+.threelab .mono{font-family:var(--mono);color:var(--electron)}
+.threelab .leg{color:var(--bench-muted);font-size:.78rem}
+.benchhint{margin:0;padding:0 14px 12px;font-size:.82rem;color:var(--bench-muted)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tools .spacer{flex:1}
+.panel{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:14px 16px;min-width:0}
+.card h3{font-size:1.05rem;margin-bottom:8px}
+.card .lbl{font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.meter{height:10px;background:var(--rule-soft);border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+.meter.over i{background:var(--bad)}
+.brow{display:flex;justify-content:space-between;gap:8px;font-variant-numeric:tabular-nums;font-size:.9rem;flex-wrap:wrap}
+.brow b{font-family:var(--mono)}
+.sum{font-family:var(--mono);font-size:.84rem;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:4px}
+.sum b{color:var(--ink)}
+.ech{display:inline-flex;align-items:center;gap:6px;background:var(--bench);color:var(--bench-ink);border-radius:999px;padding:2px 10px 2px 6px;font-weight:600}
+.ech i{width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.plus{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);border-radius:999px;padding:3px 10px 3px 4px;font-size:.85rem;font-variant-numeric:tabular-nums}
+.chip i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:700;font-size:.72rem;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.chip.ok{border-color:var(--ok);background:var(--ok-soft)}
+.chip.bad{border-color:var(--bad);background:var(--bad-soft)}
+.mini{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center}
+.mini .mv{grid-column:1/-1;background:var(--bench);border-radius:10px}
+.mini .mv svg{display:block;width:100%;height:150px}
+.legend{font-size:.8rem;color:var(--muted);grid-column:1/-1}
+.task ol.method{margin:6px 0 10px;padding-left:1.2em;font-size:.9rem}
+.task ol.method li{margin-bottom:3px}
+.fb{border-radius:8px;padding:10px 12px;font-size:.92rem;margin-top:10px}
+.fb.bad{background:var(--bad-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--bad) 50%,transparent)}
+.fb.ok{background:var(--ok-soft);border:1px solid color-mix(in srgb,var(--ok) 50%,transparent)}
+.fb.info{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent)}
+.fb ul{margin:4px 0 0;padding-left:1.1em}
+.fb .t{font-weight:700}
+.note{font-size:.9rem;background:var(--paper);border-radius:8px;padding:10px 12px;margin-top:10px}
+.note .lbl{display:block;margin-bottom:2px}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent-ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.counter{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule-soft)}
+.counter .ctl{display:inline-flex;align-items:center;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.counter .ctl button{border:0;background:var(--paper);width:36px;height:36px;font-size:1.1rem;font-weight:700}
+.counter .ctl output{min-width:40px;text-align:center;font-family:var(--mono);font-weight:600;font-size:1.1rem}
+.axe-out{font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--accent-ink);margin:10px 0 4px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.opt{border:1px solid var(--rule);background:var(--sheet);border-radius:10px;padding:8px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt canvas{width:100%;height:96px;display:block;background:var(--bench);border-radius:7px}
+.opt .on{font-weight:600;font-size:.9rem;line-height:1.3}
+.opt .oe{font-size:.76rem;color:var(--muted)}
+.opt.txt{justify-content:center;min-height:52px;font-family:var(--mono);font-weight:600;font-size:1rem;text-align:center;align-items:center}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);opacity:.7}
+.opt.right{border-color:var(--ok);background:var(--ok-soft);box-shadow:0 0 0 2px var(--ok)}
+.score-break{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:.92rem;font-variant-numeric:tabular-nums;margin:8px 0}
+.score-break b{font-family:var(--mono);text-align:right}
+.score-break .tot{border-top:1px solid var(--rule);padding-top:6px;font-weight:700}
+.bigstars{font-size:2rem;color:var(--accent);letter-spacing:4px}
+.bigstars .off{color:var(--rule)}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* dialogs */
+dialog{border:0;border-radius:16px;padding:0;background:var(--sheet);color:var(--ink);width:min(960px,calc(100vw - 24px));max-height:calc(100vh - 24px)}
+dialog::backdrop{background:rgba(10,16,22,.6)}
+.dlg{padding:18px 20px 20px;display:flex;flex-direction:column;gap:12px}
+.dlg-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dlg-h h3{font-size:1.25rem}
+.certimg{width:100%;height:auto;border-radius:6px;border:1px solid var(--rule);display:block;background:#fff}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:600;color:var(--muted);min-width:0}
+.form input[type=text]{font:inherit;font-size:.98rem;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;width:100%}
+.form .full{grid-column:1/-1}
+.sig{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sig img{height:44px;max-width:160px;object-fit:contain;background:#fff;border:1px solid var(--rule);border-radius:6px}
+.small{font-size:.82rem;color:var(--muted)}
+footer{border-top:1px solid var(--rule);margin-top:24px;padding-top:14px;font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px}
+footer b{color:var(--ink);font-weight:600}
+.dev{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;margin:18px 0 0;font-size:.92rem}
+.dev-l{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.dev-n{font-weight:700}
+.dev-s{color:var(--muted)}
+
+/* svg atoms */
+.e{stroke:rgba(5,9,13,.55);stroke-width:.8}
+.board .e{filter:drop-shadow(0 0 2.5px rgba(255,255,255,.28))}
+.bline{stroke:var(--bench-ink);stroke-linecap:round}
+.slot{stroke:var(--bench-muted);stroke-dasharray:5 6;stroke-width:2;opacity:.75}
+.slotplus{fill:var(--bench-2);stroke:var(--bench-muted);stroke-width:1.5}
+.slotplus-t{fill:var(--bench-ink);font-family:var(--mono);font-size:15px;font-weight:600}
+.hit{stroke:transparent;stroke-width:34;stroke-linecap:round}
+[data-bond],[data-atom]{cursor:pointer;outline:none}
+[data-bond]:hover .slot{opacity:1;stroke:var(--electron)}
+[data-atom]:hover .acirc,[data-atom]:focus-visible .acirc{stroke:var(--electron);stroke-width:3}
+[data-bond]:focus-visible .hit{stroke:rgba(255,182,39,.25)}
+.asym{font-family:var(--display);font-weight:700;pointer-events:none}
+.pop{animation:pop .28s ease-out;transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{transform:scale(.55);opacity:.3}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}.meter i{transition:none}}
+
+
+/* AR mode: the phone's camera becomes the stage; the molecule floats over the real room on an amber anchor ring */
+.arbtn{position:absolute;right:12px;bottom:12px;z-index:2;background:var(--electron);color:#1E1400;border:0;border-radius:999px;padding:8px 14px 8px 11px;font-weight:700;font-size:.9rem;display:inline-flex;gap:6px;align-items:center;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.arbtn svg,.ar-ico{width:18px;height:18px;flex:none}
+.vcell .vrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}
+.vcell .vrow .axe{margin-top:0}
+.arsm{border:1px solid var(--rule);background:var(--sheet);border-radius:6px;font-size:.74rem;padding:2px 8px;font-weight:700;color:var(--accent-ink);position:relative;z-index:1}
+.arsm:hover{border-color:var(--accent)}
+.tile .tb{display:flex;gap:6px}
+dialog#ar{width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border-radius:0;background:#06090C;color:#F2F6F9;overflow:hidden;font-family:var(--body)}
+dialog#ar::backdrop{background:#06090C}
+.ar-bg{position:absolute;inset:0;background:#141D25;background-image:radial-gradient(ellipse at 50% 60%,rgba(255,182,39,.10),transparent 60%),linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:auto,28px 28px,28px 28px}
+#arVid,#arPhoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#arCv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.ar-top,.ar-bot{position:absolute;left:0;right:0;z-index:2;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));pointer-events:none}
+.ar-top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 12px);padding-bottom:28px;background:linear-gradient(rgba(4,7,10,.78),rgba(4,7,10,0));display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ar-bot{bottom:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding-top:34px;background:linear-gradient(rgba(4,7,10,0),rgba(4,7,10,.82));display:flex;flex-direction:column;align-items:center;gap:10px}
+.ar-top>*,.ar-bot>*{pointer-events:auto}
+.ar-info{display:flex;flex-direction:column;gap:2px;min-width:0;pointer-events:none}
+.ar-eb{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#FFB627}
+.ar-info h2{font-family:var(--display);font-size:clamp(1.6rem,6vw,2.3rem);font-weight:700;line-height:1.1;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.ar-info h2 small{font-family:var(--body);font-size:.5em;font-weight:500;color:#D5DEE5;margin-left:8px}
+.ar-meta{font-size:.92rem;color:#E6EDF2;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.ar-meta .m{font-family:var(--mono);color:#FFC85C}
+.ar-meta .lp{display:block;font-size:.8rem;color:#C6D2DB}
+.ar-x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(10,15,20,.55);color:#fff;font-size:1.2rem;display:grid;place-items:center;backdrop-filter:blur(6px)}
+.ar-hint{margin:0;font-size:.8rem;color:#C6D2DB;text-align:center;max-width:46ch;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.ar-nav{display:flex;align-items:center;gap:10px;background:rgba(10,15,20,.6);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px;backdrop-filter:blur(6px)}
+.ar-nav button{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:1.3rem;line-height:1}
+.ar-nav button:disabled{opacity:.3;cursor:default}
+.ar-nav span{font-family:var(--mono);font-size:.84rem;min-width:7ch;text-align:center;font-variant-numeric:tabular-nums}
+.ar-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.ar-b{border:1px solid rgba(255,255,255,.26);background:rgba(10,15,20,.6);color:#fff;border-radius:999px;padding:9px 14px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:6px;backdrop-filter:blur(6px)}
+.ar-b[aria-pressed="true"]{border-color:#FFB627;color:#FFD27A}
+.ar-b.ar-shot{background:#FFB627;border-color:#FFB627;color:#1E1400}
+.ar-msg{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100% - 32px));background:rgba(13,19,24,.92);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;backdrop-filter:blur(10px)}
+.ar-msg h3{font-family:var(--display);font-size:1.2rem;color:#fff}
+.ar-msg p{margin:0;font-size:.92rem;color:#D5DEE5;line-height:1.55}
+.ar-msg .ar-opts{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.ar-msg .ar-b{justify-content:center;width:100%}
+.ar-status{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);font-size:.95rem;color:#E6EDF2;background:rgba(10,15,20,.6);padding:8px 14px;border-radius:999px;pointer-events:none}
+.ar-sheet{position:absolute;inset:0;z-index:4;background:rgba(4,7,10,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px))}
+.ar-sheet h3{font-family:var(--display);font-size:1.15rem;color:#fff}
+.ar-sheet img{max-width:100%;max-height:62vh;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.6);display:block}
+.ar-sheet .ar-tools{max-width:520px}
+.ar-sheet p{margin:0;font-size:.82rem;color:#AFC0CC;text-align:center;max-width:46ch}
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:24px;padding-block:28px}
+  .playgrid{grid-template-columns:1fr}
+  .howto{grid-template-columns:1fr 1fr}
+  .stepper{margin-left:0;width:100%}
+}
+@media (max-width:520px){
+  .howto{grid-template-columns:1fr}
+  .form{grid-template-columns:1fr}
+  .sc-row svg,.sc-row canvas{height:150px}
+  .three canvas{height:340px}
+  .pl-title h2{font-size:1.6rem}
+  .brand span.en{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="brandBtn" type="button">
+      <svg viewBox="0 0 40 22" aria-hidden="true"><circle cx="8" cy="11" r="7" fill="#E0342E"/><circle cx="32" cy="11" r="7" fill="#3A5BE0"/><circle cx="19" cy="8" r="1.8" fill="#FFB627"/><circle cx="19" cy="14" r="1.8" fill="#FFB627"/><circle cx="23" cy="8" r="1.8" fill="#FFB627"/><circle cx="23" cy="14" r="1.8" fill="#FFB627"/></svg>
+      <span data-t="appName"></span>
+    </button>
+    <div class="topr">
+      <div class="seg" role="group" aria-label="Language">
+        <button type="button" data-lang="th">ไทย</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="btn" type="button" id="settingsBtn" data-t="settings"></button>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Levels">
+    <div class="rail-top"><span class="rail-msg" id="railMsg"></span><span class="rail-count" id="railCount"></span></div>
+    <div class="rail-bar" aria-hidden="true"><i id="railFill"></i></div>
+    <div class="rail-track" id="railTrack"></div>
+  </nav>
+
+  <!-- HOME -->
+  <main id="home">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-t="eyebrow"></div>
+        <h1><span data-t="appName"></span><span class="en" data-t="appNameAlt"></span></h1>
+        <p class="lead" data-t="tagline"></p>
+        <div class="cta">
+          <button class="btn primary big" type="button" id="startBtn"></button>
+          <button class="btn big" type="button" id="arHomeBtn"><svg class="ar-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M12 7.5 16 10v4.5L12 17l-4-2.5V10z"/><path d="M8 10l4 2.4 4-2.4M12 12.4V17"/></svg><span data-t="arRoom"></span></button>
+          <a class="btn big" href="#shapes" data-t="vsepr"></a>
+        </div>
+        <div class="stats" id="stats"></div>
+        <p class="dev"><span class="dev-l" data-t="devLabel"></span><span class="dev-n" data-t="devName"></span><span class="dev-s" data-t="devSchool"></span></p>
+      </div>
+      <div class="showcase" aria-live="off">
+        <div class="sc-lab"><span data-t="scLewis"></span><span data-t="sc3d"></span></div>
+        <div class="sc-row">
+          <div id="scSvg"></div>
+          <div class="sc-arrow" aria-hidden="true">→</div>
+          <canvas id="scCv" aria-label="3D"></canvas>
+        </div>
+        <div class="sc-cap" id="scCap"></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="sechead"><h2 data-t="howto"></h2></div>
+      <ol class="howto" id="howto"></ol>
+    </section>
+
+    <section class="block" id="levels">
+      <div class="sechead"><h2 data-t="levels"></h2><span class="small" data-t="anyOrder"></span></div>
+      <div id="chapters"></div>
+      <div class="grandbar" id="grandbar"></div>
+    </section>
+
+    <section class="block" id="tgMount">
+      <div class="sechead"><h2 data-tg="h">สำหรับครู</h2></div>
+      <div class="tg-mount"><p data-tg="p"></p><button class="btn" type="button" id="tgBtn">คู่มือครู · ความสอดคล้องกับแผนการสอน</button></div>
+    </section>
+
+
+    <section class="block" id="shapes">
+      <div class="sechead"><h2 data-t="vsepr"></h2></div>
+      <p class="vnote" data-t="vseprNote"></p>
+      <div class="vtable" id="vtable"></div>
+    </section>
+  </main>
+
+  <!-- PLAY -->
+  <main id="play" hidden>
+    <div class="playbar">
+      <button class="btn" type="button" id="backBtn">← <span data-t="home"></span></button>
+      <div class="pl-title"><span class="eyebrow" id="plChap"></span><h2 id="plFormula"></h2></div>
+      <ol class="stepper" id="stepper"></ol>
+      <div class="plscore" id="plScore"></div>
+    </div>
+    <div class="playgrid">
+      <div class="stage">
+        <div class="stagebar">
+          <div class="seg" role="group" id="tabSeg">
+            <button type="button" data-tab="lewis" data-t="tabLewis"></button>
+            <button type="button" data-tab="3d" data-t="tab3d"></button>
+          </div>
+          <div class="seg" role="group" id="viewSeg">
+            <button type="button" data-view="dot" data-t="viewDot"></button>
+            <button type="button" data-view="line" data-t="viewLine"></button>
+          </div>
+        </div>
+        <div class="bench" id="bench">
+          <div class="board" id="board"></div>
+          <div class="three" id="three" hidden><canvas id="cv3"></canvas><div class="threelab" id="threeLab"></div><button class="arbtn" type="button" id="arLvBtn"><svg class="ar-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M12 7.5 16 10v4.5L12 17l-4-2.5V10z"/><path d="M8 10l4 2.4 4-2.4M12 12.4V17"/></svg><span data-t="arBtn"></span></button></div>
+          <p class="benchhint" id="benchHint"></p>
+        </div>
+        <div class="tools" id="tools">
+          <div class="seg" role="group" id="modeSeg">
+            <button type="button" data-mode="add" data-t="modeAdd"></button>
+            <button type="button" data-mode="remove" data-t="modeRemove"></button>
+          </div>
+          <button class="btn" type="button" id="undoBtn" data-t="undo"></button>
+          <button class="btn" type="button" id="resetBtn" data-t="reset"></button>
+          <button class="btn" type="button" id="fillBtn" data-t="autofill"></button>
+          <span class="spacer"></span>
+          <button class="btn primary" type="button" id="checkBtn" data-t="check"></button>
+        </div>
+      </div>
+      <aside class="panel">
+        <div class="card task" id="task" aria-live="polite"></div>
+        <div class="card" id="budget"></div>
+        <div class="card" id="chips"></div>
+        <div class="card mini" id="mini"></div>
+      </aside>
+    </div>
+  </main>
+  <footer><span data-t="footer"></span><span class="dev-foot"><span data-t="devLabel"></span> <b data-t="devName"></b> <span data-t="devSchool"></span></span></footer>
+</div>
+
+<dialog id="certDlg">
+  <div class="dlg">
+    <div class="dlg-h"><h3 id="certTitle"></h3><button class="btn" type="button" data-close data-t="close"></button></div>
+    <div class="form">
+      <label><span data-t="sStudent"></span><input type="text" id="cStudent" autocomplete="off"></label>
+      <label><span data-t="sClass"></span><input type="text" id="cClass" autocomplete="off"></label>
+    </div>
+    <img class="certimg" id="certImg" alt="">
+    <div class="row-btns" style="align-items:center">
+      <button class="btn primary" type="button" id="certSave" data-t="certSave"></button>
+      <button class="btn" type="button" id="certSettings" data-t="certSettings"></button>
+      <span class="small" data-t="certSaveHint"></span>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="ar" aria-labelledby="arTitle">
+  <div class="ar-bg"></div>
+  <video id="arVid" playsinline muted autoplay hidden></video>
+  <img id="arPhoto" alt="" hidden>
+  <canvas id="arCv" aria-label="AR"></canvas>
+  <div class="ar-status" id="arStatus" hidden></div>
+  <div class="ar-top">
+    <div class="ar-info"><span class="ar-eb" data-t="arEyebrow"></span><h2 id="arTitle"></h2><div class="ar-meta" id="arMeta"></div></div>
+    <button class="ar-x" type="button" id="arClose" aria-label="close">✕</button>
+  </div>
+  <div class="ar-bot">
+    <p class="ar-hint" id="arHint"></p>
+    <div class="ar-nav" id="arNav"><button type="button" id="arPrev" aria-label="previous">‹</button><span id="arCount"></span><button type="button" id="arNext" aria-label="next">›</button></div>
+    <div class="ar-tools">
+      <button class="ar-b" type="button" id="arGyro" aria-pressed="false"></button>
+      <button class="ar-b" type="button" id="arReset" data-t="arReset"></button>
+      <button class="ar-b" type="button" id="arSrcBtn" data-t="arSrc"></button>
+      <button class="ar-b ar-shot" type="button" id="arShot" data-t="arShot"></button>
+    </div>
+  </div>
+  <div class="ar-msg" id="arMsg" hidden></div>
+  <div class="ar-sheet" id="arSheet" hidden>
+    <h3 id="arShotTitle"></h3>
+    <img id="arShotImg" alt="">
+    <div class="ar-tools"><button class="ar-b ar-shot" type="button" id="arSave" data-t="certSave"></button><button class="ar-b" type="button" id="arBack" data-t="arBack"></button></div>
+    <p data-t="certSaveHint"></p>
+  </div>
+  <input type="file" id="arFile" accept="image/*" capture="environment" hidden>
+</dialog>
+
+<dialog id="setDlg">
+  <div class="dlg">
+    <div class="dlg-h"><h3 data-t="sTitle"></h3><button class="btn" type="button" data-close data-t="close"></button></div>
+    <div class="form">
+      <label><span data-t="sStudent"></span><input type="text" id="fStudent" autocomplete="off"></label>
+      <label><span data-t="sClass"></span><input type="text" id="fClass" autocomplete="off"></label>
+      <label class="full"><span data-t="sSchool"></span><input type="text" id="fSchool" autocomplete="off"></label>
+      <label><span data-t="sTeacher"></span><input type="text" id="fTeacher" autocomplete="off"></label>
+      <label><span data-t="sPos"></span><input type="text" id="fTeacherPos" autocomplete="off"></label>
+      <label><span data-t="sDirector"></span><input type="text" id="fDirector" autocomplete="off"></label>
+      <label><span data-t="sPos"></span><input type="text" id="fDirectorPos" autocomplete="off"></label>
+      <div class="full"><div class="small" style="font-weight:600" data-t="sSigT"></div>
+        <div class="sig"><input type="file" id="fSigT" accept="image/*"><img id="pSigT" alt="" hidden><button class="btn" type="button" id="xSigT" data-t="sClearSig"></button></div></div>
+      <div class="full"><div class="small" style="font-weight:600" data-t="sSigD"></div>
+        <div class="sig"><input type="file" id="fSigD" accept="image/*"><img id="pSigD" alt="" hidden><button class="btn" type="button" id="xSigD" data-t="sClearSig"></button></div></div>
+    </div>
+    <p class="small" data-t="sNote"></p>
+    <div><button class="btn" type="button" id="resetAll" data-t="sReset"></button></div>
+  </div>
+</dialog>
+
+<script>
+/* ===== data + pure logic (no DOM) ===== */
+const ELEM={
+  H:{v:1,col:'#F2F4F6',txt:'#1B2530',r:22,r3:.24,ec:'#FFFFFF'},
+  B:{v:3,col:'#F4A28C',txt:'#3B1A10',r:27,r3:.33,ec:'#FFB8A6'},
+  C:{v:4,col:'#30363C',txt:'#FFFFFF',r:27,r3:.34,ec:'#D99BFF'},
+  N:{v:5,col:'#3A5BE0',txt:'#FFFFFF',r:27,r3:.33,ec:'#62B4FF'},
+  O:{v:6,col:'#E0342E',txt:'#FFFFFF',r:27,r3:.32,ec:'#FF6F61'},
+  F:{v:7,col:'#8AD660',txt:'#14300F',r:26,r3:.30,ec:'#A6F27A'},
+  P:{v:5,col:'#F58220',txt:'#2A1300',r:29,r3:.40,ec:'#FFA54F'},
+  S:{v:6,col:'#EDC524',txt:'#2E2600',r:29,r3:.40,ec:'#FFE14D'},
+  Cl:{v:7,col:'#24A247',txt:'#FFFFFF',r:28,r3:.37,ec:'#52E28E'},
+  Xe:{v:8,col:'#3FB0BF',txt:'#08262A',r:30,r3:.44,ec:'#5FE6F2'}
+};
+/* who supplied each bonding electron: each side gives `order` electrons, shifted toward the atom with positive formal charge (coordinate bonds) */
+function bondOwners(L,b,lp){
+  const fc=L.atoms.map((a,i)=>ELEM[a.e].v-2*lp[i]-bondSum(L,b,i));
+  return L.bonds.map(([i,j],k)=>{const c=[b[k],b[k]];
+    if(fc[i]>0&&fc[j]<0){const s=Math.min(fc[i],-fc[j],c[1]);c[0]+=s;c[1]-=s;fc[i]-=s;fc[j]+=s}
+    else if(fc[j]>0&&fc[i]<0){const s=Math.min(fc[j],-fc[i],c[0]);c[1]+=s;c[0]-=s;fc[j]-=s;fc[i]+=s}
+    return c});
+}
+function pairColors(L,k,ord,c){const [i,j]=L.bonds[k];let a=c[0],bb=c[1];const out=[];
+  for(let m=0;m<ord;m++){let d1,d2;if(a>0){d1=i;a--}else{d1=j;bb--}if(bb>0){d2=j;bb--}else{d2=i;a--}out.push([d1,d2])}return out}
+const SHAPES={
+  linear:{d:2,lp:0,th:'เส้นตรง',en:'Linear',ang:'180°',ex:'CO2'},
+  trigonalPlanar:{d:3,lp:0,th:'สามเหลี่ยมแบนราบ',en:'Trigonal planar',ang:'120°',ex:'BF3'},
+  bent3:{d:3,lp:1,th:'มุมงอ',en:'Bent',ang:'< 120°',ex:'SO2'},
+  tetrahedral:{d:4,lp:0,th:'ทรงสี่หน้า',en:'Tetrahedral',ang:'109.5°',ex:'CH4'},
+  pyramidal:{d:4,lp:1,th:'พีระมิดฐานสามเหลี่ยม',en:'Trigonal pyramidal',ang:'≈107°',ex:'NH3'},
+  bent4:{d:4,lp:2,th:'มุมงอ',en:'Bent',ang:'≈104.5°',ex:'H2O'},
+  tbp:{d:5,lp:0,th:'พีระมิดคู่ฐานสามเหลี่ยม',en:'Trigonal bipyramidal',ang:'90°, 120°',ex:'PCl5'},
+  seesaw:{d:5,lp:1,th:'ทรงสี่หน้าบิดเบี้ยว',en:'Seesaw',ang:'< 90°, < 120°',ex:'SF4'},
+  tshape:{d:5,lp:2,th:'รูปตัวที',en:'T-shaped',ang:'< 90°',ex:'ClF3'},
+  linear5:{d:5,lp:3,th:'เส้นตรง',en:'Linear',ang:'180°',ex:'XeF2'},
+  octahedral:{d:6,lp:0,th:'ทรงแปดหน้า',en:'Octahedral',ang:'90°',ex:'SF6'},
+  sqPyramidal:{d:6,lp:1,th:'พีระมิดฐานสี่เหลี่ยม',en:'Square pyramidal',ang:'< 90°',ex:'BrF5'},
+  sqPlanar:{d:6,lp:2,th:'สี่เหลี่ยมแบนราบ',en:'Square planar',ang:'90°',ex:'XeF4'}
+};
+const GEOM={2:{th:'เส้นตรง',en:'linear'},3:{th:'สามเหลี่ยมแบนราบ',en:'trigonal planar'},4:{th:'ทรงสี่หน้า',en:'tetrahedral'},5:{th:'พีระมิดคู่ฐานสามเหลี่ยม',en:'trigonal bipyramidal'},6:{th:'ทรงแปดหน้า',en:'octahedral'}};
+const CHAPTERS=[
+  {th:'พันธะเดี่ยว พันธะคู่ พันธะสาม',en:'Single, double and triple bonds'},
+  {th:'คู่โดดเดี่ยวกำหนดรูปร่าง',en:'Lone pairs set the shape'},
+  {th:'พันธะหลายชั้นและข้อยกเว้นออกเตต',en:'Multiple bonds and an octet exception'},
+  {th:'อะตอมกลางที่ขยายเกินออกเตต',en:'Expanded octets'}
+];
+function ring(center,ct,terms,dist){
+  const atoms=[{e:center,x:0,y:0,t:ct}],bonds=[];
+  terms.forEach(([e,a,t,d],i)=>{const rad=a*Math.PI/180,dd=d||dist;atoms.push({e,x:Math.round(dd*Math.cos(rad)),y:Math.round(dd*Math.sin(rad)),t});bonds.push([0,i+1])});
+  return {atoms,bonds};
+}
+function duo(e1,t1,e2,t2){return {atoms:[{e:e1,x:-78,y:0,t:t1},{e:e2,x:78,y:0,t:t2}],bonds:[[0,1]],diatomic:true}}
+const A=(o)=>o;
+const LEVELS=[
+  A({id:'hcl',f:'HCl',ch:0,...duo('H',2,'Cl',8),fc:0,shape:'linear',sol:{b:[1],lp:[0,3]},bt:0,
+    name:{th:'ไฮโดรเจนคลอไรด์',en:'Hydrogen chloride'},
+    hint:{th:'H ต้องการอิเล็กตรอนล้อมรอบเพียง 2 ตัว (กฎดูเอต) ส่วน Cl ต้องการ 8 ตัว',en:'H needs only 2 electrons around it (duet rule). Cl needs 8.'},
+    note:{th:'H–Cl ใช้อิเล็กตรอนร่วมกัน 1 คู่ จึงเป็นพันธะเดี่ยว ส่วน Cl ยังมีคู่โดดเดี่ยวอีก 3 คู่',en:'H–Cl shares one pair of electrons, a single bond. Cl keeps three lone pairs.'}}),
+  A({id:'o2',f:'O2',ch:0,...duo('O',8,'O',8),fc:0,shape:'linear',sol:{b:[2],lp:[2,2]},bt:1,
+    name:{th:'แก๊สออกซิเจน',en:'Oxygen'},
+    hint:{th:'ถ้าใช้พันธะเดี่ยว O แต่ละอะตอมจะมีอิเล็กตรอนไม่ครบ 8 ลองเพิ่มเป็นพันธะคู่',en:'With a single bond each O falls short of 8. Try a double bond.'},
+    note:{th:'O=O ใช้อิเล็กตรอนร่วมกัน 2 คู่ (4 ตัว) และ O แต่ละอะตอมมีคู่โดดเดี่ยว 2 คู่',en:'O=O shares two pairs (4 electrons). Each O keeps two lone pairs.'}}),
+  A({id:'n2',f:'N2',ch:0,...duo('N',8,'N',8),fc:0,shape:'linear',sol:{b:[3],lp:[1,1]},bt:2,
+    name:{th:'แก๊สไนโตรเจน',en:'Nitrogen'},
+    hint:{th:'N มีเวเลนซ์อิเล็กตรอน 5 ตัว ต้องใช้อิเล็กตรอนร่วมกัน 3 คู่จึงครบออกเตต',en:'N has 5 valence electrons, so it must share three pairs to reach an octet.'},
+    note:{th:'N≡N เป็นพันธะสามที่แข็งแรงมาก (ประมาณ 945 kJ/mol) แก๊สไนโตรเจนจึงไม่ค่อยทำปฏิกิริยา',en:'N≡N is a very strong triple bond (about 945 kJ/mol), which is why nitrogen gas is so unreactive.'}}),
+
+  A({id:'ch4',f:'CH4',ch:1,...ring('C',8,[['H',0,2],['H',90,2],['H',180,2],['H',270,2]],125),fc:0,shape:'tetrahedral',sol:{b:[1,1,1,1],lp:[0,0,0,0,0]},
+    ang:{opts:['109.5°','90°','120°','180°'],ans:0},
+    name:{th:'มีเทน',en:'Methane'},
+    hint:{th:'C มีเวเลนซ์อิเล็กตรอน 4 ตัว จับคู่กับ H ได้ 4 อะตอมพอดี',en:'C has 4 valence electrons, exactly enough to pair with four H atoms.'},
+    note:{th:'บนกระดาษพันธะทำมุม 90° แต่ในสามมิติกลุ่มอิเล็กตรอน 4 กลุ่มกางออกให้ห่างกันมากที่สุด เป็นทรงสี่หน้า มุม 109.5°',en:'On paper the bonds look 90° apart. In 3D the four domains spread as far as possible into a tetrahedron at 109.5°.'}}),
+  A({id:'nh3',f:'NH3',ch:1,...ring('N',8,[['H',180,2],['H',0,2],['H',90,2]],125),fc:0,shape:'pyramidal',sol:{b:[1,1,1],lp:[1,0,0,0]},
+    ang:{opts:['≈107°','109.5°','120°','90°'],ans:0},
+    name:{th:'แอมโมเนีย',en:'Ammonia'},
+    hint:{th:'N ต่อพันธะกับ H 3 อะตอม แล้วยังเหลืออิเล็กตรอน 2 ตัววางเป็นคู่โดดเดี่ยวบน N',en:'N bonds to three H atoms, and the 2 electrons left over sit on N as a lone pair.'},
+    note:{th:'คู่โดดเดี่ยว 1 คู่บน N ผลักแรงกว่าคู่ร่วมพันธะ มุม H–N–H จึงหุบลงเหลือประมาณ 107°',en:'The lone pair on N pushes harder than a bonding pair, squeezing H–N–H to about 107°.'}}),
+  A({id:'h2o',f:'H2O',ch:1,...ring('O',8,[['H',180,2],['H',0,2]],125),fc:0,shape:'bent4',sol:{b:[1,1],lp:[2,0,0]},
+    ang:{opts:['≈104.5°','109.5°','180°','120°'],ans:0},
+    name:{th:'น้ำ',en:'Water'},
+    hint:{th:'O ต่อพันธะกับ H 2 อะตอม อิเล็กตรอนที่เหลือ 4 ตัวเป็นคู่โดดเดี่ยว 2 คู่บน O',en:'O bonds to two H atoms. The remaining 4 electrons form two lone pairs on O.'},
+    note:{th:'คู่โดดเดี่ยว 2 คู่ผลักแรงขึ้นอีก มุม H–O–H จึงเหลือประมาณ 104.5° โมเลกุลน้ำจึงงอ ไม่ใช่เส้นตรงอย่างที่วาดบนกระดาษ',en:'Two lone pairs push even harder, closing H–O–H to about 104.5°. Water is bent, not straight as drawn on paper.'}}),
+
+  A({id:'co2',f:'CO2',ch:2,...ring('C',8,[['O',180,8],['O',0,8]],140),fc:0,shape:'linear',sol:{b:[2,2],lp:[0,2,2]},
+    ang:{opts:['180°','120°','109.5°','104.5°'],ans:0},
+    name:{th:'คาร์บอนไดออกไซด์',en:'Carbon dioxide'},
+    hint:{th:'ถ้าใช้พันธะเดี่ยว C จะมีอิเล็กตรอนแค่ 4 ตัว ให้เปลี่ยนคู่โดดเดี่ยวของ O ทั้งสองข้างมาเป็นพันธะคู่',en:'With single bonds C only has 4 electrons. Turn a lone pair on each O into a second bond.'},
+    note:{th:'O=C=O ไม่มีคู่โดดเดี่ยวบน C พันธะคู่ 2 ข้างนับเป็น 2 กลุ่ม จึงเป็นเส้นตรง 180°',en:'O=C=O has no lone pair on C. The two double bonds count as two domains, so the molecule is linear at 180°.'}}),
+  A({id:'hcn',f:'HCN',ch:2,...ring('C',8,[['H',180,2,120],['N',0,8,140]],140),fc:0,shape:'linear',sol:{b:[1,3],lp:[0,0,1]},
+    ang:{opts:['180°','120°','109.5°','90°'],ans:0},
+    name:{th:'ไฮโดรเจนไซยาไนด์',en:'Hydrogen cyanide'},
+    hint:{th:'อะตอมกลางคือ C ระหว่าง C กับ N ต้องเป็นพันธะสาม',en:'C is the central atom. C and N need a triple bond.'},
+    note:{th:'รอบ C มี 2 กลุ่ม คือพันธะเดี่ยว 1 กลุ่มและพันธะสาม 1 กลุ่ม จึงเป็นเส้นตรง',en:'C has two domains, one single bond and one triple bond, so HCN is linear.'}}),
+  A({id:'ch2o',f:'CH2O',ch:2,...ring('C',8,[['O',270,8],['H',150,2],['H',30,2]],130),fc:0,shape:'trigonalPlanar',sol:{b:[2,1,1],lp:[0,2,0,0]},
+    ang:{opts:['≈120°','109.5°','180°','90°'],ans:0},
+    name:{th:'ฟอร์มาลดีไฮด์',en:'Formaldehyde'},
+    hint:{th:'O ต้องต่อกับ C ด้วยพันธะคู่ C จึงครบออกเตต',en:'O must join C with a double bond for C to reach an octet.'},
+    note:{th:'รอบ C มี 3 กลุ่มและไม่มีคู่โดดเดี่ยว จึงเป็นสามเหลี่ยมแบนราบ มุมประมาณ 120°',en:'C has three domains and no lone pair: trigonal planar, about 120°.'}}),
+  A({id:'so2',f:'SO2',ch:2,...ring('S',8,[['O',180,8],['O',0,8]],140),fc:2,shape:'bent3',sol:{b:[2,1],lp:[1,2,3]},
+    ang:{opts:['≈119°','180°','109.5°','90°'],ans:0},
+    name:{th:'ซัลเฟอร์ไดออกไซด์',en:'Sulfur dioxide'},
+    hint:{th:'ให้ S ครบออกเตต: พันธะคู่กับ O 1 อะตอม พันธะเดี่ยวกับอีก 1 อะตอม และคู่โดดเดี่ยว 1 คู่บน S',en:'Give S an octet: a double bond to one O, a single bond to the other, and one lone pair on S.'},
+    note:{th:'พันธะคู่สลับไปอยู่ข้างใดก็ได้ จึงมีโครงสร้างเรโซแนนซ์ 2 แบบ พันธะ S–O จริงยาวเท่ากันทั้งสองข้าง',en:'The double bond can sit on either side, giving two resonance structures. In reality both S–O bonds are the same length.'}}),
+  A({id:'bf3',f:'BF3',ch:2,...ring('B',6,[['F',270,8],['F',30,8],['F',150,8]],135),fc:0,shape:'trigonalPlanar',sol:{b:[1,1,1],lp:[0,3,3,3]},
+    ang:{opts:['120°','109.5°','107°','90°'],ans:0},
+    name:{th:'โบรอนไตรฟลูออไรด์',en:'Boron trifluoride'},
+    hint:{th:'B มีเวเลนซ์อิเล็กตรอนเพียง 3 ตัว ในโมเลกุลนี้ B มีอิเล็กตรอนล้อมรอบแค่ 6 ตัว ไม่ครบออกเตต',en:'B has only 3 valence electrons. In this molecule B ends up with just 6 electrons, short of an octet.'},
+    note:{th:'BF₃ เป็นข้อยกเว้นของกฎออกเตต B มีอิเล็กตรอนรอบตัว 6 ตัว มี 3 กลุ่ม จึงเป็นสามเหลี่ยมแบนราบ มุม 120°',en:'BF₃ breaks the octet rule: B has 6 electrons in three domains, giving a trigonal planar shape at 120°.'}}),
+
+  A({id:'pcl5',f:'PCl5',ch:3,...ring('P',10,[['Cl',270,8],['Cl',342,8],['Cl',54,8],['Cl',126,8],['Cl',198,8]],140),fc:0,shape:'tbp',sol:{b:[1,1,1,1,1],lp:[0,3,3,3,3,3]},
+    ang:{opts:[{th:'90° และ 120°',en:'90° and 120°'},'72°','109.5°',{th:'120° เท่านั้น',en:'120° only'}],ans:0},
+    name:{th:'ฟอสฟอรัสเพนตะคลอไรด์',en:'Phosphorus pentachloride'},
+    hint:{th:'ธาตุคาบที่ 3 ขึ้นไปรับอิเล็กตรอนได้เกิน 8 ตัว P ต่อพันธะกับ Cl 5 อะตอม รอบ P จึงมีอิเล็กตรอน 10 ตัว',en:'Period 3 and heavier atoms can hold more than 8. P bonds to five Cl atoms and ends up with 10 electrons.'},
+    note:{th:'5 กลุ่มจัดเป็นพีระมิดคู่ฐานสามเหลี่ยม Cl แนวแกนทำมุม 90° กับแนวระนาบ ส่วน Cl ในแนวระนาบทำมุม 120° กัน',en:'Five domains form a trigonal bipyramid: axial Cl sit at 90° to the equator, equatorial Cl are 120° apart.'}}),
+  A({id:'sf4',f:'SF4',ch:3,...ring('S',10,[['F',0,8],['F',90,8],['F',180,8],['F',270,8]],140),fc:0,shape:'seesaw',sol:{b:[1,1,1,1],lp:[1,3,3,3,3]},
+    ang:{opts:[{th:'≈102° และ ≈173°',en:'≈102° and ≈173°'},'109.5°',{th:'90° และ 120°',en:'90° and 120°'},'90°'],ans:0},
+    name:{th:'ซัลเฟอร์เตตระฟลูออไรด์',en:'Sulfur tetrafluoride'},
+    hint:{th:'S ต่อพันธะกับ F 4 อะตอม แล้วยังเหลืออิเล็กตรอน 2 ตัวบน S รวมรอบ S เป็น 10 ตัว',en:'S bonds to four F atoms with 2 electrons left on S, giving 10 around S.'},
+    note:{th:'คู่โดดเดี่ยวเลือกอยู่ในแนวระนาบ (equatorial) ซึ่งมีที่ว่างมากกว่า จึงดันพันธะอื่นให้บิด รูปร่างเป็นทรงสี่หน้าบิดเบี้ยว',en:'The lone pair takes an equatorial position where there is more room, bending the other bonds into a seesaw.'}}),
+  A({id:'xef2',f:'XeF2',ch:3,...ring('Xe',10,[['F',180,8],['F',0,8]],145),fc:0,shape:'linear5',sol:{b:[1,1],lp:[3,3,3]},
+    ang:{opts:['180°','90°','120°','104.5°'],ans:0},
+    name:{th:'ซีนอนไดฟลูออไรด์',en:'Xenon difluoride'},
+    hint:{th:'Xe มีเวเลนซ์อิเล็กตรอน 8 ตัว หลังต่อพันธะกับ F 2 อะตอม ที่เหลือเป็นคู่โดดเดี่ยว 3 คู่บน Xe',en:'Xe has 8 valence electrons. After bonding two F atoms, the rest form three lone pairs on Xe.'},
+    note:{th:'คู่โดดเดี่ยว 3 คู่เรียงอยู่ในแนวระนาบรอบอะตอมกลาง F ทั้งสองอยู่บนแกนตั้ง จึงเป็นเส้นตรง 180° แม้จะมี 5 กลุ่ม',en:'The three lone pairs ring the equator and both F sit on the axis, so XeF₂ is linear at 180° even with five domains.'}}),
+  A({id:'sf6',f:'SF6',ch:3,...ring('S',12,[['F',0,8],['F',60,8],['F',120,8],['F',180,8],['F',240,8],['F',300,8]],140),fc:0,shape:'octahedral',sol:{b:[1,1,1,1,1,1],lp:[0,3,3,3,3,3,3]},
+    ang:{opts:['90°','60°','109.5°','120°'],ans:0},
+    name:{th:'ซัลเฟอร์เฮกซะฟลูออไรด์',en:'Sulfur hexafluoride'},
+    hint:{th:'S ใช้เวเลนซ์อิเล็กตรอนทั้ง 6 ตัวสร้างพันธะกับ F 6 อะตอม รอบ S จึงมีอิเล็กตรอน 12 ตัว',en:'S uses all 6 valence electrons to bond six F atoms, so S holds 12 electrons.'},
+    note:{th:'บนกระดาษเห็นพันธะห่างกัน 60° แต่ในสามมิติ F ทั้ง 6 กางเป็นทรงแปดหน้า ทุกมุมเป็น 90°',en:'On paper the bonds are 60° apart, but in 3D the six F atoms form an octahedron with every angle 90°.'}}),
+  A({id:'xef4',f:'XeF4',ch:3,...ring('Xe',12,[['F',0,8],['F',90,8],['F',180,8],['F',270,8]],145),fc:0,shape:'sqPlanar',sol:{b:[1,1,1,1],lp:[2,3,3,3,3]},
+    ang:{opts:['90°','109.5°','≈102°','120°'],ans:0},
+    name:{th:'ซีนอนเตตระฟลูออไรด์',en:'Xenon tetrafluoride'},
+    hint:{th:'Xe ต่อพันธะกับ F 4 อะตอม เหลือคู่โดดเดี่ยว 2 คู่บน Xe รวมรอบ Xe เป็น 12 ตัว',en:'Xe bonds to four F atoms and keeps two lone pairs, 12 electrons in all.'},
+    note:{th:'คู่โดดเดี่ยว 2 คู่อยู่ตรงข้ามกัน (บนและล่าง) F ทั้ง 4 จึงอยู่บนระนาบเดียวกัน เป็นสี่เหลี่ยมแบนราบ',en:'The two lone pairs sit opposite each other, above and below, so the four F atoms lie flat in a square plane.'}})
+];
+const valenceTotal=L=>L.atoms.reduce((s,a)=>s+ELEM[a.e].v,0);
+function bondSum(L,b,i){let s=0;L.bonds.forEach((bd,k)=>{if(bd[0]===i||bd[1]===i)s+=b[k]});return s}
+const atomCount=(L,b,lp,i)=>2*lp[i]+2*bondSum(L,b,i);
+const usedTotal=(L,b,lp)=>lp.reduce((s,x)=>s+2*x,0)+b.reduce((s,x)=>s+2*x,0);
+const formalCharges=(L,b,lp)=>L.atoms.map((a,i)=>ELEM[a.e].v-2*lp[i]-bondSum(L,b,i));
+function validate(L,b,lp){
+  const issues=[],bad=new Set();
+  L.bonds.forEach((bd,k)=>{if(b[k]===0){issues.push({k:'disc',a:bd[1]});bad.add(bd[1])}});
+  const T=valenceTotal(L),U=usedTotal(L,b,lp);
+  if(U>T)issues.push({k:'over',n:U-T,t:T});else if(U<T)issues.push({k:'under',n:T-U});
+  L.atoms.forEach((a,i)=>{const n=atomCount(L,b,lp,i);if(n!==a.t){issues.push({k:'atom',a:i,t:a.t,n});bad.add(i)}});
+  let ok=issues.length===0;
+  if(ok){const fc=formalCharges(L,b,lp).reduce((s,x)=>s+Math.abs(x),0);if(fc!==L.fc){ok=false;issues.push({k:'fc'})}}
+  return {ok,issues,bad};
+}
+</script>
+
+<script>
+/* ===== UI ===== */
+const I18N={
+th:{
+ appName:'จากพันธะสู่รูปร่าง',appNameAlt:'Bond to Shape',eyebrow:'เคมี ม.4 · 3.3.1 การเกิดพันธะโคเวเลนต์ · 3.3.4 รูปร่างโมเลกุลโคเวเลนต์',
+ tagline:'ต่อพันธะโคเวเลนต์ด้วยมือตัวเอง ดูโครงสร้างลิวอิสทั้งแบบจุดและแบบเส้น แล้วดูว่าคู่อิเล็กตรอนรอบอะตอมกลางกำหนดรูปร่างโมเลกุลอย่างไร ผ่านแต่ละด่านรับเกียรติบัตรทันที',
+ start:'เริ่มด่านที่ 1',cont:'เล่นต่อ ด่านที่ {n}',replayAll:'เล่นทบทวน',vsepr:'ตารางรูปร่างโมเลกุล',howto:'วิธีเล่น',levels:'ด่านทั้งหมด 16 ด่าน',anyOrder:'เลือกเล่นด่านใดก่อนก็ได้',
+ how1:'<b>สร้างพันธะ</b> แตะเส้นประระหว่างอะตอมเพื่อเพิ่มพันธะ (เดี่ยว → คู่ → สาม) แตะอะตอมเพื่อเติมคู่อิเล็กตรอนโดดเดี่ยว',
+ how2:'<b>นับกลุ่มอิเล็กตรอน</b> รอบอะตอมกลาง แล้วเขียนในรูป AXₘEₙ',
+ how3:'<b>เลือกรูปร่างและมุมพันธะ</b> แล้วหมุนดูแบบจำลองสามมิติ',
+ how4:'<b>รับเกียรติบัตร</b> ประจำด่าน บันทึกเป็นภาพ PNG ได้',
+ scLewis:'โครงสร้างลิวอิส',sc3d:'รูปร่างจริง',
+ sPassed:'ด่านที่ผ่าน',sScore:'คะแนนรวม',sStars:'ดาวที่ได้',
+ vseprNote:'ทฤษฎี VSEPR: กลุ่มอิเล็กตรอนรอบอะตอมกลางผลักกันให้อยู่ห่างกันมากที่สุด X คือจำนวนอะตอมที่ต่อกับอะตอมกลาง E คือจำนวนคู่อิเล็กตรอนโดดเดี่ยวบนอะตอมกลาง ก้อนสีอำพันในภาพคือคู่โดดเดี่ยว',
+ footer:'จากพันธะสู่รูปร่าง · ความคืบหน้าบันทึกไว้ในเบราว์เซอร์เครื่องนี้',
+ devLabel:'ผู้ออกแบบและพัฒนาเกม',devName:'นางมัณฑนา ไชยสงค์',devSchool:'ครูโรงเรียนธาตุพนม',certDev:'ออกแบบและพัฒนาสื่อการเรียนรู้โดย นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม',
+ settings:'ตั้งค่า',home:'หน้าหลัก',level:'ด่าน',chapter:'บท',
+ tabLewis:'โครงสร้างลิวอิส',tab3d:'รูปร่าง 3 มิติ',viewDot:'แบบจุด',viewLine:'แบบเส้น',modeAdd:'＋ เพิ่ม',modeRemove:'－ ลบ',
+ undo:'ย้อนกลับ',reset:'ล้างกระดาน',autofill:'เติมคู่โดดเดี่ยวอะตอมล้อมรอบ',check:'ตรวจโครงสร้าง',
+ hintAdd:'แตะเส้นประ = เพิ่มพันธะ · แตะอะตอม = เพิ่มคู่โดดเดี่ยว',hintRemove:'โหมดลบ: แตะพันธะหรืออะตอมเพื่อลดลงทีละ 1',hintDone:'โครงสร้างเสร็จแล้ว สลับดูแบบจุดและแบบเส้นได้',hint3d:'ลากเพื่อหมุนแบบจำลอง',
+ st1:'สร้างพันธะ',st2:'กลุ่มอิเล็กตรอน',st2d:'คู่ร่วมพันธะ',st3:'รูปร่าง',st4:'มุมพันธะ',st4d:'ชนิดพันธะ',
+ ptsNow:'คะแนนด่านนี้',
+ buildTitle:'สร้างโครงสร้างลิวอิสของ {f}',method:'ลำดับคิด',
+ m1:'รวมเวเลนซ์อิเล็กตรอนของทุกอะตอม (ดูกล่องด้านล่าง)',m2:'ต่อพันธะเดี่ยวระหว่างอะตอมกลางกับอะตอมล้อมรอบทุกตัว',m2d:'ต่อพันธะเดี่ยวระหว่างสองอะตอม',
+ m3:'เติมคู่โดดเดี่ยวให้อะตอมล้อมรอบครบ 8 (H ครบที่ 2)',m4:'อิเล็กตรอนที่เหลือวางเป็นคู่โดดเดี่ยวบนอะตอมกลาง',
+ m5:'ถ้าอะตอมกลางยังไม่ครบ เปลี่ยนคู่โดดเดี่ยวของอะตอมล้อมรอบเป็นพันธะคู่หรือพันธะสาม',m5d:'ถ้ายังไม่ครบ เพิ่มเป็นพันธะคู่หรือพันธะสาม',
+ showHint:'ขอคำใบ้',hintLbl:'คำใบ้',showAns:'ดูเฉลย (ได้ 15 คะแนน)',ansUsed:'ใช้เฉลยแล้ว ลองสังเกตว่าทำไมโครงสร้างนี้จึงถูกต้อง',
+ budget:'เวเลนซ์อิเล็กตรอนทั้งหมด',placed:'วางแล้ว',left:'คงเหลือ',over:'เกินมา',
+ around:'อิเล็กตรอนรอบแต่ละอะตอม',otherDot:'โครงสร้างเดียวกันแบบจุด',otherLine:'โครงสร้างเดียวกันแบบเส้น',
+ legend:'แบบเส้น: 1 เส้น = อิเล็กตรอนคู่ร่วมพันธะ 1 คู่ (2 ตัว) · สีของจุดบอกว่าอิเล็กตรอนมาจากอะตอมใด',
+ ecNote:'จุดแต่ละสีคือเวเลนซ์อิเล็กตรอนของธาตุนั้น เมื่อสร้างเสร็จ จำนวนจุดแต่ละสีต้องเท่ากับเวเลนซ์อิเล็กตรอนของธาตุ',
+ railTitle:'ความคืบหน้า',railCount:'ผ่าน {n}/16 ด่าน · {s} คะแนน',
+ enc0:'เริ่มการเดินทางจากพันธะสู่รูปร่างกันเลย',enc1:'เริ่มต้นได้ดีมาก ไปต่อกันเลย',enc2:'กำลังไปได้สวย เก่งขึ้นทุกด่าน',enc3:'ผ่านมาครึ่งทางแล้ว เก่งมาก',enc4:'เกินครึ่งทางแล้ว อย่าหยุดนะ',enc5:'ใกล้ถึงเส้นชัยแล้ว อีกนิดเดียว',enc6:'ผ่านครบทุกด่าน ยอดเยี่ยมที่สุด',
+ remain:'ผ่านแล้ว {n} จาก 16 ด่าน อีก {k} ด่านจะครบทั้งหมด',
+ finale:'ยินดีด้วยอย่างยิ่ง! เธอผ่านครบทั้ง 16 ด่าน ตั้งแต่พันธะเดี่ยวจนถึงอะตอมที่ขยายเกินออกเตต เธอคือนักต่อพันธะตัวจริง',
+ finaleSub:'รับเกียรติบัตรผ่านครบทุกด่านได้แล้ว',
+ fbDisc:'{a} ยังไม่ได้ต่อพันธะ',fbOver:'ใช้อิเล็กตรอนเกินไป {n} ตัว โมเลกุลนี้มีเวเลนซ์อิเล็กตรอนเพียง {t} ตัว',fbUnder:'ยังมีอิเล็กตรอนเหลืออีก {n} ตัวที่ต้องวาง',
+ fbAtom:'{a} ควรมีอิเล็กตรอนล้อมรอบ {t} ตัว ตอนนี้มี {n} ตัว',fbFC:'จำนวนอิเล็กตรอนถูกต้องแล้ว แต่ประจุฟอร์มัลรวมยังสูงเกินไป ลองย้ายตำแหน่งพันธะคู่',
+ fbNotYet:'ยังไม่ถูก (−10 คะแนน)',fbOk:'ถูกต้อง! โครงสร้างลิวอิสสมบูรณ์',learned:'สิ่งที่เห็นจากโครงสร้างนี้',
+ domTitle:'อะตอมกลาง {a} มีกลุ่มอิเล็กตรอนกี่กลุ่ม',domX:'กลุ่มพันธะ (X) คืออะตอมที่ต่อกับอะตอมกลาง',domE:'คู่โดดเดี่ยวบนอะตอมกลาง (E)',
+ domTip:'พันธะคู่และพันธะสามนับเป็น 1 กลุ่ม เหมือนพันธะเดี่ยว',submit:'ยืนยันคำตอบ',tryAgain:'ยังไม่ถูก ลองนับจากโครงสร้างบนกระดานอีกครั้ง',
+ domOk:'ถูกต้อง! {axe} มีกลุ่มอิเล็กตรอน {d} กลุ่ม เรขาคณิตของคู่อิเล็กตรอนเป็นแบบ{g}',
+ pairTitle:'อะตอมทั้งสองใช้อิเล็กตรอนร่วมกันกี่คู่',pairLbl:'คู่อิเล็กตรอนร่วมพันธะ',pairOk:'ถูกต้อง! ใช้อิเล็กตรอนร่วมกัน {n} คู่ ({e} ตัว)',
+ shapeTitle:'{f} มีรูปร่างโมเลกุลแบบใด',shapeTip:'รูปร่างโมเลกุลดูจากตำแหน่งของอะตอมเท่านั้น คู่โดดเดี่ยวมองไม่เห็นในรูปร่าง แต่ยังผลักพันธะอื่นอยู่',
+ shapeTipD:'โมเลกุลที่มีเพียง 2 อะตอมจะเรียงตัวแบบใด',shapeOk:'ถูกต้อง! {f} มีรูปร่างแบบ{s} เปิดแท็บรูปร่าง 3 มิติแล้ว ลองลากหมุนดู',
+ angTitle:'มุมพันธะใน {f} ประมาณเท่าใด',bondTitle:'พันธะใน {f} เป็นพันธะชนิดใด',single:'พันธะเดี่ยว',double:'พันธะคู่',triple:'พันธะสาม',
+ doneTitle:'ผ่านด่านที่ {n} แล้ว',pBuild:'สร้างพันธะ',pDom:'กลุ่มอิเล็กตรอน',pDomD:'คู่ร่วมพันธะ',pShape:'รูปร่าง',pAng:'มุมพันธะ',pAngD:'ชนิดพันธะ',total:'รวม',
+ getCert:'รับเกียรติบัตร',next:'ด่านถัดไป',replay:'เล่นด่านนี้ใหม่',best:'คะแนนดีที่สุด {s}',
+ geom:'เรขาคณิตคู่อิเล็กตรอน',mshape:'รูปร่างโมเลกุล',angle:'มุมพันธะ',lpLegend:'ก้อนสีอำพัน = คู่อิเล็กตรอนโดดเดี่ยว',
+ locked3d:'เปิดได้หลังเลือกรูปร่างถูก',
+ cert:'เกียรติบัตร',certOf:'เกียรติบัตรด่านที่ {n}',certAll:'เกียรติบัตรผ่านครบทุกด่าน',
+ certGiven:'ขอมอบเกียรติบัตรฉบับนี้ไว้เพื่อแสดงว่า',certPass:'ผ่านด่านที่ {n} : ',certDetail:'สร้างโครงสร้างลิวอิสได้ถูกต้อง และระบุรูปร่างโมเลกุลแบบ{s} ({axe})',
+ certDetailD:'สร้างโครงสร้างลิวอิสได้ถูกต้อง และระบุได้ว่าเป็น{bt} รูปร่างเส้นตรง',
+ certAllLine:'ผ่านครบทั้ง 16 ด่าน ตั้งแต่พันธะเดี่ยวจนถึงอะตอมกลางที่ขยายเกินออกเตต',certAllScore:'คะแนนรวม {s} / 1,600',
+ certScore:'คะแนน {s} / 100',certDate:'ให้ไว้ ณ วันที่ {d}',certNamePh:'(ใส่ชื่อนักเรียนด้านบน)',
+ certSave:'บันทึกภาพ PNG',certSettings:'ตั้งค่าโรงเรียนและลายเซ็น',certSaveHint:'ถ้ากดปุ่มแล้วไม่มีไฟล์ ให้คลิกขวาหรือกดค้างที่ภาพ แล้วเลือกบันทึกรูปภาพ',
+ grandLocked:'ผ่านครบ 16 ด่านเพื่อรับเกียรติบัตรผ่านครบทุกด่าน ({n}/16)',grandOpen:'ผ่านครบทุกด่านแล้ว รับเกียรติบัตรรวมได้เลย',
+ sTitle:'ตั้งค่าเกียรติบัตร',sStudent:'ชื่อ-นามสกุลนักเรียน',sClass:'ชั้น / เลขที่',sSchool:'ชื่อโรงเรียน',sTeacher:'ชื่อครูผู้สอน',sDirector:'ชื่อผู้อำนวยการ',sPos:'ตำแหน่ง',
+ sSigT:'ลายเซ็นครูผู้สอน (ไฟล์ภาพ ควรเป็นพื้นขาวหรือพื้นใส)',sSigD:'ลายเซ็นผู้อำนวยการ',sClearSig:'ลบลายเซ็น',
+ sNote:'ข้อมูลทั้งหมดเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ครูตั้งค่าครั้งเดียวก่อนให้นักเรียนเล่นในเครื่องเดียวกันได้',
+ sReset:'ล้างความคืบหน้าทั้งหมด',sResetConfirm:'กดอีกครั้งเพื่อยืนยันการล้าง',sResetDone:'ล้างแล้ว',close:'ปิด',
+ defTPos:'ครูผู้สอน',defDPos:'ผู้อำนวยการโรงเรียน',nth:'ตัวที่ {n}',center:'อะตอมกลาง',
+ arBtn:'ดูแบบ AR',arRoom:'ห้อง AR โมเลกุล',arEyebrow:'AR · ความเป็นจริงเสริม',
+ arHint:'ลากเพื่อหมุน · ถ่างสองนิ้วเพื่อย่อหรือขยาย · เอียงเครื่องเพื่อมองโมเลกุลจากมุมอื่น',
+ arHintNoGyro:'ลากเพื่อหมุน · ถ่างสองนิ้วหรือหมุนล้อเมาส์เพื่อย่อหรือขยาย',
+ arGyroOn:'เอียงเครื่องเพื่อหมุน: เปิด',arGyroOff:'เอียงเครื่องเพื่อหมุน: ปิด',arGyroNA:'อุปกรณ์นี้ไม่ส่งค่าการเอียง ใช้นิ้วลากหมุนแทน',
+ arReset:'จัดกลาง',arSrc:'ฉากหลัง',arShot:'ถ่ายภาพ AR',arBack:'กลับสู่ AR',arShotTitle:'ภาพ AR ของ {f}',
+ arStarting:'กำลังเปิดกล้อง…',arNoCamTitle:'เปิดกล้องไม่ได้',
+ arNoCamBody:'หน้าที่เปิดอยู่ไม่อนุญาตให้ใช้กล้อง เช่น เมื่อเปิดผ่านหน้าแชร์หรือแอปแชท ให้เปิดไฟล์เกมด้วย Chrome หรือ Safari โดยตรงแล้วกดอนุญาตกล้อง หรือถ่ายภาพห้องเรียนมาเป็นฉากหลังแทน',
+ arSrcTitle:'เลือกฉากหลัง',arSrcBody:'ใช้ภาพสดจากกล้อง ภาพถ่าย หรือฉากโต๊ะแล็บ โมเลกุลจะลอยอยู่บนฉากที่เลือก',
+ arUseCam:'ใช้กล้องสด',arUsePhoto:'ถ่ายภาพหรือเลือกภาพเป็นฉากหลัง',arUseLab:'ใช้ฉากโต๊ะแล็บ',arCancel:'ปิด',
+ arExample:'ตัวอย่าง {f}',arFooter:'จากพันธะสู่รูปร่าง · โหมด AR',arWho:'{n} {c}'
+},
+en:{
+ appName:'Bond to Shape',appNameAlt:'จากพันธะสู่รูปร่าง',eyebrow:'Grade 10 chemistry · 3.3.1 Formation of covalent bonds · 3.3.4 Shapes of covalent molecules',
+ tagline:'Build covalent bonds yourself, see every Lewis structure as dots and as lines, then watch the electron pairs around the central atom decide the shape. Each level you clear earns a certificate.',
+ start:'Start level 1',cont:'Continue at level {n}',replayAll:'Play again',vsepr:'Molecular shape table',howto:'How to play',levels:'All 16 levels',anyOrder:'Play the levels in any order',
+ how1:'<b>Build bonds.</b> Tap the dashed slot between atoms to add a bond (single → double → triple). Tap an atom to add a lone pair.',
+ how2:'<b>Count electron domains</b> on the central atom and write AXₘEₙ.',
+ how3:'<b>Choose the shape and bond angle,</b> then rotate the 3D model.',
+ how4:'<b>Collect the certificate</b> for the level and save it as a PNG.',
+ scLewis:'Lewis structure',sc3d:'Real shape',
+ sPassed:'Levels cleared',sScore:'Total score',sStars:'Stars',
+ vseprNote:'VSEPR theory: electron domains around the central atom push apart as far as they can. X is the number of atoms bonded to the centre; E is the number of lone pairs on it. Amber lobes in the pictures are lone pairs.',
+ footer:'Bond to Shape · progress is saved in this browser',
+ devLabel:'Game designer and developer',devName:'Mrs. Manthana Chaiyasong',devSchool:'Teacher, That Phanom School',certDev:'Learning media designed and developed by Mrs. Manthana Chaiyasong, That Phanom School',
+ settings:'Settings',home:'Home',level:'Level',chapter:'Chapter',
+ tabLewis:'Lewis structure',tab3d:'3D shape',viewDot:'Dots',viewLine:'Lines',modeAdd:'＋ Add',modeRemove:'－ Remove',
+ undo:'Undo',reset:'Clear board',autofill:'Fill outer lone pairs',check:'Check structure',
+ hintAdd:'Tap a dashed slot to bond · tap an atom to add a lone pair',hintRemove:'Remove mode: tap a bond or atom to take one away',hintDone:'Structure complete. Switch between dots and lines any time.',hint3d:'Drag to rotate the model',
+ st1:'Build',st2:'Domains',st2d:'Shared pairs',st3:'Shape',st4:'Angle',st4d:'Bond type',
+ ptsNow:'Points this level',
+ buildTitle:'Build the Lewis structure of {f}',method:'Method',
+ m1:'Add up the valence electrons of every atom (see the box below)',m2:'Join the central atom to every outer atom with a single bond',m2d:'Join the two atoms with a single bond',
+ m3:'Give outer atoms lone pairs until they have 8 (H stops at 2)',m4:'Put leftover electrons on the central atom as lone pairs',
+ m5:'If the central atom is still short, turn outer lone pairs into double or triple bonds',m5d:'If still short, raise it to a double or triple bond',
+ showHint:'Show a hint',hintLbl:'Hint',showAns:'Show the answer (15 pts)',ansUsed:'Answer shown. Look at why this structure works.',
+ budget:'Total valence electrons',placed:'Placed',left:'Remaining',over:'Over by',
+ around:'Electrons around each atom',otherDot:'Same structure as dots',otherLine:'Same structure as lines',
+ legend:'Lines: one line = one shared pair (2 electrons) · dot colour shows which atom the electron came from',
+ ecNote:'Each colour is one element\'s valence electrons. When the structure is done, the dots of each colour must match that element\'s valence electrons.',
+ railTitle:'Progress',railCount:'{n}/16 levels cleared · {s} points',
+ enc0:'Start your journey from bond to shape',enc1:'Great start. Keep going',enc2:'Looking good. You get sharper every level',enc3:'Halfway there. Well done',enc4:'Past halfway. Keep it up',enc5:'The finish line is close',enc6:'Every level cleared. Outstanding',
+ remain:'{n} of 16 levels cleared, {k} to go',
+ finale:'Congratulations! You cleared all 16 levels, from single bonds to expanded octets. You are a real bond builder.',
+ finaleSub:'Your all-levels certificate is ready.',
+ fbDisc:'{a} is not bonded yet',fbOver:'{n} electrons too many. This molecule only has {t} valence electrons.',fbUnder:'{n} electrons still need a place',
+ fbAtom:'{a} should have {t} electrons around it; it has {n}',fbFC:'The electron count works, but the formal charges are too large. Try moving the double bond.',
+ fbNotYet:'Not yet (−10 points)',fbOk:'Correct! The Lewis structure is complete.',learned:'What this structure shows',
+ domTitle:'How many electron domains surround the central {a}?',domX:'Bonding domains (X): atoms attached to the centre',domE:'Lone pairs on the centre (E)',
+ domTip:'A double or triple bond counts as one domain, just like a single bond.',submit:'Submit',tryAgain:'Not yet. Count again from the structure on the board.',
+ domOk:'Right! {axe} has {d} electron domains, so the electron-pair geometry is {g}.',
+ pairTitle:'How many electron pairs do the two atoms share?',pairLbl:'Shared pairs',pairOk:'Right! They share {n} pair(s), {e} electrons.',
+ shapeTitle:'What shape is {f}?',shapeTip:'Molecular shape follows the atoms only. Lone pairs do not show in the shape, but they still push the bonds.',
+ shapeTipD:'How do two atoms line up?',shapeOk:'Right! {f} is {s}. The 3D tab is open now; drag to rotate it.',
+ angTitle:'What is the bond angle in {f}?',bondTitle:'What kind of bond holds {f} together?',single:'Single bond',double:'Double bond',triple:'Triple bond',
+ doneTitle:'Level {n} cleared',pBuild:'Build',pDom:'Domains',pDomD:'Shared pairs',pShape:'Shape',pAng:'Angle',pAngD:'Bond type',total:'Total',
+ getCert:'Get certificate',next:'Next level',replay:'Replay level',best:'Best score {s}',
+ geom:'Electron-pair geometry',mshape:'Molecular shape',angle:'Bond angle',lpLegend:'Amber lobes = lone pairs',
+ locked3d:'Opens once you pick the right shape',
+ cert:'Certificate',certOf:'Level {n} certificate',certAll:'All-levels certificate',
+ certGiven:'This certificate is presented to',certPass:'for completing Level {n}: ',certDetail:'by building a correct Lewis structure and identifying its {s} shape ({axe})',
+ certDetailD:'by building a correct Lewis structure and identifying a {bt}, linear molecule',
+ certAllLine:'for completing all 16 levels, from single bonds to expanded octets',certAllScore:'Total score {s} / 1,600',
+ certScore:'Score {s} / 100',certDate:'Given on {d}',certNamePh:'(type the student name above)',
+ certSave:'Save PNG',certSettings:'School and signatures',certSaveHint:'If no file appears, right-click or long-press the image and choose Save image.',
+ grandLocked:'Clear all 16 levels to unlock the all-levels certificate ({n}/16)',grandOpen:'Every level cleared. Your all-levels certificate is ready.',
+ sTitle:'Certificate settings',sStudent:'Student name',sClass:'Class / number',sSchool:'School name',sTeacher:'Teacher name',sDirector:'Director name',sPos:'Position',
+ sSigT:'Teacher signature (image, white or transparent background)',sSigD:'Director signature',sClearSig:'Remove signature',
+ sNote:'Everything is stored only in this browser. A teacher can set it once before students play on the same device.',
+ sReset:'Clear all progress',sResetConfirm:'Click again to confirm',sResetDone:'Cleared',close:'Close',
+ defTPos:'Teacher',defDPos:'School Director',nth:'#{n}',center:'centre',
+ arBtn:'View in AR',arRoom:'Molecule AR room',arEyebrow:'AR · augmented reality',
+ arHint:'Drag to rotate · pinch to zoom · tilt the phone to see the molecule from another side',
+ arHintNoGyro:'Drag to rotate · pinch or scroll to zoom',
+ arGyroOn:'Tilt to rotate: on',arGyroOff:'Tilt to rotate: off',arGyroNA:'This device sends no tilt data. Drag to rotate instead.',
+ arReset:'Re-centre',arSrc:'Background',arShot:'Capture AR',arBack:'Back to AR',arShotTitle:'AR snapshot of {f}',
+ arStarting:'Starting the camera…',arNoCamTitle:'The camera could not start',
+ arNoCamBody:'This page is not allowed to use the camera, for example when it is opened inside a share page or chat app. Open the game file in Chrome or Safari directly and allow the camera, or take a photo of your classroom to use as the background.',
+ arSrcTitle:'Choose a background',arSrcBody:'Use the live camera, a photo, or the lab bench. The molecule floats over whichever you choose.',
+ arUseCam:'Live camera',arUsePhoto:'Take or pick a photo',arUseLab:'Lab bench',arCancel:'Close',
+ arExample:'e.g. {f}',arFooter:'Bond to Shape · AR mode',arWho:'{n} {c}'
+}};
+const PRAISE=[
+ {th:'เยี่ยมมาก! ก้าวแรกของนักต่อพันธะเริ่มต้นได้สวยงาม',en:'Excellent! Your first bond is built and the journey has begun.'},
+ {th:'เก่งมาก! พันธะคู่ไม่ใช่เรื่องยากสำหรับเธออีกแล้ว',en:'Well done! Double bonds hold no fear for you now.'},
+ {th:'สุดยอด! ต่อพันธะสามได้ และผ่านบทที่ 1 อย่างมั่นใจ',en:'Brilliant! A triple bond, and Chapter 1 is complete.'},
+ {th:'ยอดเยี่ยม! เห็นแล้วใช่ไหมว่าโมเลกุลไม่ได้แบนอย่างที่วาดบนกระดาษ',en:'Superb! Now you have seen that molecules are not flat like the paper.'},
+ {th:'เก่งจริง ๆ! เธอเข้าใจแล้วว่าคู่โดดเดี่ยวผลักพันธะได้แรงแค่ไหน',en:'Impressive! You now know how hard a lone pair pushes.'},
+ {th:'น่าภูมิใจมาก! รู้จักรูปร่างของน้ำที่อยู่รอบตัวเรา และผ่านครบบทที่ 2',en:'So proud of you! You know the shape of water, and Chapter 2 is done.'},
+ {th:'ดีเยี่ยม! จัดการพันธะคู่สองข้างได้อย่างคล่องแคล่ว',en:'Excellent! Two double bonds, handled with ease.'},
+ {th:'เก่งมาก! มีทั้งพันธะเดี่ยวและพันธะสามในโมเลกุลเดียวก็ไม่หวั่น',en:'Great work! A single and a triple bond in one molecule, no problem.'},
+ {th:'ยอดไปเลย! สามเหลี่ยมแบนราบอยู่ในมือเธอแล้ว',en:'Fantastic! Trigonal planar is in your hands.'},
+ {th:'สุดยอด! แม้แต่โครงสร้างเรโซแนนซ์ก็ผ่านไปได้',en:'Outstanding! Even resonance could not stop you.'},
+ {th:'เก่งมาก! รู้ทันข้อยกเว้นของกฎออกเตต และผ่านครบบทที่ 3',en:'Well done! You spotted the octet exception and finished Chapter 3.'},
+ {th:'ยอดเยี่ยม! ก้าวข้ามกฎออกเตตสู่โลกของอะตอมที่รับอิเล็กตรอนเกินแปด',en:'Superb! You have stepped beyond the octet into expanded shells.'},
+ {th:'เก่งขึ้นทุกด่าน! รูปร่างที่บิดเบี้ยวก็มองออกแล้ว',en:'Better every level! Even a twisted seesaw is clear to you.'},
+ {th:'น่าทึ่งมาก! แก๊สมีตระกูลยังต่อพันธะได้ และเธอก็ต่อได้เช่นกัน',en:'Amazing! A noble gas can form bonds, and so can you.'},
+ {th:'ใกล้แล้ว! ทรงแปดหน้าสมบูรณ์แบบ เหลืออีกเพียงด่านเดียว',en:'Almost there! A perfect octahedron, and just one level left.'},
+ {th:'ยินดีด้วย! เธอพิชิตด่านสุดท้ายได้สำเร็จ',en:'Congratulations! You conquered the final level.'}
+];
+const TH_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('b2s.'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('b2s.'+k,JSON.stringify(v))}catch(e){}}};
+let lang=store.get('lang','th');
+let progress=store.get('progress',{});
+let cfg=Object.assign({student:'',klass:'',school:'',teacher:'',teacherPos:'',director:'',directorPos:'',sigT:'',sigD:''},store.get('cfg',{}));
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function t(k,v){let s=(I18N[lang]&&I18N[lang][k])??I18N.th[k]??k;if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
+const tx=o=>typeof o==='string'?o:(o[lang]||o.th);
+const fH=f=>f.replace(/(\d+)/g,'<sub>$1</sub>');
+const SUBD='₀₁₂₃₄₅₆₇₈₉';const fU=f=>f.replace(/\d/g,d=>SUBD[d]);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function fmtDate(iso){const d=iso?new Date(iso):new Date();if(lang==='th')return `${d.getDate()} ${TH_MONTHS[d.getMonth()]} พ.ศ. ${d.getFullYear()+543}`;return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}
+function axeHTML(X,E){return 'AX'+(X>1?`<sub>${X}</sub>`:'')+(E?'E'+(E>1?`<sub>${E}</sub>`:''):'')}
+function axeText(X,E){return 'AX'+(X>1?fU(String(X)):'')+(E?'E'+(E>1?fU(String(E)):''):'')}
+function atomLabel(L,i){const el=L.atoms[i].e;const same=L.atoms.map((a,j)=>[a.e,j]).filter(x=>x[0]===el);if(same.length<2)return el;return el+' '+t('nth',{n:same.findIndex(x=>x[1]===i)+1})}
+
+/* ---------- 2D Lewis drawing ---------- */
+const angOf=(p,q)=>{let a=Math.atan2(q.y-p.y,q.x-p.x)*180/Math.PI;return (a+360)%360};
+const angDist=(a,b)=>{const d=Math.abs(a-b)%360;return d>180?360-d:d};
+function lpDirs(L,i,k){
+  const nb=[];L.bonds.forEach(([a,c])=>{if(a===i)nb.push(angOf(L.atoms[i],L.atoms[c]));else if(c===i)nb.push(angOf(L.atoms[i],L.atoms[a]))});
+  const cands=[270,90,0,180,315,45,225,135],chosen=[];
+  for(let n=0;n<k;n++){let best=null,bd=-1;for(const c of cands){if(chosen.includes(c))continue;const all=nb.concat(chosen);const d=all.length?Math.min(...all.map(x=>angDist(x,c))):999;if(d>bd+.01){bd=d;best=c}}if(best===null)break;chosen.push(best)}
+  return chosen;
+}
+function bounds(L){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;L.atoms.forEach(a=>{const r=ELEM[a.e].r+26;x0=Math.min(x0,a.x-r);y0=Math.min(y0,a.y-r);x1=Math.max(x1,a.x+r);y1=Math.max(y1,a.y+r)});return {x0,y0,x1,y1}}
+function svgMol(L,b,lp,o){
+  o=Object.assign({mode:'dot',interactive:false,marks:null,hl:-1,pop:null,pad:30},o);
+  const B=bounds(L),p=o.pad;let vb=[B.x0-p,B.y0-p,B.x1-B.x0+2*p,B.y1-B.y0+2*p];
+  if(o.minW&&vb[2]<o.minW){vb[0]-=(o.minW-vb[2])/2;vb[2]=o.minW}
+  if(o.minH&&vb[3]<o.minH){vb[1]-=(o.minH-vb[3])/2;vb[3]=o.minH}
+  let s=`<svg viewBox="${vb.join(' ')}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(L.f)}">`;
+  const A=L.atoms,own=bondOwners(L,b,lp),ecol=n=>ELEM[A[n].e].ec;
+  L.bonds.forEach(([i,j],k)=>{
+    const P=A[i],Q=A[j],dx=Q.x-P.x,dy=Q.y-P.y,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux;
+    const r1=ELEM[P.e].r+5,r2=ELEM[Q.e].r+5,x1=P.x+ux*r1,y1=P.y+uy*r1,x2=Q.x-ux*r2,y2=Q.y-uy*r2,mx=(x1+x2)/2,my=(y1+y2)/2,ord=b[k];
+    let g='';
+    if(ord===0){if(o.interactive)g+=`<line class="slot" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><circle class="slotplus" cx="${mx}" cy="${my}" r="10"/><text class="slotplus-t" x="${mx}" y="${my+5}" text-anchor="middle">+</text>`}
+    else if(o.mode==='line'){for(let m=0;m<ord;m++){const off=(m-(ord-1)/2)*9;g+=`<line class="bline" stroke-width="3.4" x1="${x1+nx*off}" y1="${y1+ny*off}" x2="${x2+nx*off}" y2="${y2+ny*off}"/>`}}
+    else{const pc=pairColors(L,k,ord,own[k]);for(let m=0;m<ord;m++){const off=(m-(ord-1)/2)*11;[-1,1].forEach((sg,q)=>{g+=`<circle class="e" fill="${ecol(pc[m][q])}" cx="${(mx+ux*off+nx*sg*5.5).toFixed(1)}" cy="${(my+uy*off+ny*sg*5.5).toFixed(1)}" r="4.2"/>`})}}
+    if(o.interactive){const lbl=`${atomLabel(L,i)}–${atomLabel(L,j)}`;s+=`<g data-bond="${k}" tabindex="0" role="button" aria-label="${esc(lbl)}" class="${o.pop==='b'+k?'pop':''}">${g}<line class="hit" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/></g>`}
+    else s+=`<g>${g}</g>`;
+  });
+  A.forEach((a,i)=>{
+    const E=ELEM[a.e];let g='';
+    const dirs=lpDirs(L,i,lp[i]);const rr=E.r+12;
+    dirs.forEach(d=>{const rad=d*Math.PI/180,cx=a.x+Math.cos(rad)*rr,cy=a.y+Math.sin(rad)*rr,nx=-Math.sin(rad),ny=Math.cos(rad);const er=o.mode==='line'?3.6:4.2;
+      for(const sg of [-1,1])g+=`<circle class="e" fill="${E.ec}" cx="${(cx+nx*sg*5.2).toFixed(1)}" cy="${(cy+ny*sg*5.2).toFixed(1)}" r="${er}"/>`});
+    const mk=o.marks?o.marks[i]:null;
+    if(mk)g+=`<circle cx="${a.x}" cy="${a.y}" r="${E.r+6}" fill="none" stroke="${mk==='ok'?'var(--ok)':'var(--bad)'}" stroke-width="3"/>`;
+    if(o.hl===i)g+=`<circle cx="${a.x}" cy="${a.y}" r="${E.r+7}" fill="none" stroke="var(--electron)" stroke-width="2" stroke-dasharray="4 4"/>`;
+    g+=`<circle class="acirc" cx="${a.x}" cy="${a.y}" r="${E.r}" fill="${E.col}" stroke="rgba(0,0,0,.45)" stroke-width="1.5"/>`;
+    g+=`<text class="asym" x="${a.x}" y="${a.y}" text-anchor="middle" dominant-baseline="central" font-size="${a.e.length>1?18:20}" fill="${E.txt}">${a.e}</text>`;
+    if(o.interactive)s+=`<g data-atom="${i}" tabindex="0" role="button" aria-label="${esc(atomLabel(L,i))}" class="${o.pop==='a'+i?'pop':''}">${g}</g>`;
+    else s+=`<g>${g}</g>`;
+  });
+  return s+'</svg>';
+}
+
+/* ---------- 3D ---------- */
+const DIRS={
+  2:[[1,0,0],[-1,0,0]],
+  3:[[0,1,0],[-.866,-.5,0],[.866,-.5,0]],
+  4:[[0,1,0],[.9428,-.3333,0],[-.4714,-.3333,.8165],[-.4714,-.3333,-.8165]],
+  5:[[0,1,0],[0,-1,0],[1,0,0],[-.5,0,.866],[-.5,0,-.866]],
+  6:[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]
+};
+const LPIDX={2:{0:[]},3:{0:[],1:[0]},4:{0:[],1:[0],2:[0,1]},5:{0:[],1:[2],2:[2,3],3:[2,3,4]},6:{0:[],1:[2],2:[2,3]}};
+const norm=v=>{const l=Math.hypot(...v);return v.map(x=>x/l)};
+function shapeModel(key,atomsSpec,orders){
+  const sh=SHAPES[key],dirs=DIRS[sh.d],li=LPIDX[sh.d][sh.lp];
+  const lps=li.map(i=>dirs[i]);let bonded=dirs.filter((_,i)=>!li.includes(i));
+  if(lps.length){const sum=lps.reduce((s,v)=>[s[0]+v[0],s[1]+v[1],s[2]+v[2]],[0,0,0]);bonded=bonded.map(v=>norm([v[0]-.09*sum[0],v[1]-.09*sum[1],v[2]-.09*sum[2]]))}
+  const c=atomsSpec[0],atoms=[{p:[0,0,0],r:c.r3,col:c.col,sym:c.sym,txt:c.txt}],bonds=[];
+  bonded.forEach((v,i)=>{const s=atomsSpec[i+1]||atomsSpec[1];const L=s.sym==='H'?.88:1.08;atoms.push({p:v.map(x=>x*L),r:s.r3,col:s.col,sym:s.sym,txt:s.txt});bonds.push({a:0,b:i+1,o:orders?orders[i]:1})});
+  return {atoms,bonds,lps,scale:.27};
+}
+function levelModel(L,sol){
+  const spec=L.atoms.map(a=>({sym:a.e,col:ELEM[a.e].col,txt:ELEM[a.e].txt,r3:ELEM[a.e].r3}));
+  if(L.diatomic){const d=.58;return {atoms:[{p:[-d,0,0],...spec[0],r:spec[0].r3},{p:[d,0,0],...spec[1],r:spec[1].r3}],bonds:[{a:0,b:1,o:sol.b[0]}],lps:[],scale:.36}}
+  return shapeModel(L.shape,spec,sol.b);
+}
+function genericModel(key){
+  const sh=SHAPES[key],c={sym:'',col:'#7D8C99',r3:.3},x={sym:'',col:'#C9D4DD',r3:.22};
+  const spec=[c];for(let i=0;i<sh.d;i++)spec.push(x);const m=shapeModel(key,spec,null);m.scale=.3;return m;
+}
+function hexRGB(h){h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function mix(h,t,a){const c=hexRGB(h),d=t==='w'?[255,255,255]:[0,0,0];return `rgb(${c.map((v,i)=>Math.round(v+(d[i]-v)*a)).join(',')})`}
+function rotP(p,yaw,pitch){const cy=Math.cos(yaw),sy=Math.sin(yaw);const x=p[0]*cy+p[2]*sy,z=-p[0]*sy+p[2]*cy,y=p[1];const cp=Math.cos(pitch),sp=Math.sin(pitch);return [x,y*cp-z*sp,y*sp+z*cp]}
+function fitCanvas(cv){const dpr=Math.min(2,window.devicePixelRatio||1),r=cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width*dpr)),h=Math.max(1,Math.round(r.height*dpr));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}return dpr}
+function draw3D(cv,m,yaw,pitch,o){o=o||{};
+  const dpr=fitCanvas(cv),ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  const unit=Math.min(W,H)*m.scale*(o.zoom||1),cx=W/2+(o.ox||0)*dpr,cy=H/2+(o.oy||0)*dpr,D=6;
+  if(o.pre)o.pre(ctx,cx,cy,unit,dpr);
+  const proj=p=>{const r=rotP(p,yaw,pitch),s=D/(D-r[2]);return {x:cx+r[0]*s*unit,y:cy-r[1]*s*unit,z:r[2],s}};
+  const P=m.atoms.map(a=>proj(a.p)),items=[];
+  m.bonds.forEach(bd=>{const p=P[bd.a],q=P[bd.b];items.push({z:(p.z+q.z)/2-.02,d:()=>{
+    const dx=q.x-p.x,dy=q.y-p.y,l=Math.hypot(dx,dy)||1,nx=-dy/l,ny=dx/l,w=Math.max(2,.085*unit*(p.s+q.s)/2),n=bd.o||1,sp=w*1.25;
+    for(let k=0;k<n;k++){const off=(k-(n-1)/2)*sp;ctx.lineCap='round';
+      ctx.strokeStyle='rgba(5,9,13,.85)';ctx.lineWidth=n>1?w*.85+2:w+2.5;ctx.beginPath();ctx.moveTo(p.x+nx*off,p.y+ny*off);ctx.lineTo(q.x+nx*off,q.y+ny*off);ctx.stroke();
+      ctx.strokeStyle='#C8D2DB';ctx.lineWidth=n>1?w*.85:w;ctx.stroke()}}})});
+  m.atoms.forEach((a,i)=>{const p=P[i];items.push({z:p.z,d:()=>{
+    const r=a.r*unit*p.s,g=ctx.createRadialGradient(p.x-r*.35,p.y-r*.4,r*.08,p.x,p.y,r);
+    g.addColorStop(0,mix(a.col,'w',.6));g.addColorStop(.45,a.col);g.addColorStop(1,mix(a.col,'b',.5));
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill();
+    if(a.sym&&r>11*dpr){ctx.fillStyle=a.txt||'#fff';ctx.font=`700 ${Math.round(r*.8)}px "Chakra Petch",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(a.sym,p.x,p.y+r*.04)}}})});
+  m.lps.forEach(dv=>{const c=proj(dv.map(v=>v*.6)),o=P[0];items.push({z:c.z,d:()=>{
+    const ang=Math.atan2(c.y-o.y,c.x-o.x),l=Math.hypot(c.x-o.x,c.y-o.y),maj=Math.max(.2*unit,l*.62)*1,mn=.25*unit*c.s;
+    ctx.save();ctx.translate(c.x,c.y);ctx.rotate(ang);const g=ctx.createRadialGradient(0,0,1,0,0,maj);
+    g.addColorStop(0,'rgba(255,182,39,.55)');g.addColorStop(1,'rgba(255,182,39,.12)');ctx.fillStyle=g;ctx.strokeStyle='rgba(255,196,80,.7)';ctx.lineWidth=1*dpr;
+    ctx.beginPath();ctx.ellipse(0,0,maj,mn,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#FFD27A';for(const s of [-1,1]){ctx.beginPath();ctx.arc(maj*.15,s*mn*.32,Math.max(1.5,.045*unit),0,Math.PI*2);ctx.fill()}ctx.restore()}})});
+  items.sort((a,b)=>a.z-b.z).forEach(it=>it.d());
+}
+const viewers=[];
+function addViewer(cv,getModel,active,opts){
+  const v=Object.assign({cv,getModel,active,yaw:.6,pitch:.35,auto:!reduced,idle:0,drag:null},opts||{});
+  cv.addEventListener('pointerdown',e=>{v.drag={x:e.clientX,y:e.clientY,yaw:v.yaw,pitch:v.pitch};v.auto=false;cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing'});
+  cv.addEventListener('pointermove',e=>{if(!v.drag)return;v.yaw=v.drag.yaw+(e.clientX-v.drag.x)*.01;v.pitch=Math.max(-1.4,Math.min(1.4,v.drag.pitch+(e.clientY-v.drag.y)*.01))});
+  const up=()=>{if(v.drag){v.drag=null;v.idle=performance.now();cv.style.cursor=''}};
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  viewers.push(v);return v;
+}
+let lastT=0;
+function loop(ts){const dt=Math.min(50,ts-(lastT||ts));lastT=ts;
+  for(const v of viewers){if(!v.active())continue;const m=v.getModel();if(!m)continue;
+    if(!v.drag&&!reduced&&(v.auto||ts-v.idle>2500)){v.auto=true;v.yaw+=dt*.00045}
+    draw3D(v.cv,m,v.yaw,v.pitch)}
+  if(AR.on)arFrame(ts,dt);
+  requestAnimationFrame(loop)}
+
+/* ---------- static text ---------- */
+function applyStatic(){
+  document.documentElement.lang=lang;
+  $$('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t)});
+  $$('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===lang));
+  document.title=t('appName');
+}
+
+/* ---------- home ---------- */
+function stats(){const ids=Object.keys(progress).filter(id=>LEVELS.some(l=>l.id===id));return {n:ids.length,score:ids.reduce((s,id)=>s+progress[id].score,0),stars:ids.reduce((s,id)=>s+progress[id].stars,0)}}
+function starsHTML(n){return '<span class="stars" aria-label="'+n+'/3">'+[0,1,2].map(i=>i<n?'★':'<span class="off">★</span>').join('')+'</span>'}
+function encKey(n){return n===0?'enc0':n<=3?'enc1':n<=7?'enc2':n===8?'enc3':n<=12?'enc4':n<=15?'enc5':'enc6'}
+function renderRail(){
+  const st=stats(),cur=S?S.i:-1,nxt=LEVELS.findIndex(l=>!progress[l.id]);
+  $('#railMsg').textContent=t(encKey(st.n));
+  $('#railCount').textContent=t('railCount',{n:st.n,s:st.score.toLocaleString()});
+  $('#railFill').style.width=(st.n/16*100)+'%';
+  $('#railTrack').innerHTML=CHAPTERS.map((c,ci)=>`<div class="rg"><span class="rg-l">${t('chapter')} ${ci+1}</span><div class="rg-n">${LEVELS.map((L,i)=>{if(L.ch!==ci)return '';const p=progress[L.id];
+    const cls=[p?'done':'',i===cur?'now':'',cur<0&&i===nxt?'next':''].join(' ');
+    return `<button type="button" class="rn ${cls}" data-start="${i}" aria-label="${t('level')} ${i+1} ${esc(L.f)}${p?' ✓':''}"${i===cur?' aria-current="step"':''}><span class="n">${p?'✓ ':''}${String(i+1).padStart(2,'0')}</span><span class="f">${fH(L.f)}</span><span class="s">${p?[0,1,2].map(k=>k<p.stars?'★':'<span class="off">★</span>').join(''):''}</span></button>`}).join('')}</div></div>`).join('');
+  const on=$('#railTrack .now')||$('#railTrack .next');if(on){const tr=$('#railTrack');tr.scrollLeft=Math.max(0,on.offsetLeft-tr.offsetLeft-tr.clientWidth/2+on.offsetWidth/2)}
+}
+function renderHome(){
+  renderRail();
+  const st=stats(),firstOpen=LEVELS.findIndex(l=>!progress[l.id]);
+  const sb=$('#startBtn');sb.textContent=st.n===0?t('start'):firstOpen<0?t('replayAll'):t('cont',{n:firstOpen+1});
+  sb.onclick=()=>startLevel(firstOpen<0?0:firstOpen);
+  $('#stats').innerHTML=`<div class="stat"><b>${st.n}/16</b><span>${t('sPassed')}</span></div><div class="stat"><b>${st.score.toLocaleString()}</b><span>${t('sScore')} / 1,600</span></div><div class="stat"><b>${st.stars}/48</b><span>${t('sStars')}</span></div>`;
+  $('#howto').innerHTML=['how1','how2','how3','how4'].map(k=>`<li>${t(k)}</li>`).join('');
+  let h='';
+  CHAPTERS.forEach((c,ci)=>{
+    h+=`<div class="chap"><h3><span class="eyebrow">${t('chapter')} ${ci+1}</span>${tx(c)}</h3><div class="tiles">`;
+    LEVELS.forEach((L,i)=>{if(L.ch!==ci)return;const p=progress[L.id];
+      h+=`<article class="tile ${p?'done':''}"><button class="go" type="button" data-start="${i}" aria-label="${t('level')} ${i+1} ${esc(L.f)}"></button>
+        <span class="num">${t('level')} ${String(i+1).padStart(2,'0')}</span><span class="f">${fH(L.f)}</span><span class="nm">${tx(L.name)}</span>
+        ${p?`<div class="row"><span class="shape">${tx(SHAPES[L.shape])}</span></div><div class="row">${starsHTML(p.stars)}<span class="tb"><button class="arsm" type="button" data-ar="${i}" aria-label="${t('arBtn')} ${esc(L.f)}">AR</button><button class="cert" type="button" data-cert="${i}">${t('cert')}</button></span></div>`:''}</article>`});
+    h+='</div></div>';
+  });
+  $('#chapters').innerHTML=h;
+  const all=st.n===16;
+  $('#grandbar').innerHTML=`<span>${all?t('grandOpen'):t('grandLocked',{n:st.n})}</span><button class="btn ${all?'primary':''}" type="button" id="grandBtn" ${all?'':'disabled'}>${t('certAll')}</button>`;
+  $('#grandBtn').onclick=()=>openCert('all');
+  renderVTable();
+}
+function renderVTable(){
+  const keys=Object.keys(SHAPES);
+  $('#vtable').innerHTML=keys.map(k=>{const s=SHAPES[k];return `<div class="vcell"><canvas data-thumb="${k}"></canvas><div class="vrow"><span class="axe">${axeHTML(s.d-s.lp,s.lp)}</span><button class="arsm" type="button" data-arshape="${k}" aria-label="${t('arBtn')} ${lang==='th'?s.th:s.en}">AR</button></div><div class="nm">${lang==='th'?s.th:s.en}</div><div class="en">${lang==='th'?s.en:s.th}</div><div class="meta">${t('angle')} ${s.ang} · ${fH(s.ex)}</div></div>`}).join('');
+  requestAnimationFrame(()=>$$('#vtable canvas').forEach(cv=>draw3D(cv,genericModel(cv.dataset.thumb),.55,.32)));
+}
+/* showcase */
+const SC=[3,4,5,9,14];let scI=0,scModel=null;
+function renderShowcase(){
+  const L=LEVELS[SC[scI]],sh=SHAPES[L.shape];
+  $('#scSvg').innerHTML=svgMol(L,L.sol.b,L.sol.lp,{mode:'dot',pad:18});
+  scModel=levelModel(L,L.sol);
+  $('#scCap').innerHTML=`<span class="f">${fH(L.f)}</span><span class="axe">${axeHTML(sh.d-sh.lp,sh.lp)}</span><span>${tx(sh)} · ${sh.ang}</span>`;
+}
+
+/* ---------- play state ---------- */
+let S=null;
+function startLevel(i){
+  const L=LEVELS[i];
+  S={i,L,b:L.bonds.map(()=>0),lp:L.atoms.map(()=>0),hist:[],mode:'add',view:'dot',tab:'lewis',step:1,fails:0,pts:{build:50,dom:20,shape:20,ang:10},
+     fb:null,marks:null,hint:false,ans:false,domX:0,domE:0,domWrong:0,shapeOpts:null,shapeWrong:[],angWrong:[],angOpts:null,msg:null,hl:-1,pop:null};
+  S.shapeOpts=shapeOptions(L);
+  if(L.diatomic)S.angOpts=shuffle([0,1,2].map(k=>({k,label:t(['single','double','triple'][k])})));
+  else S.angOpts=shuffle(L.ang.opts.map((o,k)=>({k,o})));
+  $('#home').hidden=true;$('#play').hidden=false;window.scrollTo(0,0);
+  renderPlay();
+}
+function shapeOptions(L){
+  const c=L.shape,cs=SHAPES[c],nm=k=>SHAPES[k].th;
+  const pool=Object.keys(SHAPES).filter(k=>k!==c&&nm(k)!==nm(c));
+  const near=shuffle(pool.filter(k=>SHAPES[k].d===cs.d||(SHAPES[k].d-SHAPES[k].lp)===(cs.d-cs.lp)));
+  const picks=[];for(const k of near.concat(shuffle(pool.slice()))){if(picks.length>=3)break;if(!picks.includes(k)&&!picks.some(p=>nm(p)===nm(k)))picks.push(k)}
+  return shuffle([c,...picks]);
+}
+const total=()=>S.pts.build+S.pts.dom+S.pts.shape+S.pts.ang;
+function renderPlay(){
+  const L=S.L;renderRail();
+  $('#plChap').textContent=`${t('level')} ${S.i+1} · ${t('chapter')} ${L.ch+1} ${tx(CHAPTERS[L.ch])}`;
+  $('#plFormula').innerHTML=`${fH(L.f)} <small>${tx(L.name)}</small>`;
+  const names=['st1',L.diatomic?'st2d':'st2','st3',L.diatomic?'st4d':'st4'];
+  $('#stepper').innerHTML=names.map((k,j)=>`<li class="${S.step>j+1?'done':S.step===j+1?'now':''}">${j+1} ${t(k)}</li>`).join('');
+  $('#plScore').innerHTML=`${t('ptsNow')} <b>${total()}</b>/100`;
+  $$('#viewSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===S.view));
+  $$('#tabSeg button').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.tab===S.tab);if(b.dataset.tab==='3d'){b.disabled=S.step<4;b.title=S.step<4?t('locked3d'):''}});
+  $('#viewSeg').style.visibility=S.tab==='lewis'?'visible':'hidden';
+  $$('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===S.mode));
+  $('#tools').hidden=S.step!==1;
+  $('#fillBtn').hidden=L.ch<2;
+  $('#undoBtn').disabled=!S.hist.length;
+  $('#board').hidden=S.tab!=='lewis';$('#three').hidden=S.tab!=='3d';
+  $('#bench').classList.toggle('solved',S.step>1);
+  $('#benchHint').textContent=S.tab==='3d'?t('hint3d'):S.step>1?t('hintDone'):S.mode==='add'?t('hintAdd'):t('hintRemove');
+  renderBoard();renderBudget();renderChips();renderMini();renderTask();render3DLab();
+}
+function renderBoard(){
+  $('#board').innerHTML=svgMol(S.L,S.b,S.lp,{mode:S.view,interactive:S.step===1,marks:S.marks,hl:S.hl,pop:S.pop,minW:460,minH:300,pad:34});
+  S.pop=null;
+}
+function renderBudget(){
+  const L=S.L,T=valenceTotal(L),U=usedTotal(L,S.b,S.lp),left=T-U;
+  const groups={};L.atoms.forEach(a=>{groups[a.e]=(groups[a.e]||0)+1});
+  const sum=Object.entries(groups).map(([e,n])=>`<span class="ech"><i style="background:${ELEM[e].ec}"></i>${e} ${ELEM[e].v}${n>1?' ×'+n:''}</span>`).join('<span class="plus">+</span>');
+  $('#budget').innerHTML=`<div class="brow"><span class="lbl">${t('budget')}</span><b>${T}</b></div><div class="sum">${sum}<span class="plus">=</span><b>${T}</b></div><p class="small" style="margin:4px 0 0">${t('ecNote')}</p>
+   <div class="meter ${U>T?'over':''}"><i style="width:${Math.min(100,U/T*100)}%"></i></div>
+   <div class="brow"><span>${t('placed')} <b>${U}</b></span><span>${left>=0?t('left'):t('over')} <b style="color:${left<0?'var(--bad)':left===0?'var(--ok)':'inherit'}">${Math.abs(left)}</b></span></div>`;
+}
+function renderChips(){
+  const L=S.L;
+  $('#chips').innerHTML=`<span class="lbl">${t('around')}</span><div class="chips">${L.atoms.map((a,i)=>{const n=atomCount(L,S.b,S.lp,i),mk=S.marks?S.marks[i]:'';
+    return `<span class="chip ${mk||''}" data-hl="${i}"><i style="background:${ELEM[a.e].col};color:${ELEM[a.e].txt}">${a.e}</i>${i===0&&!L.diatomic?`<span class="small">${t('center')}</span> `:''}<b>${n}</b> e⁻</span>`}).join('')}</div>`;
+}
+function renderMini(){
+  const other=S.view==='dot'?'line':'dot';
+  $('#mini').innerHTML=`<span class="lbl">${t(other==='line'?'otherLine':'otherDot')}</span><div class="mv">${svgMol(S.L,S.b,S.lp,{mode:other,pad:20})}</div><div class="legend">${t('legend')}</div>`;
+}
+function fbList(issues){
+  const L=S.L,out=[];
+  for(const is of issues){
+    if(is.k==='disc')out.push(t('fbDisc',{a:atomLabel(L,is.a)}));
+    else if(is.k==='over')out.push(t('fbOver',{n:is.n,t:is.t}));
+    else if(is.k==='under')out.push(t('fbUnder',{n:is.n}));
+    else if(is.k==='atom')out.push(t('fbAtom',{a:atomLabel(L,is.a),t:is.t,n:is.n}));
+    else if(is.k==='fc')out.push(t('fbFC'));
+  }
+  const uniq=[...new Set(out)];return uniq.slice(0,4);
+}
+function renderTask(){
+  const L=S.L,el=$('#task');let h='';
+  const noteBox=S.step>1?`<div class="note"><span class="lbl">${t('learned')}</span>${tx(L.note)}</div>`:'';
+  if(S.step===1){
+    h=`<h3>${t('buildTitle',{f:fH(L.f)})}</h3><span class="lbl">${t('method')}</span><ol class="method">
+      <li>${t('m1')}</li><li>${t(L.diatomic?'m2d':'m2')}</li><li>${t('m3')}</li>${L.diatomic?'':`<li>${t('m4')}</li>`}<li>${t(L.diatomic?'m5d':'m5')}</li></ol>`;
+    h+=S.hint?`<div class="fb info"><span class="t">${t('hintLbl')}:</span> ${tx(L.hint)}</div>`:`<button class="linkbtn" type="button" id="hintBtn">${t('showHint')}</button>`;
+    if(S.fb)h+=`<div class="fb bad"><span class="t">${t('fbNotYet')}</span><ul>${S.fb.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+    if(S.fails>=2)h+=`<div class="row-btns"><button class="btn" type="button" id="ansBtn">${t('showAns')}</button></div>`;
+  }else if(S.step===2){
+    h=`<div class="fb ok">${S.ans?t('ansUsed'):t('fbOk')}</div>${noteBox}`;
+    if(L.diatomic){
+      h+=`<h3 style="margin-top:14px">${t('pairTitle')}</h3><div class="counter"><span>${t('pairLbl')}</span>${ctl('domX',S.domX)}</div>`;
+    }else{
+      h+=`<h3 style="margin-top:14px">${t('domTitle',{a:L.atoms[0].e})}</h3>
+       <div class="counter"><span>${t('domX')}</span>${ctl('domX',S.domX)}</div>
+       <div class="counter"><span>${t('domE')}</span>${ctl('domE',S.domE)}</div>
+       <div class="axe-out">${axeHTML(S.domX,S.domE)}</div><p class="small" style="margin:0">${t('domTip')}</p>`;
+    }
+    if(S.msg)h+=`<div class="fb bad">${S.msg}</div>`;
+    h+=`<div class="row-btns"><button class="btn primary" type="button" id="domSubmit">${t('submit')}</button></div>`;
+  }else if(S.step===3){
+    h=domSummary()+`<h3 style="margin-top:14px">${t('shapeTitle',{f:fH(L.f)})}</h3><p class="small" style="margin:0">${L.diatomic?t('shapeTipD'):t('shapeTip')}</p>
+     <div class="opts">${S.shapeOpts.map(k=>{const s=SHAPES[k],w=S.shapeWrong.includes(k);return `<button class="opt ${w?'wrong':''}" type="button" data-shape="${k}" ${w?'disabled':''}><canvas data-thumb="${k}"></canvas><span class="on">${lang==='th'?s.th:s.en}</span><span class="oe">${lang==='th'?s.en:s.th}</span></button>`}).join('')}</div>`;
+    if(S.msg)h+=`<div class="fb bad">${S.msg}</div>`;
+  }else if(S.step===4){
+    const sh=SHAPES[L.shape];
+    h=`<div class="fb ok">${t('shapeOk',{f:fH(L.f),s:tx(sh)})}</div><h3 style="margin-top:14px">${L.diatomic?t('bondTitle',{f:fH(L.f)}):t('angTitle',{f:fH(L.f)})}</h3>
+     <div class="opts">${S.angOpts.map(o=>{const w=S.angWrong.includes(o.k);return `<button class="opt txt ${w?'wrong':''}" type="button" data-ang="${o.k}" ${w?'disabled':''}>${esc(o.label||tx(o.o))}</button>`}).join('')}</div>`;
+    if(S.msg)h+=`<div class="fb bad">${S.msg}</div>`;
+  }else{
+    const p=progress[L.id],st=starsFor(total());
+    const stt=stats(),allDone=stt.n===16;
+    h=`<span class="eyebrow">${t('doneTitle',{n:S.i+1})}</span><p class="praise">${tx(PRAISE[S.i])}</p>
+     ${allDone?`<div class="finale"><b>${t('finale')}</b><span class="small">${t('finaleSub')}</span><div class="row-btns"><button class="btn primary" type="button" id="grandBtn2">${t('certAll')}</button></div></div>`:`<p class="small" style="margin:0 0 6px">${t('remain',{n:stt.n,k:16-stt.n})}</p>`}
+     <div class="bigstars" aria-label="${st}/3">${[0,1,2].map(i=>i<st?'★':'<span class="off">★</span>').join('')}</div>
+     <div class="score-break"><span>${t('pBuild')}</span><b>${S.pts.build}/50</b><span>${t(L.diatomic?'pDomD':'pDom')}</span><b>${S.pts.dom}/20</b><span>${t('pShape')}</span><b>${S.pts.shape}/20</b><span>${t(L.diatomic?'pAngD':'pAng')}</span><b>${S.pts.ang}/10</b><span class="tot">${t('total')}</span><b class="tot">${total()}/100</b></div>
+     ${p&&p.score>total()?`<p class="small">${t('best',{s:p.score})}</p>`:''}${noteBox}
+     <div class="row-btns"><button class="btn primary" type="button" id="certBtn">${t('getCert')}</button>${S.i<15?`<button class="btn dark" type="button" id="nextBtn">${t('next')} →</button>`:''}<button class="btn" type="button" id="replayBtn">${t('replay')}</button></div>`;
+  }
+  el.innerHTML=h;
+  if(S.step===3)requestAnimationFrame(()=>$$('#task canvas[data-thumb]').forEach(cv=>draw3D(cv,genericModel(cv.dataset.thumb),.55,.32)));
+}
+function domSummary(){const L=S.L;if(L.diatomic){const n=S.b[0];return `<div class="fb ok">${t('pairOk',{n,e:n*2})}</div>`}
+  const X=L.atoms.length-1,E=S.lp[0],d=X+E;return `<div class="fb ok">${t('domOk',{axe:axeHTML(X,E),d,g:tx(GEOM[d])})}</div>`}
+function ctl(id,v){return `<span class="ctl"><button type="button" data-dec="${id}" aria-label="−">−</button><output>${v}</output><button type="button" data-inc="${id}" aria-label="+">+</button></span>`}
+const starsFor=s=>s>=90?3:s>=70?2:1;
+function render3DLab(){
+  const L=S.L,sh=SHAPES[L.shape];
+  if(L.diatomic){$('#threeLab').innerHTML=`<span class="big">${fH(L.f)} · ${tx(sh)}</span><span class="mono">180°</span>`;return}
+  const X=L.atoms.length-1,E=S.lp[0];
+  $('#threeLab').innerHTML=`<span class="big">${fH(L.f)} · ${tx(sh)}</span><span class="mono">${axeHTML(X,E)} · ${t('angle')} ${tx(L.ang.opts[L.ang.ans])}</span><span>${t('geom')}: ${tx(GEOM[sh.d])}</span>${E?`<span class="leg">${t('lpLegend')}</span>`:''}`;
+}
+
+/* ---------- play events ---------- */
+function snapshot(){S.hist.push({b:S.b.slice(),lp:S.lp.slice()});if(S.hist.length>60)S.hist.shift()}
+function changed(){S.marks=null;renderBoard();renderBudget();renderChips();renderMini();$('#undoBtn').disabled=!S.hist.length}
+function act(target){
+  if(!S||S.step!==1)return;
+  const gb=target.closest('[data-bond]'),ga=target.closest('[data-atom]');
+  if(gb){const k=+gb.dataset.bond;snapshot();S.b[k]=S.mode==='add'?(S.b[k]+1)%4:Math.max(0,S.b[k]-1);S.pop='b'+k;changed();focusBack('[data-bond="'+k+'"]')}
+  else if(ga){const i=+ga.dataset.atom;snapshot();S.lp[i]=S.mode==='add'?(S.lp[i]+1)%5:Math.max(0,S.lp[i]-1);S.pop='a'+i;changed();focusBack('[data-atom="'+i+'"]')}
+}
+let kbAct=false;
+function focusBack(sel){if(kbAct){const el=$('#board '+sel);if(el)el.focus()}kbAct=false}
+$('#board').addEventListener('click',e=>act(e.target));
+$('#board').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();kbAct=true;act(e.target)}});
+$('#chips').addEventListener('pointerover',e=>{const c=e.target.closest('[data-hl]');const v=c?+c.dataset.hl:-1;if(v!==S.hl){S.hl=v;renderBoard()}});
+$('#chips').addEventListener('pointerleave',()=>{if(S.hl!==-1){S.hl=-1;renderBoard()}});
+$('#modeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;S.mode=b.dataset.mode;renderPlay()});
+$('#viewSeg').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;S.view=b.dataset.view;renderPlay()});
+$('#tabSeg').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b||b.disabled)return;S.tab=b.dataset.tab;renderPlay()});
+$('#undoBtn').onclick=()=>{const h=S.hist.pop();if(!h)return;S.b=h.b;S.lp=h.lp;changed()};
+$('#resetBtn').onclick=()=>{snapshot();S.b=S.b.map(()=>0);S.lp=S.lp.map(()=>0);S.fb=null;changed();renderTask()};
+$('#fillBtn').onclick=()=>{snapshot();const L=S.L;L.atoms.forEach((a,i)=>{if(i===0&&!L.diatomic)return;if(a.e==='H')return;S.lp[i]=Math.max(0,(a.t-2*bondSum(L,S.b,i))/2)});changed()};
+$('#checkBtn').onclick=()=>{
+  const r=validate(S.L,S.b,S.lp);
+  S.marks={};S.L.atoms.forEach((_,i)=>S.marks[i]=r.bad.has(i)?'bad':'ok');
+  if(r.ok){S.fb=null;S.step=2;S.marks=null;S.domX=0;S.domE=0;renderPlay()}
+  else{S.fails++;S.pts.build=Math.max(20,50-10*S.fails);S.fb=fbList(r.issues);renderPlay()}
+};
+$('#task').addEventListener('click',e=>{
+  const L=S.L,tg=e.target;
+  if(tg.closest('#hintBtn')){S.hint=true;renderTask();return}
+  if(tg.closest('#ansBtn')){S.b=L.sol.b.slice();S.lp=L.sol.lp.slice();S.ans=true;S.pts.build=15;S.fb=null;S.marks=null;S.step=2;renderPlay();return}
+  const inc=tg.closest('[data-inc]'),dec=tg.closest('[data-dec]');
+  if(inc||dec){const k=(inc||dec).dataset[inc?'inc':'dec'];S[k]=Math.max(0,Math.min(8,S[k]+(inc?1:-1)));S.msg=null;renderTask();return}
+  if(tg.closest('#domSubmit')){
+    const ok=L.diatomic?S.domX===S.b[0]:(S.domX===L.atoms.length-1&&S.domE===S.lp[0]);
+    if(ok){S.step=3;S.msg=null}else{S.domWrong++;S.pts.dom=Math.max(5,20-5*S.domWrong);S.msg=t('tryAgain')}
+    renderPlay();return}
+  const so=tg.closest('[data-shape]');
+  if(so){const k=so.dataset.shape;if(k===L.shape){S.step=4;S.msg=null;S.tab='3d'}else{S.shapeWrong.push(k);S.pts.shape=Math.max(5,20-7*S.shapeWrong.length);S.msg=t('tryAgain')}renderPlay();return}
+  const ao=tg.closest('[data-ang]');
+  if(ao){const k=+ao.dataset.ang,ans=L.diatomic?L.bt:L.ang.ans;if(k===ans){S.msg=null;finish()}else{S.angWrong.push(k);S.pts.ang=Math.max(0,10-5*S.angWrong.length);S.msg=t('tryAgain');renderPlay()}return}
+  if(tg.closest('#certBtn')){openCert(S.i);return}
+  if(tg.closest('#grandBtn2')){openCert('all');return}
+  if(tg.closest('#nextBtn')){startLevel(S.i+1);return}
+  if(tg.closest('#replayBtn')){startLevel(S.i);return}
+});
+function finish(){
+  S.step=5;const sc=total(),L=S.L,prev=progress[L.id];
+  if(!prev||sc>=prev.score)progress[L.id]={score:sc,stars:starsFor(sc),date:new Date().toISOString(),sol:{b:S.b.slice(),lp:S.lp.slice()}};
+  store.set('progress',progress);renderPlay();celebrate(stats().n===16);
+}
+function celebrate(big){
+  if(reduced)return;let cv=$('#confetti');if(!cv){cv=document.createElement('canvas');cv.id='confetti';document.body.appendChild(cv)}
+  const dpr=fitCanvas(cv),ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cols=Object.values(ELEM).map(e=>e.ec).concat(['#FFB627']);
+  const N=big?220:110,ps=[];for(let i=0;i<N;i++){const a=-Math.PI/2+(Math.random()-.5)*1.6,v=(6+Math.random()*9)*dpr;ps.push({x:W*(.3+Math.random()*.4),y:H*.75,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:(3+Math.random()*4)*dpr,c:cols[i%cols.length]})}
+  const t0=performance.now(),dur=big?2600:1700;
+  (function step(now){const k=(now-t0)/dur;ctx.clearRect(0,0,W,H);if(k>=1){cv.remove();return}
+    ps.forEach(p=>{p.vy+=.28*dpr;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;ctx.globalAlpha=1-k;ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;requestAnimationFrame(step)})(t0);
+}
+function goHome(){S=null;$('#play').hidden=true;$('#home').hidden=false;renderHome();window.scrollTo(0,0)}
+$('#backBtn').onclick=goHome;$('#brandBtn').onclick=goHome;
+$('#railTrack').addEventListener('click',e=>{const s=e.target.closest('[data-start]');if(s)startLevel(+s.dataset.start)});
+$('#chapters').addEventListener('click',e=>{const a=e.target.closest('[data-ar]');if(a){openAR(arCleared(+a.dataset.ar),+a.dataset.ar);return}const c=e.target.closest('[data-cert]');if(c){openCert(+c.dataset.cert);return}const s=e.target.closest('[data-start]');if(s)startLevel(+s.dataset.start)});
+$$('[data-lang]').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;store.set('lang',lang);applyStatic();renderShowcase();if(S){if(S.L.diatomic)S.angOpts.forEach(o=>o.label=t(['single','double','triple'][o.k]));renderPlay()}else renderHome();if($('#certDlg').open)drawCertNow()});
+
+/* ---------- certificate ---------- */
+let certKind=null,certURL='';
+const FF={body:'"Anuphan","Noto Sans Thai",sans-serif',disp:'"Chakra Petch","Anuphan",sans-serif',script:'"Charm","Anuphan",serif',mono:'"IBM Plex Mono",monospace'};
+function fRuns(f){return f.match(/\d+|\D+/g).map(s=>({s,sub:/^\d+$/.test(s)}))}
+function segW(ctx,segs,size,fam,wt){let w=0;for(const g of segs){if(g.f){for(const r of fRuns(g.f)){ctx.font=`${wt} ${r.sub?size*.62:size}px ${fam}`;w+=ctx.measureText(r.s).width}}else{ctx.font=`${wt} ${size}px ${fam}`;w+=ctx.measureText(g.t).width}}return w}
+function drawSegs(ctx,segs,cx,y,size,fam,wt,col,maxW){let sz=size;while(segW(ctx,segs,sz,fam,wt)>maxW&&sz>14)sz-=1;let x=cx-segW(ctx,segs,sz,fam,wt)/2;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillStyle=col;
+  for(const g of segs){if(g.f){for(const r of fRuns(g.f)){const s2=r.sub?sz*.62:sz;ctx.font=`${wt} ${s2}px ${fam}`;ctx.fillText(r.s,x,y+(r.sub?sz*.18:0));x+=ctx.measureText(r.s).width}}else{ctx.font=`${wt} ${sz}px ${fam}`;ctx.fillText(g.t,x,y);x+=ctx.measureText(g.t).width}}}
+function fitText(ctx,txt,cx,y,size,fam,wt,col,maxW){drawSegs(ctx,[{t:txt}],cx,y,size,fam,wt,col,maxW)}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function star(ctx,x,y,r,on){ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rad=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad)}ctx.closePath();ctx.fillStyle=on?'#E89A00':'#DCE2E7';ctx.fill()}
+function drawMolCanvas(ctx,L,sol,box){
+  const B=bounds(L),sc=Math.min(box.w/(B.x1-B.x0),box.h/(B.y1-B.y0),1.9),ox=box.x+box.w/2-(B.x0+B.x1)/2*sc,oy=box.y+box.h/2-(B.y0+B.y1)/2*sc,P=a=>[ox+a.x*sc,oy+a.y*sc];
+  L.bonds.forEach(([i,j],k)=>{const p=L.atoms[i],q=L.atoms[j],[x1,y1]=P(p),[x2,y2]=P(q),dx=x2-x1,dy=y2-y1,l=Math.hypot(dx,dy),ux=dx/l,uy=dy/l,nx=-uy,ny=ux,r1=(ELEM[p.e].r+5)*sc,r2=(ELEM[q.e].r+5)*sc,o=sol.b[k];
+    ctx.strokeStyle='#E6EDF2';ctx.lineWidth=3.4*sc;ctx.lineCap='round';for(let m=0;m<o;m++){const off=(m-(o-1)/2)*9*sc;ctx.beginPath();ctx.moveTo(x1+ux*r1+nx*off,y1+uy*r1+ny*off);ctx.lineTo(x2-ux*r2+nx*off,y2-uy*r2+ny*off);ctx.stroke()}});
+  L.atoms.forEach((a,i)=>{const E=ELEM[a.e],[x,y]=P(a),r=E.r*sc;
+    lpDirs(L,i,sol.lp[i]).forEach(d=>{const rad=d*Math.PI/180,cx=x+Math.cos(rad)*(E.r+12)*sc,cy=y+Math.sin(rad)*(E.r+12)*sc,nx=-Math.sin(rad),ny=Math.cos(rad);ctx.fillStyle=E.ec;for(const s of [-1,1]){ctx.beginPath();ctx.arc(cx+nx*s*5.2*sc,cy+ny*s*5.2*sc,3.8*sc,0,Math.PI*2);ctx.fill()}});
+    ctx.fillStyle=E.col;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=1.5*sc;ctx.stroke();
+    ctx.fillStyle=E.txt;ctx.font=`700 ${(a.e.length>1?18:20)*sc}px ${FF.disp}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(a.e,x,y+1)});
+}
+function loadImg(src){return new Promise(res=>{if(!src)return res(null);const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src})}
+async function renderCert(kind){
+  try{await Promise.all(['700 80px "Charm"','600 30px "Anuphan"','400 30px "Anuphan"','700 30px "Chakra Petch"','600 20px "IBM Plex Mono"'].map(f=>document.fonts.load(f,'เกียรติบัตร Aa')))}catch(e){}
+  const W=1754,H=1240,cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
+  const ink='#17212B',mut='#5A6874',amb='#8A5600';
+  ctx.fillStyle='#FCFDFD';ctx.fillRect(0,0,W,H);
+  // hex lattice motif
+  ctx.strokeStyle='#E6EBEF';ctx.lineWidth=2;const hx=(x,y,r)=>{ctx.beginPath();for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3;ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a))}ctx.closePath();ctx.stroke()};
+  for(let c=0;c<6;c++)for(let r=0;r<5;r++){const x=W-60-c*52-(r%2)*26,y=H-60-r*45;if(c+r<6)hx(x,y,30)}
+  // frame
+  ctx.strokeStyle=ink;ctx.lineWidth=14;ctx.strokeRect(34,34,W-68,H-68);ctx.strokeStyle='#E89A00';ctx.lineWidth=3;ctx.strokeRect(58,58,W-116,H-116);
+  // left bench panel
+  const px=110,py=110,pw=520,ph=H-220;ctx.fillStyle='#1B252F';rr(ctx,px,py,pw,ph,22);ctx.fill();
+  ctx.save();rr(ctx,px,py,pw,ph,22);ctx.clip();ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;for(let x=px;x<px+pw;x+=26){ctx.beginPath();ctx.moveTo(x,py);ctx.lineTo(x,py+ph);ctx.stroke()}for(let y=py;y<py+ph;y+=26){ctx.beginPath();ctx.moveTo(px,y);ctx.lineTo(px+pw,y);ctx.stroke()}ctx.restore();
+  const cxR=1185,maxW=1000;
+  let L=null,p=null;
+  if(kind==='all'){
+    ctx.fillStyle='#8FA2B2';ctx.font=`600 22px ${FF.mono}`;ctx.textAlign='center';ctx.fillText('16 / 16',px+pw/2,py+70);
+    LEVELS.forEach((lv,i)=>{const c=i%4,r=Math.floor(i/4),x=px+46+c*110,y=py+130+r*150;ctx.fillStyle='#243140';rr(ctx,x,y,96,120,12);ctx.fill();
+      drawSegs(ctx,[{f:lv.f}],x+48,y+62,lv.f.length>4?26:32,FF.disp,700,'#E6EDF2',88);ctx.fillStyle='#FFB627';ctx.font=`600 15px ${FF.mono}`;ctx.textAlign='center';ctx.fillText(String(i+1).padStart(2,'0'),x+48,y+100)});
+  }else{
+    L=LEVELS[kind];p=progress[L.id];const sol=p?p.sol:L.sol,sh=SHAPES[L.shape];
+    drawMolCanvas(ctx,L,sol,{x:px+40,y:py+70,w:pw-80,h:ph-330});
+    drawSegs(ctx,[{f:L.f}],px+pw/2,py+ph-200,64,FF.disp,700,'#E6EDF2',pw-60);
+    fitText(ctx,tx(sh),px+pw/2,py+ph-138,34,FF.body,600,'#FFB627',pw-60);
+    const X=L.atoms.length-1,E=sol.lp[0];
+    fitText(ctx,L.diatomic?'180°':`${axeText(X,E)}  ·  ${tx(L.ang.opts[L.ang.ans])}`,px+pw/2,py+ph-88,26,FF.mono,600,'#8FA2B2',pw-60);
+  }
+  // developer credit under the bench panel
+  fitText(ctx,t('certDev'),px+pw/2,py+ph+38,20,FF.body,600,mut,pw+40);
+  // right text
+  let y=150;
+  if(cfg.school){fitText(ctx,cfg.school,cxR,y+10,34,FF.body,600,mut,maxW);y+=30}
+  fitText(ctx,lang==='th'?'เกียรติบัตร':'Certificate',cxR,y+130,lang==='th'?128:112,FF.script,700,ink,maxW);
+  ctx.fillStyle=amb;ctx.font=`700 26px ${FF.disp}`;ctx.textAlign='center';ctx.letterSpacing='8px';ctx.fillText(lang==='th'?'CERTIFICATE OF ACHIEVEMENT':'จากพันธะสู่รูปร่าง · BOND TO SHAPE',cxR+4,y+190);ctx.letterSpacing='0px';
+  fitText(ctx,t('certGiven'),cxR,y+270,32,FF.body,400,mut,maxW);
+  const nm=cfg.student||t('certNamePh');
+  fitText(ctx,nm,cxR,y+370,cfg.student?88:40,cfg.student?FF.script:FF.body,700,cfg.student?ink:'#A9B4BD',maxW);
+  ctx.strokeStyle='#CBD4DB';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cxR-380,y+395);ctx.lineTo(cxR+380,y+395);ctx.stroke();
+  if(cfg.klass)fitText(ctx,cfg.klass,cxR,y+438,28,FF.body,400,mut,maxW);
+  if(kind==='all'){
+    const st=stats();
+    fitText(ctx,t('certAllLine'),cxR,y+500,36,FF.body,600,ink,maxW);
+    fitText(ctx,t('certAllScore',{s:st.score.toLocaleString()}),cxR,y+556,30,FF.body,400,mut,maxW);
+    fitText(ctx,t('certDate',{d:fmtDate(new Date().toISOString())}),cxR,y+640,28,FF.body,400,mut,maxW);
+  }else{
+    const sh=SHAPES[L.shape],sol=p?p.sol:L.sol;
+    drawSegs(ctx,[{t:t('certPass',{n:kind+1})},{f:L.f},{t:` (${tx(L.name)})`}],cxR,y+500,38,FF.body,600,ink,maxW);
+    const det=L.diatomic?t('certDetailD',{bt:t(['single','double','triple'][L.bt])}):t('certDetail',{s:tx(sh),axe:axeText(L.atoms.length-1,sol.lp[0])});
+    fitText(ctx,det,cxR,y+552,30,FF.body,400,mut,maxW);
+    const sc=p?p.score:0,stn=p?p.stars:0;for(let i=0;i<3;i++)star(ctx,cxR-64+i*64,y+612,26,i<stn);
+    fitText(ctx,t('certScore',{s:sc}),cxR,y+672,28,FF.mono,600,amb,maxW);
+    fitText(ctx,t('certDate',{d:fmtDate(p&&p.date)}),cxR,y+716,28,FF.body,400,mut,maxW);
+  }
+  // signatures
+  const [sT,sD]=await Promise.all([loadImg(cfg.sigT),loadImg(cfg.sigD)]);
+  const sigY=H-170;
+  [[cxR-260,sT,cfg.teacher,cfg.teacherPos||t('defTPos')],[cxR+260,sD,cfg.director,cfg.directorPos||t('defDPos')]].forEach(([x,im,name,pos])=>{
+    if(im){const s=Math.min(280/im.width,95/im.height);ctx.drawImage(im,x-im.width*s/2,sigY-12-im.height*s,im.width*s,im.height*s)}
+    ctx.strokeStyle='#9AA7B2';ctx.lineWidth=1.5;ctx.setLineDash([4,5]);ctx.beginPath();ctx.moveTo(x-170,sigY);ctx.lineTo(x+170,sigY);ctx.stroke();ctx.setLineDash([]);
+    fitText(ctx,name?`( ${name} )`:'(.................................................)',x,sigY+42,26,FF.body,600,ink,360);
+    fitText(ctx,pos,x,sigY+78,24,FF.body,400,mut,360)});
+  return cv;
+}
+let certCanvas=null;
+async function drawCertNow(){certCanvas=await renderCert(certKind);certURL=certCanvas.toDataURL('image/png');$('#certImg').src=certURL;$('#certImg').alt=$('#certTitle').textContent}
+function openCert(kind){
+  certKind=kind;$('#certTitle').textContent=kind==='all'?t('certAll'):t('certOf',{n:kind+1});
+  $('#cStudent').value=cfg.student;$('#cClass').value=cfg.klass;
+  const d=$('#certDlg');if(!d.open)d.showModal();drawCertNow();
+}
+let certTimer=null;
+['cStudent','cClass'].forEach(id=>$('#'+id).addEventListener('input',()=>{cfg.student=$('#cStudent').value.trim();cfg.klass=$('#cClass').value.trim();store.set('cfg',cfg);clearTimeout(certTimer);certTimer=setTimeout(drawCertNow,250)}));
+let dlNS;const dlReady=(async()=>{try{dlNS=window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){dlNS=null}})();
+$('#certSave').onclick=async()=>{
+  if(!certCanvas)return;const L=certKind==='all'?null:LEVELS[certKind];
+  const name=L?`certificate-level-${certKind+1}-${L.f}.png`:'certificate-all-levels.png';
+  const blob=await new Promise(r=>certCanvas.toBlob(r,'image/png'));
+  saveBlob(name,blob);
+};
+async function saveBlob(name,blob){
+  if(window.claude&&window.claude.use){await dlReady;if(dlNS){try{await dlNS.save({filename:name,data:blob})}catch(e){}return}}
+  try{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}catch(e){}
+}
+$('#certSettings').onclick=()=>{$('#certDlg').close();openSettings(true)};
+$$('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+
+/* ---------- settings ---------- */
+let reopenCert=false;
+const F={fStudent:'student',fClass:'klass',fSchool:'school',fTeacher:'teacher',fTeacherPos:'teacherPos',fDirector:'director',fDirectorPos:'directorPos'};
+function openSettings(back){reopenCert=!!back;for(const id in F)$('#'+id).value=cfg[F[id]]||'';
+  $('#fTeacherPos').placeholder=t('defTPos');$('#fDirectorPos').placeholder=t('defDPos');sigPrev();$('#setDlg').showModal()}
+function sigPrev(){[['pSigT','sigT'],['pSigD','sigD']].forEach(([im,k])=>{const el=$('#'+im);el.hidden=!cfg[k];if(cfg[k])el.src=cfg[k]})}
+for(const id in F)$('#'+id).addEventListener('input',e=>{cfg[F[id]]=e.target.value.trim();store.set('cfg',cfg)});
+function readSig(input,key){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,600/im.width,220/im.height),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cfg[key]=c.toDataURL('image/png');store.set('cfg',cfg);sigPrev()};im.src=r.result};r.readAsDataURL(f)}
+$('#fSigT').onchange=e=>readSig(e.target,'sigT');$('#fSigD').onchange=e=>readSig(e.target,'sigD');
+$('#xSigT').onclick=()=>{cfg.sigT='';store.set('cfg',cfg);$('#fSigT').value='';sigPrev()};
+$('#xSigD').onclick=()=>{cfg.sigD='';store.set('cfg',cfg);$('#fSigD').value='';sigPrev()};
+let resetArm=0;
+$('#resetAll').onclick=e=>{const b=e.currentTarget;if(Date.now()-resetArm<4000){progress={};store.set('progress',progress);b.textContent=t('sResetDone');resetArm=0;if(!S)renderHome()}else{resetArm=Date.now();b.textContent=t('sResetConfirm');setTimeout(()=>{b.textContent=t('sReset')},4000)}};
+$('#settingsBtn').onclick=()=>openSettings(false);
+$('#setDlg').addEventListener('close',()=>{if(reopenCert&&certKind!==null){reopenCert=false;openCert(certKind)}if(!S)renderHome()});
+
+/* ---------- AR mode ---------- */
+const AR={on:false,list:[],i:0,model:null,src:'cam',pref:'cam',stream:null,photoURL:'',
+  yaw:.6,pitch:.3,zoom:1.2,idle:0,ptr:new Map(),drag:null,pinch:null,
+  gyro:false,g:null,g0:null,gyroSeen:false,gyroTimer:0,shot:null,token:0};
+const clampN=(v,a,b)=>Math.max(a,Math.min(b,v));
+function arCleared(cur){const ids=LEVELS.map((L,i)=>i).filter(i=>progress[LEVELS[i].id]||i===cur);return ids.map(i=>({kind:'lv',i}))}
+function arInfo(it){
+  if(it.kind==='lv'){const L=LEVELS[it.i],sh=SHAPES[L.shape];
+    return {f:L.f,sub:tx(L.name),shape:tx(sh),axe:L.diatomic?'':axeHTML(sh.d-sh.lp,sh.lp),axeT:L.diatomic?'':axeText(sh.d-sh.lp,sh.lp),
+      ang:L.diatomic?'180°':(L.ang?L.ang.opts[L.ang.ans]:sh.ang),lp:!L.diatomic&&sh.lp>0,model:()=>levelModel(L,L.sol),file:L.id}}
+  const sh=SHAPES[it.k];
+  return {f:'',title:tx(sh),sub:t('arExample',{f:fU(sh.ex)}),shape:tx(sh),axe:axeHTML(sh.d-sh.lp,sh.lp),axeT:axeText(sh.d-sh.lp,sh.lp),
+    ang:sh.ang,lp:sh.lp>0,model:()=>genericModel(it.k),file:it.k}
+}
+function arRenderInfo(){
+  const it=AR.list[AR.i],a=arInfo(it);AR.model=a.model();
+  $('#arTitle').innerHTML=a.f?`${fH(a.f)}<small>${esc(a.sub)}</small>`:`${esc(a.title)}<small>${esc(a.sub)}</small>`;
+  $('#arMeta').innerHTML=`${a.f?esc(a.shape)+' · ':''}${a.axe?`<span class="m">${a.axe}</span> · `:''}${t('angle')} <span class="m">${esc(a.ang)}</span>${a.lp?`<span class="lp">${t('lpLegend')}</span>`:''}`;
+  const n=AR.list.length;$('#arNav').hidden=n<2;$('#arCount').textContent=`${AR.i+1} / ${n}`;
+  $('#arPrev').disabled=AR.i===0;$('#arNext').disabled=AR.i===n-1;
+  arGyroLabel();
+}
+function arGyroLabel(){const b=$('#arGyro');b.textContent=AR.gyro?t('arGyroOn'):t('arGyroOff');b.setAttribute('aria-pressed',AR.gyro);
+  $('#arHint').textContent=AR.gyro?t('arHint'):t('arHintNoGyro')}
+function openAR(list,i){
+  if(!list.length)return;AR.list=list;AR.i=Math.max(0,list.findIndex(x=>x.kind==='lv'?x.i===i:x.k===i));
+  AR.yaw=.6;AR.pitch=.3;AR.zoom=1.05;AR.idle=0;AR.ptr.clear();AR.drag=AR.pinch=null;
+  arRenderInfo();$('#arSheet').hidden=true;$('#arMsg').hidden=true;
+  const d=$('#ar');if(!d.open)d.showModal();AR.on=true;
+  arGyroStart();               // inside the tap, so iPhone can show its motion prompt
+  arSetSource(AR.pref);
+  $('#arClose').focus();
+}
+function arStop(){if(AR.stream){AR.stream.getTracks().forEach(x=>x.stop());AR.stream=null}const v=$('#arVid');v.srcObject=null;v.hidden=true}
+function arStatus(msg){const el=$('#arStatus');el.hidden=!msg;el.textContent=msg||''}
+function arSetSource(src){
+  AR.token++;const tok=AR.token;$('#arMsg').hidden=true;
+  if(src==='cam'){arCamera(tok);return}
+  arStop();arStatus(null);AR.src=src;AR.pref=src;
+  $('#arPhoto').hidden=src!=='photo';
+}
+async function arCamera(tok){
+  arStop();$('#arPhoto').hidden=true;AR.src='cam';
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){arStatus(null);arChoose(true);return}
+  arStatus(t('arStarting'));
+  try{
+    const s=await Promise.race([
+      navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false}),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),12000))]);
+    if(tok!==AR.token||!AR.on){s.getTracks().forEach(x=>x.stop());return}
+    AR.stream=s;AR.pref='cam';const v=$('#arVid');v.srcObject=s;v.hidden=false;
+    try{await v.play()}catch(e){}
+    arStatus(null);
+  }catch(e){if(tok!==AR.token)return;arStatus(null);AR.src='lab';arChoose(true)}
+}
+function arChoose(failed){
+  const m=$('#arMsg');
+  m.innerHTML=`<h3>${failed?t('arNoCamTitle'):t('arSrcTitle')}</h3><p>${failed?t('arNoCamBody'):t('arSrcBody')}</p>
+    <div class="ar-opts">
+      <button class="ar-b ar-shot" type="button" data-src="photo">${t('arUsePhoto')}</button>
+      <button class="ar-b" type="button" data-src="cam">${t('arUseCam')}</button>
+      <button class="ar-b" type="button" data-src="lab">${t('arUseLab')}</button>
+      ${failed?'':`<button class="ar-b" type="button" data-src="x">${t('arCancel')}</button>`}
+    </div>`;
+  m.hidden=false;const f=m.querySelector('button');if(f)f.focus();
+}
+$('#arMsg').addEventListener('click',e=>{const b=e.target.closest('[data-src]');if(!b)return;const s=b.dataset.src;
+  if(s==='photo'){$('#arFile').click();return}
+  if(s==='x'){$('#arMsg').hidden=true;return}
+  arSetSource(s)});
+$('#arFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;
+  if(AR.photoURL)URL.revokeObjectURL(AR.photoURL);AR.photoURL=URL.createObjectURL(f);
+  const im=$('#arPhoto');im.onload=()=>arSetSource('photo');im.src=AR.photoURL;e.target.value=''});
+
+/* tilt: the molecule keeps its place in the room while the phone turns around it */
+function arOri(e){if(e.alpha==null&&e.beta==null)return;AR.gyroSeen=true;AR.g={a:e.alpha||0,b:e.beta||0};if(!AR.g0)AR.g0={...AR.g}}
+async function arGyroStart(){
+  AR.g=AR.g0=null;AR.gyroSeen=false;clearTimeout(AR.gyroTimer);
+  const DOE=window.DeviceOrientationEvent;
+  if(!DOE){AR.gyro=false;arGyroLabel();return false}
+  try{if(typeof DOE.requestPermission==='function'){const r=await DOE.requestPermission();if(r!=='granted'){AR.gyro=false;arGyroLabel();return false}}}catch(e){AR.gyro=false;arGyroLabel();return false}
+  window.addEventListener('deviceorientation',arOri);AR.gyro=true;arGyroLabel();
+  AR.gyroTimer=setTimeout(()=>{if(!AR.gyroSeen){window.removeEventListener('deviceorientation',arOri);AR.gyro=false;arGyroLabel()}},1600);
+  return true;
+}
+function arGyroStop(){window.removeEventListener('deviceorientation',arOri);clearTimeout(AR.gyroTimer);AR.gyro=false;AR.g=AR.g0=null;arGyroLabel()}
+$('#arGyro').onclick=async()=>{
+  if(AR.gyro){arGyroStop();return}
+  await arGyroStart();
+  setTimeout(()=>{if(!AR.gyroSeen&&AR.on){arStatus(t('arGyroNA'));setTimeout(()=>arStatus(null),2600)}},1700);
+};
+function arPose(){
+  let yaw=AR.yaw,pitch=AR.pitch,ox=0,oy=0;
+  if(AR.gyro&&AR.g&&AR.g0){
+    let da=AR.g.a-AR.g0.a;da=((da+540)%360)-180;const db=clampN(AR.g.b-AR.g0.b,-70,70);
+    yaw+=da*Math.PI/180;pitch=clampN(pitch+db*Math.PI/180*.8,-1.45,1.45);
+    const W=innerWidth,H=innerHeight;ox=clampN(da*3.2,-W*.3,W*.3);oy=clampN(db*3.2,-H*.25,H*.25);
+  }
+  return {yaw,pitch,ox,oy};
+}
+function arGround(ctx,cx,cy,unit,dpr,ts){
+  const gy=cy+unit*1.5,rx=unit*1.55,ry=unit*.34;
+  ctx.save();ctx.translate(cx,gy);ctx.scale(1,ry/rx);
+  const g=ctx.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,'rgba(0,0,0,.55)');g.addColorStop(.6,'rgba(0,0,0,.22)');g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,Math.PI*2);ctx.fill();ctx.restore();
+  ctx.save();ctx.setLineDash([unit*.16,unit*.1]);ctx.lineDashOffset=reduced?0:-(ts||0)*.03;
+  ctx.strokeStyle='rgba(255,182,39,.9)';ctx.lineWidth=2.2*dpr;ctx.beginPath();ctx.ellipse(cx,gy,rx*.78,ry*.78,0,0,Math.PI*2);ctx.stroke();
+  ctx.setLineDash([]);ctx.strokeStyle='rgba(255,210,122,.35)';ctx.lineWidth=1*dpr;ctx.beginPath();ctx.ellipse(cx,gy,rx*.52,ry*.52,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+}
+function arFrame(ts,dt){
+  if(!AR.model||!$('#arSheet').hidden)return;
+  const live=AR.gyro&&AR.gyroSeen;
+  if(!AR.drag&&!AR.pinch&&!live&&!reduced&&ts-AR.idle>2500)AR.yaw+=dt*.00045;
+  const p=arPose(),lift=-innerHeight*.07;
+  draw3D($('#arCv'),AR.model,p.yaw,p.pitch,{zoom:AR.zoom,ox:p.ox,oy:p.oy+lift,pre:(ctx,cx,cy,u,dpr)=>arGround(ctx,cx,cy,u,dpr,ts)});
+}
+/* drag to rotate, pinch or wheel to zoom */
+const arCv=$('#arCv');
+function arDist(){const v=[...AR.ptr.values()];return Math.hypot(v[0].x-v[1].x,v[0].y-v[1].y)||1}
+arCv.addEventListener('pointerdown',e=>{AR.ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});try{arCv.setPointerCapture(e.pointerId)}catch(_){}
+  if(AR.ptr.size===1){AR.drag={x:e.clientX,y:e.clientY,yaw:AR.yaw,pitch:AR.pitch};arCv.style.cursor='grabbing'}
+  else if(AR.ptr.size===2){AR.drag=null;AR.pinch={d:arDist(),z:AR.zoom}}});
+arCv.addEventListener('pointermove',e=>{if(!AR.ptr.has(e.pointerId))return;AR.ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(AR.pinch&&AR.ptr.size>=2){AR.zoom=clampN(AR.pinch.z*arDist()/AR.pinch.d,.5,2.8);return}
+  if(AR.drag){AR.yaw=AR.drag.yaw+(e.clientX-AR.drag.x)*.01;AR.pitch=clampN(AR.drag.pitch+(e.clientY-AR.drag.y)*.01,-1.4,1.4)}});
+const arUp=e=>{AR.ptr.delete(e.pointerId);
+  if(AR.ptr.size<2)AR.pinch=null;
+  if(AR.ptr.size===1){const v=[...AR.ptr.values()][0];AR.drag={x:v.x,y:v.y,yaw:AR.yaw,pitch:AR.pitch}}
+  if(AR.ptr.size===0){AR.drag=null;AR.idle=performance.now();arCv.style.cursor=''}};
+arCv.addEventListener('pointerup',arUp);arCv.addEventListener('pointercancel',arUp);
+arCv.addEventListener('wheel',e=>{e.preventDefault();AR.zoom=clampN(AR.zoom*Math.exp(-e.deltaY*.0015),.5,2.8);AR.idle=performance.now()},{passive:false});
+
+/* capture: camera frame + molecule + a caption band the student can hand in */
+function coverDraw(ctx,src,sw,sh,W,H){const k=Math.max(W/sw,H/sh),dw=sw*k,dh=sh*k;ctx.drawImage(src,(W-dw)/2,(H-dh)/2,dw,dh)}
+function arCapture(){
+  const cv=$('#arCv'),W=cv.width,H=cv.height;if(!W||!H)return;
+  const out=document.createElement('canvas');out.width=W;out.height=H;const ctx=out.getContext('2d');
+  const v=$('#arVid'),im=$('#arPhoto');
+  ctx.fillStyle='#141D25';ctx.fillRect(0,0,W,H);
+  if(AR.src==='cam'&&AR.stream&&v.videoWidth)coverDraw(ctx,v,v.videoWidth,v.videoHeight,W,H);
+  else if(AR.src==='photo'&&im.naturalWidth)coverDraw(ctx,im,im.naturalWidth,im.naturalHeight,W,H);
+  else{ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;const g=Math.round(28*W/innerWidth);for(let x=0;x<W;x+=g){ctx.beginPath();ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,H);ctx.stroke()}for(let y=0;y<H;y+=g){ctx.beginPath();ctx.moveTo(0,y+.5);ctx.lineTo(W,y+.5);ctx.stroke()}}
+  ctx.drawImage(cv,0,0);
+  const a=arInfo(AR.list[AR.i]),s=W/innerWidth,bandH=Math.round(150*s);
+  const gr=ctx.createLinearGradient(0,H-bandH*1.4,0,H);gr.addColorStop(0,'rgba(4,7,10,0)');gr.addColorStop(.35,'rgba(4,7,10,.72)');gr.addColorStop(1,'rgba(4,7,10,.9)');
+  ctx.fillStyle=gr;ctx.fillRect(0,H-bandH*1.4,W,bandH*1.4);
+  const mw=W-32*s;
+  drawSegs(ctx,a.f?[{f:a.f},{t:'  '+a.sub}]:[{t:a.title}],W/2,H-bandH+40*s,30*s,FF.disp,700,'#FFFFFF',mw);
+  fitText(ctx,`${a.shape}${a.axeT?' · '+a.axeT:''} · ${t('angle')} ${a.ang}`,W/2,H-bandH+76*s,18*s,FF.body,600,'#FFC85C',mw);
+  const who=[cfg.student,cfg.klass].filter(Boolean).join(' · ');
+  fitText(ctx,(who?who+'  ·  ':'')+t('arFooter')+'  ·  '+fmtDate(),W/2,H-bandH+108*s,14*s,FF.body,500,'#C6D2DB',mw);
+  AR.shot={cv:out,name:`ar-${a.file}.png`};
+  $('#arShotImg').src=out.toDataURL('image/png');$('#arShotImg').alt=t('arShotTitle',{f:a.f?fU(a.f):a.title});
+  $('#arShotTitle').textContent=t('arShotTitle',{f:a.f?fU(a.f):a.title});
+  $('#arSheet').hidden=false;$('#arSave').focus();
+}
+$('#arShot').onclick=arCapture;
+$('#arSave').onclick=async()=>{if(!AR.shot)return;const blob=await new Promise(r=>AR.shot.cv.toBlob(r,'image/png'));if(blob)saveBlob(AR.shot.name,blob)};
+$('#arBack').onclick=()=>{$('#arSheet').hidden=true;$('#arShot').focus()};
+$('#arSrcBtn').onclick=()=>arChoose(false);
+$('#arReset').onclick=()=>{AR.yaw=.6;AR.pitch=.3;AR.zoom=1.05;if(AR.g)AR.g0={...AR.g};AR.idle=0};
+$('#arPrev').onclick=()=>{if(AR.i>0){AR.i--;arRenderInfo()}};
+$('#arNext').onclick=()=>{if(AR.i<AR.list.length-1){AR.i++;arRenderInfo()}};
+$('#arClose').onclick=()=>$('#ar').close();
+$('#ar').addEventListener('close',()=>{AR.on=false;AR.token++;arStop();arStatus(null);arGyroStop();$('#arSheet').hidden=true;$('#arMsg').hidden=true});
+$('#arLvBtn').onclick=()=>{if(S)openAR(arCleared(S.i),S.i)};
+$('#arHomeBtn').onclick=()=>{const l=arCleared(-1);if(l.length)openAR(l,l[0].i);else openAR(SC.map(i=>({kind:'lv',i})),SC[0])};
+$('#vtable').addEventListener('click',e=>{const b=e.target.closest('[data-arshape]');if(b)openAR(Object.keys(SHAPES).map(k=>({kind:'sh',k})),b.dataset.arshape)});
+
+/* ---------- boot ---------- */
+applyStatic();renderHome();renderShowcase();
+addViewer($('#scCv'),()=>scModel,()=>!$('#home').hidden);
+addViewer($('#cv3'),()=>S&&S.step>=4?levelModel(S.L,{b:S.b,lp:S.lp}):null,()=>S&&S.tab==='3d'&&!$('#play').hidden);
+if(!reduced)setInterval(()=>{if(!$('#home').hidden){scI=(scI+1)%SC.length;renderShowcase()}},5000);
+requestAnimationFrame(loop);
+document.fonts&&document.fonts.ready.then(()=>{if(!$('#home').hidden)renderVTable()});
+</script>
+
+<script>
+/* ===== คู่มือครู (teacher's guide) — shared module ===== */
+(function(){
+"use strict";
+const CSS=`
+#tgBox{position:fixed;inset:0;z-index:2147483000;background:rgba(9,13,17,.74);overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 32px);text-align:left}
+#tgBox[hidden]{display:none!important}
+#tgBox *{box-sizing:border-box}
+.tg-wrap{max-width:880px;margin:0 auto;background:#fbfaf6;color:#1d2427;border-radius:16px;padding:22px 20px 28px;display:grid;gap:22px;font-size:15px;line-height:1.7;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.tg-wrap h2,.tg-wrap h3{color:#1d2427;margin:0;letter-spacing:0;text-transform:none;font-weight:700}
+.tg-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+.tg-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#0f6b5f}
+.tg-head h2{font-size:clamp(20px,4.2vw,25px);line-height:1.3;margin-top:4px}
+.tg-btns{display:flex;flex-wrap:wrap;gap:8px}
+.tg-btn{appearance:none;font:inherit;font-size:15px;font-weight:600;min-height:44px;padding:9px 16px;border-radius:10px;border:1px solid #b9c5c2;background:#fff;color:#1d2427;cursor:pointer}
+.tg-btn:hover{background:#eef3f1}
+.tg-btn.pri{background:#0f6b5f;border-color:#0f6b5f;color:#fff}
+.tg-btn.pri:hover{background:#0c5a50}
+.tg-btn:focus-visible,.tg-nav a:focus-visible,.tg-lv summary:focus-visible{outline:3px solid #e2a62b;outline-offset:2px}
+.tg-nav{display:flex;flex-wrap:wrap;gap:6px}
+.tg-nav a{font-size:13px;font-weight:600;color:#3d4a4d;text-decoration:none;border:1px solid #d4dcda;border-radius:20px;padding:5px 11px;background:#fff}
+.tg-nav a:hover{border-color:#0f6b5f;color:#0f6b5f}
+.tg-sec{display:grid;gap:10px;scroll-margin-top:16px}
+.tg-sec h3{font-size:18px;color:#0f6b5f;line-height:1.4}
+.tg-sec p,.tg-sec li{margin:0;font-size:15px}
+.tg-sec ul{margin:0;padding-left:1.3em;display:grid;gap:5px}
+.tg-sec b{font-weight:700}
+.tg-tbl{overflow-x:auto;border:1px solid #d4dcda;border-radius:10px;background:#fff}
+.tg-tbl table{border-collapse:collapse;width:100%;min-width:540px;font-size:14px}
+.tg-tbl th,.tg-tbl td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid #e4e9e7;line-height:1.6;color:#1d2427}
+.tg-tbl th{font-size:13px;font-weight:700;background:#eef3f1;color:#3d4a4d}
+.tg-tbl tr:last-child td{border-bottom:0}
+.tg-tbl td.n{font-weight:700;color:#0f6b5f;white-space:nowrap}
+.tg-note{font-size:14px!important;color:#3d4a4d;border-left:3px solid #e2a62b;background:#fdf6e6;padding:7px 11px;border-radius:0 8px 8px 0}
+.tg-mut{font-size:13.5px!important;color:#5b6a6c}
+.tg-lv{border:1px solid #d4dcda;border-radius:12px;background:#fff}
+.tg-lv summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:baseline;padding:10px 12px}
+.tg-lv summary::-webkit-details-marker{display:none}
+.tg-lv .no{font-size:12px;font-weight:700;color:#7a8a8c;font-variant-numeric:tabular-nums}
+.tg-lv .fm{font-size:18px;font-weight:700}
+.tg-lv .nm2{font-size:13.5px;color:#5b6a6c}
+.tg-lv .mx{font-size:12.5px;color:#5b6a6c;white-space:nowrap}
+.tg-lv[open] summary{border-bottom:1px solid #e4e9e7}
+.tg-lv dl{margin:0;padding:10px 12px 12px;display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:7px 14px;font-size:14.5px;line-height:1.65}
+.tg-lv dt{color:#5b6a6c;font-weight:600}
+.tg-lv dd{margin:0}
+.tg-lv .ans{color:#0b6b36;font-weight:700}
+.tg-lv .why{display:block;color:#3d4a4d;font-size:13.5px;margin-top:2px}
+.tg-lv sub,.tg-tbl sub{font-size:.75em}
+.tg-credit{font-size:13.5px;color:#5b6a6c;margin:0}
+.tg-mount{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.tg-mount p{margin:0;max-width:62ch}
+@media (max-width:640px){.tg-lv dl{grid-template-columns:1fr;gap:0}.tg-lv dt{margin-top:7px}.tg-wrap{padding:16px 14px 22px}.tg-lv summary{grid-template-columns:auto auto 1fr}.tg-lv .mx{display:none}}
+@media print{
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
+  body>*:not(#tgBox){display:none!important}
+  #tgBox{position:static;background:#fff;padding:0;overflow:visible}
+  .tg-wrap{box-shadow:none;max-width:none;padding:0;background:#fff;color:#000}
+  .tg-noprint{display:none!important}
+  .tg-tbl table{min-width:0}
+  .tg-lv{break-inside:avoid}
+  .tg-sec h3,.tg-tbl td.n,.tg-eyebrow{color:#000}
+}
+@media (prefers-reduced-motion:reduce){#tgBox *{scroll-behavior:auto!important}}`;
+let box=null,lastFocus=null,curSpec=null;
+(function(){if(document.getElementById('tgStyle'))return;const st=document.createElement('style');st.id='tgStyle';st.textContent=CSS;(document.head||document.documentElement).appendChild(st)})();
+function ensure(){
+  if(box)return box;
+  box=document.createElement('div');box.id='tgBox';box.hidden=true;box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','tgTitle');
+  document.body.appendChild(box);
+  box.addEventListener('click',e=>{
+    if(e.target===box){close();return}
+    const a=e.target.closest('[data-tgnav]');if(a){e.preventDefault();const s=box.querySelector('#'+a.dataset.tgnav);if(s)s.scrollIntoView({behavior:'smooth',block:'start'});return}
+    if(e.target.closest('#tgClose'))close();
+    else if(e.target.closest('#tgLang')){if(curSpec&&curSpec.onLang){curSpec.onLang();const b=box.querySelector('#tgLang');if(b)b.focus({preventScroll:true})}}
+    else if(e.target.closest('#tgPrint')){box.querySelectorAll('details').forEach(d=>d.open=true);window.print()}
+  });
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&box&&!box.hidden)close()});
+  addEventListener('beforeprint',()=>{if(box&&!box.hidden)box.querySelectorAll('details').forEach(d=>d.open=true)});
+  return box;
+}
+function render(spec){
+  return `<div class="tg-wrap">
+  <div class="tg-head"><div><div class="tg-eyebrow">${spec.eyebrow}</div><h2 id="tgTitle">${spec.title}</h2></div>
+   <div class="tg-btns tg-noprint">${spec.langLbl?`<button type="button" class="tg-btn" id="tgLang" lang="${spec.langLbl==='EN'?'en':'th'}">${spec.langLbl}</button>`:''}<button type="button" class="tg-btn" id="tgPrint">${spec.printLbl}</button><button type="button" class="tg-btn pri" id="tgClose">${spec.closeLbl}</button></div></div>
+  <nav class="tg-nav tg-noprint" aria-label="${spec.navLbl||''}">${spec.sections.map((s,i)=>`<a href="#tg${i+1}" data-tgnav="tg${i+1}">${i+1} ${s.nav}</a>`).join('')}</nav>
+  ${spec.sections.map((s,i)=>`<section class="tg-sec" id="tg${i+1}"><h3>${i+1}. ${s.h}</h3>${s.html}</section>`).join('')}
+  ${spec.credit?`<p class="tg-credit">${spec.credit}</p>`:''}
+  </div>`;
+}
+function open(spec){
+  ensure();const again=!box.hidden,y=box.scrollTop;curSpec=spec;if(!again)lastFocus=document.activeElement;
+  box.innerHTML=render(spec);box.hidden=false;box.scrollTop=again?y:0;
+  if(!again){const c=box.querySelector('#tgClose');if(c)c.focus({preventScroll:true})}
+}
+function close(){if(!box)return;box.hidden=true;box.innerHTML='';if(lastFocus&&lastFocus.focus)try{lastFocus.focus({preventScroll:true})}catch(_){}}
+const H={
+  table(heads,rows,numCols){numCols=numCols||[];return `<div class="tg-tbl"><table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${numCols.includes(i)?' class="n"':''}>${c==null?'':c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`},
+  list(items){return `<ul>${items.filter(Boolean).map(i=>`<li>${i}</li>`).join('')}</ul>`},
+  note(t){return `<p class="tg-note">${t}</p>`},
+  mut(t){return `<p class="tg-mut tg-noprint">${t}</p>`},
+  card(c){return `<details class="tg-lv"><summary><span class="no">${c.no}</span><span class="fm">${c.f}</span><span class="nm2">${c.name||''}</span><span class="mx">${c.pts||''}</span></summary><dl>${c.rows.filter(Boolean).map(([dt,dd])=>`<dt>${dt}</dt><dd>${dd}</dd>`).join('')}</dl></details>`}
+};
+window.TGuide={open,close,H,isOpen:()=>!!(box&&!box.hidden)};
+})();
+
+/* ===== คู่มือครู — ข้อมูลรายเกม และตัวแปลงข้อมูลด่าน ===== */
+(function(){
+"use strict";
+const T=(th,en)=>({th,en});
+const CREDIT=T('ออกแบบและพัฒนาเกมโดย นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม','Game designed and developed by Mrs. Manthana Chaiyasong, That Phanom School');
+const SUGGEST=T('ตารางนี้เป็นข้อเสนอ ให้ปรับเลขด่านและเวลาให้ตรงกับภาคผนวก ค.6 (การจัดสรรด่าน) และ ค.7 (บันทึกการทำงานนอกห้องเรียน) ในเล่มแผน','This table is a suggestion. Adjust the level numbers and timing to match appendix ค.6 (level allocation) and ค.7 (out-of-class log) in the plan book.');
+const LO=T('ผลการเรียนรู้ให้ใช้ตามเล่มแผน (ผลการเรียนรู้ชุด 13 ข้อของหน่วยพันธะเคมี)','Use the learning outcomes as written in the plan book (the 13 outcomes of the chemical bonding unit).');
+const UI={
+  eyebrow:T('คู่มือครู','Teacher’s guide'),title:T('ความสอดคล้องกับแผนการสอนและแนวการใช้เกม','Links to the lesson plans and how to use the game'),
+  print:T('พิมพ์คู่มือ','Print the guide'),close:T('ปิด','Close'),nav:T('หัวข้อในคู่มือ','Guide sections'),
+  n1:T('ภาพรวม','Overview'),n2:T('ความสอดคล้อง','Alignment'),n3:T('ใช้ในขั้นใด','Lesson stages'),n4:T('มโนทัศน์ที่คลาดเคลื่อน','Misconceptions'),n6:T('คะแนน','Scoring'),n7:T('AR และการเตรียม','AR and preparation'),
+  h1:T('ภาพรวมของเกม','Overview of the game'),h2:T('ความสอดคล้องกับเนื้อหาในหนังสือเรียน','Alignment with the textbook'),h3:T('ใช้ในขั้นใดของแผน','Where it fits in the lesson'),h4:T('มโนทัศน์ที่คลาดเคลื่อนที่เกมท้าทาย','Misconceptions the game challenges'),h6:T('การคิดคะแนนและหลักฐาน','Scoring and evidence'),h7:T('การใช้โหมด AR และการเตรียมก่อนสอน','AR mode and preparation'),
+  useWith:T('ใช้กับ','Used with'),role:T('บทบาท','Role'),size:T('ขนาด','Size'),flow:T('ขั้นในแต่ละด่าน','Steps in each level'),
+  thCh:T('บท','Ch.'),thChName:T('ชื่อบทในเกม','Chapter in the game'),thLv:T('ด่าน','Levels'),thBook:T('เนื้อหาในหนังสือ','Textbook content'),
+  thStage:T('ขั้น','Stage'),thUse:T('วิธีใช้','How to use it'),thMis:T('มโนทัศน์ที่คลาดเคลื่อน','Misconception'),thEv:T('หลักฐานในเกมที่ท้าทายความคิดเดิม','Evidence in the game that challenges it'),
+  thStep:T('ขั้น','Step'),thPts:T('คะแนน','Points'),thRule:T('เกณฑ์','Rule'),
+  pts:T('คะแนน','pts'),chap:T('บทที่','Chapter'),
+  mountH:T('สำหรับครู','For teachers'),mountBtn:T('คู่มือครู · ความสอดคล้องกับแผนการสอน','Teacher’s guide · links to the lesson plans'),
+  allPairs:T('ทุกคู่','All pairs'),pairA:T('คู่ ก','Pair A'),pairB:T('คู่ ข','Pair B')
+};
+
+/* ---------- ข้อมูลรายเกม ---------- */
+const GAMES={};
+const ENGINE_SCORE={
+ rows:[
+  [T('แต่ละขั้นในด่าน','Each step'),T('ตามป้ายบนหัวขั้น','shown on the step header'),T('ตอบผิดถูกหักครั้งละประมาณหนึ่งในสามของคะแนนขั้นนั้น แต่ไม่ต่ำกว่า 30%','Each wrong try costs about a third of the step’s points, never below 30%')],
+  [T('ดูเฉลย','Show answer'),T('30% ของขั้น','30% of the step'),T('ปุ่มดูเฉลยปรากฏหลังตอบผิด 2 ครั้ง และเกมแสดงเหตุผลให้อ่านก่อนไปต่อ','The button appears after 2 wrong tries, and the game shows the reasoning before moving on')],
+  [T('ทั้งด่าน','Whole level'),T('100','100'),T('ดาว: 90 ขึ้นไป 3 ดวง · 70 ขึ้นไป 2 ดวง · ต่ำกว่านั้น 1 ดวง เกมเก็บคะแนนที่ดีที่สุดของแต่ละด่าน','Stars: 90+ gives 3 · 70+ gives 2 · below that 1. The game keeps each level’s best score')]],
+ notes:[
+  T('ทุกด่านมีเกียรติบัตร PNG และมีเกียรติบัตรผ่านครบทุกด่าน ครูตั้งชื่อโรงเรียน ชื่อครู ผู้อำนวยการ และแนบลายเซ็นได้ที่ปุ่มตั้งค่า','Every level has a PNG certificate, plus one for completing all levels. Set the school, teacher and director names and add signatures from the settings button'),
+  T('หลักฐาน: ให้นักเรียนบันทึกเกียรติบัตรรายด่านหรือแคปหน้าจอผลด่านส่งครู ผลเก็บไว้ในเบราว์เซอร์ของเครื่องที่เล่นเท่านั้น ถ้าใช้เครื่องร่วมกัน ให้ล้างความคืบหน้าในหน้าตั้งค่าก่อนเปลี่ยนคน','Evidence: students save their level certificates or screenshot the level result. Progress stays in that device’s browser; on shared devices, clear progress in settings before the next student')]
+};
+const ENGINE_AR=[
+ T('ปุ่ม "ดูแบบ AR" บนหน้าหลัก และปุ่ม AR บนด่านที่ผ่านแล้ว เปิดห้อง AR ที่แสดงแบบจำลองสามมิติลอยบนภาพจากกล้องหลัง ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย เอียงเครื่องเพื่อมองจากมุมอื่น และกดถ่ายภาพ AR เก็บไว้ได้','The "View in AR" button on the home screen, and the AR button on passed levels, open the AR room: a 3D model floats over the rear-camera view. Drag to rotate, pinch to zoom, tilt to look from another angle, and capture an AR photo'),
+ T('กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari ถ้าเปิดผ่านลิงก์หรือเปิดกล้องไม่ได้ ห้อง AR จะแสดงแบบจำลองบนฉากหลังจำลองแทน','The camera works when the .html file is opened directly in Chrome or Safari. Through a link, or if the camera is unavailable, the AR room shows the model on a simulated backdrop'),
+ T('iPhone และ iPad จะขออนุญาตใช้กล้องและเซนเซอร์การเคลื่อนไหว ให้กดอนุญาต และให้นักเรียนนั่งกับที่ขณะใช้กล้อง','iPhone and iPad ask for camera and motion permission; tap Allow, and keep students seated while using the camera'),
+ T('ปุ่ม ไทย/EN บนหน้าหลักสลับภาษาได้ทั้งเกม รวมถึงคู่มือนี้','The ไทย/EN buttons on the home screen switch the whole game, including this guide')
+];
+
+GAMES['electrons-to-bonds']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 5 หัวข้อ 3.3.1 การเกิดพันธะโคเวเลนต์','Lesson plan 5, topic 3.3.1 covalent bond formation'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T มีเกมเสริมคือ "ช่างต่อพันธะลิวอิส" สำหรับฝึกเขียนโครงสร้างให้คล่อง','The main game of the plan, used in stage T. Its supporting game is "Lewis Bond Builder" for fluency practice'),
+ flow:T('สร้างโครงสร้างลิวอิสบนกระดาน → นับคู่อิเล็กตรอนหรือแตะพันธะ/อะตอมที่ถาม → ตอบคำถามเหตุผล 1 ข้อ จบด่านมีบัตร "สรุปสิ่งที่ได้เรียนรู้"','Build the Lewis structure on the board → count electron pairs or tap the bond/atom asked for → answer one reasoning question. Each level ends with a "What I learned" card'),
+ time:T('ด่านละ 4–6 นาที','4–6 minutes per level'),
+ book:[T('3.3.1 การเกิดพันธะโคเวเลนต์ กฎออกเตตและกฎดูเอต พันธะเดี่ยว','3.3.1 forming covalent bonds, the octet and duet rules, single bonds'),T('3.3.1 พันธะเดี่ยว พันธะคู่ พันธะสาม','3.3.1 single, double and triple bonds'),T('3.3.1 พันธะโคออร์ดิเนตโคเวเลนต์','3.3.1 coordinate covalent bonds'),T('3.3.1 ข้อยกเว้นของกฎออกเตต: ไม่ครบออกเตต จำนวนอิเล็กตรอนเป็นเลขคี่ และเกินออกเตต','3.3.1 exceptions to the octet rule: incomplete octets, odd electron counts and expanded octets')],
+ stages:[
+  ['A',['h2','becl2'],T('เปิดบนจอใหญ่ให้นักเรียนทำนายก่อนเล่น เช่น "อิเล็กตรอนคู่ในพันธะ H–H เป็นของอะตอมใด" และ "Be ใน BeCl₂ ต้องมีอิเล็กตรอนล้อมรอบ 8 ตัวหรือไม่" แล้วเขียนลงบัตรความคิดก่อนเรียน','Project the level and ask for predictions before playing, e.g. "Which atom owns the bonding pair in H–H?" and "Must Be in BeCl₂ have 8 electrons around it?", then write them on the pre-lesson idea card')],
+  ['T','auto',T('ด่านแรกของทุกบททุกคู่เล่นเพื่อปูพื้น จากนั้นแบ่งด่านที่เหลือให้คู่ ก และคู่ ข แล้วแลกข้อมูลกันในขั้น O','Every pair plays the first level of each chapter; the rest are split between pair A and pair B, who swap findings in stage O')],
+  ['O',['nh4','no2','sf6'],T('ใช้เป็นข้อมูลท้าทายกฎ: H⁺ ไม่มีอิเล็กตรอนแต่ยังเกิดพันธะได้ และ NO₂ กับ SF₆ ไม่เป็นไปตามกฎออกเตต ให้นักเรียนปรับกฎของกลุ่มจากบัตร "สรุปสิ่งที่ได้เรียนรู้"','Use as rule-challenging data: H⁺ has no electrons yet still bonds, and NO₂ and SF₆ break the octet rule. Groups revise their rule from the "What I learned" cards')],
+  ['M',['cocl2','nh3bf3'],T('ถ่ายโยงสู่โมเลกุลที่มีพันธะหลายชนิดปนกัน และพันธะโคออร์ดิเนตระหว่างโมเลกุล','Transfer to molecules that mix bond types and to a coordinate bond between molecules')],
+  ['นอกห้อง|Homework',['pcl3','c2h2','co'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ เล่นซ้ำแล้วแคปหน้าจอผลส่งครู','Use in the spaced retrieval sets; replay and screenshot the result for the teacher')]],
+ mis:[
+  [T('อิเล็กตรอนคู่ในพันธะเป็นของอะตอมใดอะตอมหนึ่ง หรือนับให้อะตอมเดียว','The bonding pair belongs to, or counts for, only one atom'),['h2','cl2'],T('สีของจุดบอกว่าอิเล็กตรอนแต่ละตัวมาจากอะตอมใด และวงแหวนรอบอะตอมนับคู่ร่วมพันธะให้ทั้งสองอะตอม','Dot colours show which atom each electron came from, and the ring around each atom counts the bonding pair for both')],
+  [T('จำนวนพันธะเท่ากับจำนวนเวเลนซ์อิเล็กตรอน','The number of bonds equals the number of valence electrons'),['pcl3','c2h2'],T('P มีเวเลนซ์อิเล็กตรอน 5 ตัวแต่สร้าง 3 พันธะ และ C รวมพันธะได้ 4 เสมอไม่ว่าจะเป็นพันธะเดี่ยว คู่ หรือสาม','P has 5 valence electrons but forms 3 bonds, and C always totals 4 bonds whether single, double or triple')],
+  [T('พันธะคู่คืออะตอมหนึ่งต่อกับอีกสองอะตอม','A double bond means one atom joined to two others'),['c2h4','cocl2'],T('ขั้นแตะพันธะคู่บนกระดาน และขั้นนับว่าพันธะคู่ใช้อิเล็กตรอนร่วม 2 คู่ (4 ตัว) ระหว่างอะตอมคู่เดียวกัน','The step that asks students to tap the double bond, and the count showing it shares 2 pairs (4 electrons) between the same two atoms')],
+  [T('พันธะโคออร์ดิเนตพบเฉพาะในไอออน และยังต่างจากพันธะอื่นหลังเกิดแล้ว','Coordinate bonds occur only in ions, and stay different after forming'),['nh4','co','nh3bf3'],T('บัตรสรุประบุว่าพันธะ N–H ทั้ง 4 ใน NH₄⁺ เหมือนกัน และ CO กับ NH₃BF₃ เป็นโมเลกุลที่มีพันธะโคออร์ดิเนต','The summary cards state that all four N–H bonds in NH₄⁺ are identical, and that CO and NH₃BF₃ are molecules with coordinate bonds')],
+  [T('ทุกอะตอมในโมเลกุลต้องมีอิเล็กตรอนล้อมรอบ 8 ตัวเสมอ','Every atom must always have 8 electrons around it'),['becl2','no2','sf6'],T('Be ใน BeCl₂ มี 4 ตัว NO₂ มีเวเลนซ์อิเล็กตรอนรวม 17 ตัวจึงเหลืออิเล็กตรอนเดี่ยว และ S ใน SF₆ มี 12 ตัว วงแหวนเปลี่ยนเป็นสีม่วงเมื่อเกิน 8','Be in BeCl₂ has 4, NO₂ has 17 valence electrons so one is left unpaired, and S in SF₆ has 12. The ring turns purple beyond 8')]],
+ prep:[T('ก่อนสอน: ทดลองเล่นด่าน NH₄⁺, NO₂ และ SF₆ ด้วยตนเอง เพราะเป็นจุดที่นักเรียนมักติด','Before the lesson: play the NH₄⁺, NO₂ and SF₆ levels yourself, as they are where students most often get stuck'),T('จัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน และโหลดไฟล์หรือแชร์ลิงก์ไว้ล่วงหน้า','Plan one device per two students and load the file or share the link in advance')]
+};
+GAMES['formula-to-name']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 6 หัวข้อ 3.3.2 สูตรโมเลกุลและชื่อของสารโคเวเลนต์','Lesson plan 6, topic 3.3.2 molecular formulas and names of covalent substances'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T มีเกมเสริมคือ "ฉลากหายในห้องแล็บ" สำหรับฝึกเรียกชื่อให้คล่อง','The main game of the plan, used in stage T. Its supporting game is "Lost Labels in the Lab" for naming practice'),
+ flow:T('นับอะตอมจากแบบจำลองสามมิติ → ประกอบชื่อจากบัตรคำ (หรือเขียนสูตรจากชื่อในบทที่ 4) → ตอบคำถามกฎการเรียกชื่อ 1 ข้อ ฉลากขวดสารจะเติมให้ครบเมื่อตอบถูก','Count atoms in the 3D model → build the name from word cards (or write the formula from the name in chapter 4) → answer one naming-rule question. The bottle label fills in as answers are right'),
+ time:T('ด่านละ 3–5 นาที','3–5 minutes per level'),
+ book:[T('3.3.2 คำนำหน้าบอกจำนวนอะตอม (มอนอ ได ไตร) และการละ มอนอ ของธาตุตัวหน้า','3.3.2 prefixes for the number of atoms (mono, di, tri) and dropping mono on the first element'),T('3.3.2 ธาตุตัวหน้ามีหลายอะตอม (ได เตตระ) และคำนำหน้าถึง เดคะ','3.3.2 a first element with several atoms (di, tetra), prefixes up to deca'),T('3.3.2 ธาตุตัวหลังลงท้ายด้วย -ไอด์ แบบต่าง ๆ (ออกไซด์ ซัลไฟด์ คลอไรด์ ฟลูออไรด์)','3.3.2 -ide endings of the second element (oxide, sulfide, chloride, fluoride)'),T('3.3.2 เขียนสูตรจากชื่อ และลำดับการเขียนธาตุตามค่า EN','3.3.2 writing formulas from names, and ordering the elements by EN')],
+ stages:[
+  ['A',['co'],T('ให้นักเรียนทำนายชื่อของ CO ก่อนเล่น แล้วเทียบกับคำตอบที่ได้ (มักได้ "มอนอคาร์บอนมอนอกไซด์")','Ask students to predict the name of CO before playing, then compare (a common guess is "monocarbon monoxide")')],
+  ['T','auto',T('ด่านแรกของทุกบททุกคู่เล่น จากนั้นแบ่งด่านที่เหลือให้คู่ ก และคู่ ข แล้วแลกข้อมูลชื่อสารกันในขั้น O','Every pair plays the first level of each chapter; the rest are split between pair A and pair B, who swap names in stage O')],
+  ['O',['co2','of2'],T('ใช้เป็นข้อมูลท้าทายกฎ: CO กับ CO₂ ต้องมีชื่อต่างกัน และ OF₂ มี O ขึ้นก่อนเพราะค่า EN ต่ำกว่า F ให้กลุ่มสรุปขั้นตอนการเรียกชื่อเอง','Rule-challenging data: CO and CO₂ need different names, and OF₂ starts with O because its EN is below F. Groups write the naming steps themselves')],
+  ['M',['n2o5','cl2o7'],T('ถ่ายโยงย้อนกลับ: เขียนสูตรจากชื่อ','Reverse transfer: write the formula from the name')],
+  ['นอกห้อง|Homework',['n2o4','p4o10','sf6'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ หรือให้เล่นเกม "ฉลากหายในห้องแล็บ" ต่อ','Use in the spaced retrieval sets, or continue with "Lost Labels in the Lab"')]],
+ mis:[
+  [T('ต้องใส่ มอนอ ให้ธาตุตัวหน้าเสมอ เช่น มอนอคาร์บอนมอนอกไซด์','The first element always takes mono, e.g. monocarbon monoxide'),['co'],T('คำถามท้ายด่าน CO ให้เลือกเหตุผลว่าทำไมชื่อขึ้นต้นว่า "คาร์บอน"','The CO question asks why the name starts with plain "carbon"')],
+  [T('ไม่จำเป็นต้องใส่คำนำหน้า เพราะดูจำนวนอะตอมจากสูตรได้อยู่แล้ว','Prefixes are unnecessary because the formula already shows the numbers'),['co2'],T('C กับ O รวมกันได้มากกว่า 1 แบบ ถ้าไม่มีคำนำหน้า ชื่อ CO กับ CO₂ จะเหมือนกัน','C and O combine in more than one way; without prefixes CO and CO₂ would share a name')],
+  [T('ใส่คำนำหน้าเฉพาะธาตุตัวหลัง แม้ธาตุตัวหน้ามีหลายอะตอม','Only the second element takes a prefix, even when the first has several atoms'),['n2o','n2o4','p4o10'],T('ขั้นนับอะตอมจากแบบจำลองให้นับธาตุตัวหน้าก่อน แล้วบัตรคำมีคำนำหน้าให้เลือกทั้งสองส่วน','The counting step makes students count the first element, and the word cards offer prefixes for both parts')],
+  [T('เปลี่ยนเสียงท้ายเป็น -ไอด์ เฉพาะออกซิเจน','Only oxygen changes to an -ide ending'),['ccl4','cs2','sf6'],T('บทที่ 3 ใช้ คลอไรด์ ซัลไฟด์ และฟลูออไรด์ และบัตรสรุปรวบรวมชื่อธาตุตัวหลังที่พบบ่อย','Chapter 3 uses chloride, sulfide and fluoride, and the summary card lists the common endings')],
+  [T('สลับตัวเลขห้อยกับคำนำหน้าเมื่อเขียนสูตรจากชื่อ','Mixing up which subscript goes with which prefix when writing a formula'),['n2o5','cl2o7'],T('ขั้นเขียนสูตรให้เลือกธาตุและตัวเลขห้อยเอง และบัตรสรุปอธิบายว่าคำนำหน้าแปลงกลับเป็นตัวเลขห้อยของธาตุที่ตามหลัง','The formula step has students pick each element and subscript, and the summary explains that each prefix becomes the subscript of the element after it')],
+  [T('เขียนธาตุใดไว้หน้าก็ได้','Either element can be written first'),['of2'],T('ด่าน OF₂ ให้เรียงธาตุตามค่า EN ก่อนเขียนสูตร','The OF₂ level orders the elements by EN before the formula is written')]],
+ prep:[T('ก่อนสอน: เตรียมตารางค่า EN ของอโลหะไว้บนกระดาน เพราะบทที่ 4 ใช้ลำดับการเขียนธาตุ','Before the lesson: put a table of non-metal EN values on the board; chapter 4 uses element order'),T('จัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน','Plan one device per two students')]
+};
+GAMES['length-to-energy']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 7 หัวข้อ 3.3.3 ความยาวพันธะและพลังงานพันธะ (รวมเรโซแนนซ์)','Lesson plan 7, topic 3.3.3 bond length and bond energy (including resonance)'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T','The main game of the plan, used in stage T'),
+ flow:T('ทดลองกับกราฟหลุมพลังงาน ไม้บรรทัดพิโคเมตร หรือการสลับพันธะคู่ในโครงสร้างเรโซแนนซ์ → เรียงลำดับหรือคำนวณ → ตอบคำถามเหตุผล บทที่ 4 ให้แตะสลายและสร้างพันธะเพื่อคำนวณ ΔH','Experiment with the energy well, the picometre ruler or moving double bonds in resonance → order or calculate → answer a reasoning question. Chapter 4 has students break and make bonds to calculate ΔH'),
+ time:T('ด่านละ 4–6 นาที (บทที่ 4 ใช้ 6–8 นาที)','4–6 minutes per level (6–8 minutes in chapter 4)'),
+ book:[T('3.3.3 ความยาวพันธะ และรัศมีโคเวเลนต์','3.3.3 bond length and covalent radius'),T('3.3.3 พลังงานพันธะ และความสัมพันธ์กับความยาวพันธะ','3.3.3 bond energy and how it relates to bond length'),T('3.3.3 เรโซแนนซ์','3.3.3 resonance'),T('3.3.3 การคำนวณพลังงานของปฏิกิริยาจากพลังงานพันธะเฉลี่ย','3.3.3 reaction energy from average bond energies')],
+ stages:[
+  ['A',['h2'],T('ให้ทำนายก่อนเล่นว่า "อะตอม H สองอะตอมยิ่งเข้าใกล้กันยิ่งเสถียรหรือไม่" แล้วใช้กราฟหลุมพลังงานตรวจคำทำนาย','Ask for a prediction first: "Are two H atoms more stable the closer they get?", then check it with the energy well')],
+  ['T','auto',T('ด่านแรกของทุกบททุกคู่เล่น จากนั้นแบ่งด่านที่เหลือให้คู่ ก และคู่ ข แล้วแลกตารางค่าความยาวและพลังงานพันธะกันในขั้น O','Every pair plays the first level of each chapter; the rest are split between pair A and pair B, who swap their bond length and energy tables in stage O')],
+  ['O',['cc','ccE','o3'],T('ให้กลุ่มสร้างกฎความสัมพันธ์ "พันธะสั้นกว่า แข็งแรงกว่า" จากข้อมูล แล้วใช้ O₃ ท้าทายว่าโครงสร้างลิวอิสแบบเดียวอธิบายความยาวพันธะที่เท่ากันไม่ได้','Groups build the rule "shorter bonds are stronger" from the data, then O₃ challenges it: one Lewis structure cannot explain equal bond lengths')],
+  ['M',['ch4','nh3'],T('ถ่ายโยงสู่การคำนวณพลังงานของปฏิกิริยาจริง','Transfer to calculating the energy of real reactions')],
+  ['นอกห้อง|Homework',['x2','hx','co3'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ','Use in the spaced retrieval sets')]],
+ mis:[
+  [T('การสร้างพันธะต้องใช้พลังงาน และการสลายพันธะคายพลังงาน','Making a bond takes energy and breaking one releases it'),['h2','hcl'],T('กราฟหลุมพลังงานต่ำที่สุดที่ระยะพันธะ และในบทที่ 4 การสลายพันธะดูดพลังงานส่วนการสร้างพันธะคายพลังงาน','The energy well is lowest at the bond length, and in chapter 4 breaking bonds absorbs energy while making them releases it')],
+  [T('รัศมีโคเวเลนต์เท่ากับความยาวพันธะ','The covalent radius equals the bond length'),['x2'],T('ขั้นคำนวณให้หารความยาวพันธะ Cl–Cl ด้วย 2','The calculation step halves the Cl–Cl bond length')],
+  [T('พันธะที่ยาวกว่าแข็งแรงกว่า','Longer bonds are stronger'),['cc','ccE','hx'],T('ข้อมูลจริงของ C–C, C=C, C≡C และ H–F ถึง H–I แสดงว่าพันธะสั้นกว่ามีพลังงานพันธะสูงกว่า','Real data for C–C, C=C, C≡C and H–F to H–I show shorter bonds have higher bond energies')],
+  [T('โครงสร้างเรโซแนนซ์สลับไปมา และพันธะในโมเลกุลยาวไม่เท่ากัน','Resonance structures flip back and forth, and the bonds differ in length'),['o3','co3','c6h6'],T('นักเรียนวาดโครงสร้างเรโซแนนซ์ครบทุกแบบ แล้วบัตรสรุปบอกว่าพันธะ C–O ใน CO₃²⁻ เหมือนกันทั้งสาม อันดับพันธะประมาณ 1.33 และพันธะในเบนซีนยาวเท่ากัน','Students draw every resonance form, then the summaries state that all three C–O bonds in CO₃²⁻ are identical (bond order about 1.33) and benzene’s bonds are equal')],
+  [T('สารตั้งต้นที่มีพันธะแข็งแรงมากต้องทำให้ปฏิกิริยาดูดพลังงานเสมอ','A very strong bond in a reactant makes the reaction endothermic'),['nh3'],T('แม้ N≡N แข็งแรงมาก แต่การสร้าง N–H 6 พันธะคายพลังงานมากกว่า ปฏิกิริยาจึงคายพลังงาน −93 kJ','Although N≡N is very strong, making six N–H bonds releases more, so the reaction is exothermic at −93 kJ')]],
+ prep:[T('ก่อนสอน: ลองด่านเรโซแนนซ์ (O₃, CO₃²⁻, C₆H₆) และด่านคำนวณในบทที่ 4 ด้วยตนเอง และเตรียมตารางพลังงานพันธะเฉลี่ยจากหนังสือเรียนไว้ให้เทียบ','Before the lesson: try the resonance levels (O₃, CO₃²⁻, C₆H₆) and the chapter 4 calculations yourself, and have the textbook’s average bond energy table ready to compare'),T('ค่าพลังงานพันธะในบทที่ 4 เป็นค่าเฉลี่ย ΔH ที่ได้จึงต่างจากค่าจากการทดลองเล็กน้อย','Chapter 4 uses average bond energies, so the ΔH values differ slightly from experimental ones')]
+};
+GAMES['shape-to-polarity']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 8 หัวข้อ 3.3.4 รูปร่างโมเลกุล และ 3.3.5 สภาพขั้วของโมเลกุลโคเวเลนต์','Lesson plan 8, topics 3.3.4 molecular shape and 3.3.5 polarity of covalent molecules'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T มีเกมเสริมคือ "จากพันธะสู่รูปร่าง" สำหรับฝึกหารูปร่างโมเลกุลด้วยทฤษฎี VSEPR','The main game of the plan, used in stage T. Its supporting game is "Bond to Shape" for VSEPR shape practice'),
+ flow:T('วางลูกศรขั้วบนทุกพันธะตามค่า EN → หาผลต่าง EN หรือเลือกรูปร่าง → ตัดสินสภาพขั้วของโมเลกุลจากผลรวมลูกศร','Set a dipole arrow on every bond from EN values → find ΔEN or choose the shape → decide the molecule’s polarity from the sum of the arrows'),
+ time:T('ด่านละ 4–6 นาที','4–6 minutes per level'),
+ book:[T('3.3.5 สภาพขั้วของพันธะ และผลต่างค่า EN','3.3.5 bond polarity and the EN difference'),T('3.3.4–3.3.5 รูปร่างสมมาตรทำให้ไดโพลหักล้างกัน','3.3.4–3.3.5 symmetric shapes cancel the dipoles'),T('3.3.4–3.3.5 คู่โดดเดี่ยวและอะตอมรอบนอกที่ต่างกันทำให้โมเลกุลมีขั้ว','3.3.4–3.3.5 lone pairs and different outer atoms make a molecule polar'),T('3.3.4–3.3.5 อะตอมกลางที่เกินออกเตต','3.3.4–3.3.5 expanded octets')],
+ stages:[
+  ['A',['co2','h2o'],T('ให้ทำนายก่อนเล่นว่า CO₂ กับ H₂O โมเลกุลใดมีขั้ว พร้อมเหตุผล (ใช้ในคาบบันทึกวีดิทัศน์ แผนที่ 8 ชั่วโมงที่ 3 ได้)','Ask which of CO₂ and H₂O is polar, with a reason, before playing (fits the video-recorded lesson, plan 8 hour 3)')],
+  ['T','auto',T('ด่านแรกของทุกบททุกคู่เล่น จากนั้นแบ่งด่านที่เหลือให้คู่ ก และคู่ ข แล้วแลกผลการตัดสินสภาพขั้วกันในขั้น O','Every pair plays the first level of each chapter; the rest are split between pair A and pair B, who swap their polarity results in stage O')],
+  ['O',['co2','chcl3','xef4'],T('ใช้เป็นข้อมูลท้าทายกฎ: CO₂ มีพันธะมีขั้วแต่โมเลกุลไม่มีขั้ว CHCl₃ รูปร่างเดียวกับ CCl₄ แต่มีขั้ว และ XeF₄ มีคู่โดดเดี่ยวแต่ไม่มีขั้ว','Rule-challenging data: CO₂ has polar bonds but is nonpolar, CHCl₃ has the shape of CCl₄ but is polar, and XeF₄ has lone pairs but is nonpolar')],
+  ['M',['sf4','xef4'],T('ถ่ายโยงสู่โมเลกุลที่อะตอมกลางเกินออกเตต','Transfer to molecules with expanded octets')],
+  ['นอกห้อง|Homework',['hf','bf3','nh3'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ','Use in the spaced retrieval sets')]],
+ mis:[
+  [T('ลูกศรขั้วชี้ไปที่อะตอมที่มีค่า EN ต่ำกว่า หรือชี้ไปที่ H','The dipole arrow points to the lower-EN atom, or towards H'),['hcl','hf'],T('ขั้นวางลูกศรตรวจทิศทันที และเกมบอกว่าปลายลูกศรเป็น δ− ที่อะตอมซึ่งดึงอิเล็กตรอนได้ดีกว่า','The arrow step checks the direction straight away, and the game explains that the arrowhead is δ− on the atom that pulls harder')],
+  [T('โมเลกุลที่มีพันธะมีขั้วเป็นโมเลกุลมีขั้วเสมอ','A molecule with polar bonds is always polar'),['co2','bf3','ccl4'],T('ลูกศรในรูปร่างเส้นตรง สามเหลี่ยมแบนราบ และทรงสี่หน้าหักล้างกันจนผลรวมเป็นศูนย์','In linear, trigonal planar and tetrahedral shapes the arrows cancel to zero')],
+  [T('H₂O เป็นเส้นตรงเหมือน CO₂','H₂O is linear like CO₂'),['h2o'],T('บัตรสรุปเทียบว่าถ้าน้ำเป็นเส้นตรงจะไม่มีขั้ว แต่คู่โดดเดี่ยว 2 คู่บน O ทำให้โมเลกุลงอ','The summary contrasts a linear water (nonpolar) with the real bent one, bent by the two lone pairs on O')],
+  [T('รูปร่างเดียวกันต้องมีสภาพขั้วเหมือนกัน','Molecules with the same shape have the same polarity'),['chcl3'],T('CHCl₃ เป็นทรงสี่หน้าเหมือน CCl₄ แต่อะตอมรอบนอกไม่เหมือนกัน ลูกศรจึงไม่หักล้างกัน','CHCl₃ is tetrahedral like CCl₄, but its outer atoms differ, so the arrows do not cancel')],
+  [T('ถ้ามีคู่โดดเดี่ยวบนอะตอมกลาง โมเลกุลต้องมีขั้วเสมอ','A lone pair on the central atom always makes a molecule polar'),['xef4'],T('XeF₄ มีคู่โดดเดี่ยว 2 คู่ที่วางตัวตรงข้ามกัน รูปร่างสี่เหลี่ยมแบนราบจึงไม่มีขั้ว','XeF₄’s two lone pairs sit opposite each other, so the square planar molecule is nonpolar')]],
+ prep:[T('ก่อนสอน: ใช้คำให้ตรงกับแผนบันทึกวีดิทัศน์ เช่น เรียก "ลูกศรของแต่ละพันธะ" ก่อนแนะนำคำว่า ไดโพล','Before the lesson: match the wording of the video lesson plan, e.g. say "the arrow on each bond" before introducing the word dipole'),T('ค่า EN ในเกมเป็นทศนิยม 2 ตำแหน่ง ให้ใช้ค่าชุดเดียวกับในเล่มแผน','The game uses EN values to 2 decimal places; use the same set as the plan book')]
+};
+GAMES['forces-to-properties']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 9 หัวข้อ 3.3.6 แรงยึดเหนี่ยวระหว่างโมเลกุลและสมบัติของสารโคเวเลนต์ รวมสารโคเวเลนต์โครงผลึกร่างตาข่าย','Lesson plan 9, topic 3.3.6 intermolecular forces and properties of covalent substances, including network covalent solids'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T','The main game of the plan, used in stage T'),
+ flow:T('ดูแรงระหว่างโมเลกุลในแบบจำลองสามมิติและข้อมูลจุดเดือดจริง → เลือกชนิดแรง เรียงจุดเดือด หรืออ่านค่าจากข้อมูล → ใช้ความรู้อธิบายสมบัติของสาร','Look at the forces in the 3D model and real boiling-point data → choose the forces, order boiling points or read values → explain a property with what was learned'),
+ time:T('ด่านละ 4–6 นาที','4–6 minutes per level'),
+ book:[T('3.3.6 แรงลอนดอน (แรงแผ่กระจาย)','3.3.6 London (dispersion) forces'),T('3.3.6 แรงระหว่างขั้ว (dipole–dipole)','3.3.6 dipole–dipole forces'),T('3.3.6 พันธะไฮโดรเจน','3.3.6 hydrogen bonds'),T('สารโคเวเลนต์โครงผลึกร่างตาข่าย (เพชร แกรไฟต์ SiO₂)','Network covalent solids (diamond, graphite, SiO₂)')],
+ stages:[
+  ['A',['h2o'],T('ให้ทำนายก่อนเล่นว่า H₂O กับ H₂S สารใดเดือดที่อุณหภูมิสูงกว่า และเมื่อน้ำเดือด พันธะใดถูกทำลาย','Before playing, ask which of H₂O and H₂S boils higher, and what is broken when water boils')],
+  ['T','auto',T('ด่านแรกของทุกบททุกคู่เล่น จากนั้นแบ่งด่านที่เหลือให้คู่ ก และคู่ ข แล้วแลกตารางจุดเดือดกันในขั้น O','Every pair plays the first level of each chapter; the rest are split between pair A and pair B, who swap boiling-point tables in stage O')],
+  ['O',['chcl3','hx'],T('ใช้เป็นข้อมูลท้าทายกฎ: CCl₄ ไม่มีขั้วแต่เดือดสูงกว่า CHCl₃ และ HF ผิดแนวโน้มของ HCl ถึง HI','Rule-challenging data: nonpolar CCl₄ boils above CHCl₃, and HF breaks the HCl–HI trend')],
+  ['M',['sio2','gra'],T('ถ่ายโยงสู่สารโครงผลึกร่างตาข่าย เปรียบเทียบ SiO₂ กับ CO₂ และเพชรกับแกรไฟต์','Transfer to network solids: SiO₂ against CO₂, and diamond against graphite')],
+  ['นอกห้อง|Homework',['alk','icl','nh3'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ','Use in the spaced retrieval sets')]],
+ mis:[
+  [T('เมื่อสารโคเวเลนต์แบบโมเลกุลเดือด พันธะโคเวเลนต์ในโมเลกุลแตก','When a molecular covalent substance boils, the covalent bonds inside the molecules break'),['cs2'],T('บัตรสรุปของด่านระบุว่าการเปลี่ยนสถานะทำลายเฉพาะแรงยึดเหนี่ยวระหว่างโมเลกุล','The level summary states that a change of state breaks only the forces between molecules')],
+  [T('โมเลกุลไม่มีขั้วไม่มีแรงยึดเหนี่ยวระหว่างโมเลกุล','Nonpolar molecules have no forces between them'),['x2','alk'],T('แรงลอนดอนเกิดกับทุกโมเลกุล และจุดเดือดของแฮโลเจนและแอลเคนสูงขึ้นตามขนาดโมเลกุล','London forces act on every molecule, and halogen and alkane boiling points rise with size')],
+  [T('สารมีขั้วมีจุดเดือดสูงกว่าสารไม่มีขั้วเสมอ','Polar substances always boil higher than nonpolar ones'),['chcl3'],T('CCl₄ ไม่มีขั้วแต่มีขนาดใหญ่กว่า แรงลอนดอนจึงทำให้เดือดสูงกว่า CHCl₃ ที่มีขั้ว','Nonpolar CCl₄ is bigger, so its London forces make it boil above polar CHCl₃')],
+  [T('พันธะไฮโดรเจนคือพันธะที่มี H ภายในโมเลกุล และเกิดกับ H ทุกตัว','A hydrogen bond is any bond to H inside a molecule, and forms with any H'),['h2o','nh3'],T('ด่าน NH₃ ให้ระบุว่าโมเลกุลใดเกิดพันธะไฮโดรเจนได้ (H ต้องต่อกับ F, O หรือ N) และแบบจำลองแสดงพันธะไฮโดรเจนระหว่างโมเลกุล','The NH₃ level asks which molecules can hydrogen-bond (H must be on F, O or N), and the model shows the bonds between molecules')],
+  [T('CO₂ กับ SiO₂ มีสูตรคล้ายกันจึงมีสมบัติคล้ายกัน','CO₂ and SiO₂ have similar formulas, so similar properties'),['sio2'],T('CO₂ เป็นโมเลกุลเล็ก ส่วน SiO₂ เป็นร่างตาข่าย จุดหลอมเหลวจึงต่างกันมาก','CO₂ is a small molecule while SiO₂ is a network, so their melting points are far apart')],
+  [T('เพชรกับแกรไฟต์เป็นคาร์บอนเหมือนกันจึงมีสมบัติเหมือนกัน','Diamond and graphite are both carbon, so they have the same properties'),['dia','gra'],T('แบบจำลองสามมิติแสดงการจัดเรียงอะตอมที่ต่างกัน ร่างตาข่ายสามมิติกับชั้นที่เลื่อนได้','The 3D models show different arrangements: a 3D network against sliding layers')]],
+ prep:[T('ก่อนสอน: เตรียมตัวอย่างจริง เช่น ดินสอ (แกรไฟต์) ทราย (SiO₂) และน้ำแข็ง เพื่อเชื่อมกับบทที่ 3–4','Before the lesson: bring real samples such as a pencil (graphite), sand (SiO₂) and ice to link with chapters 3–4'),T('จุดเดือดในเกมเป็นข้อมูลจริง ปัดเป็นจำนวนเต็ม','Boiling points in the game are real data, rounded to whole numbers')]
+};
+GAMES['bond-to-shape']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 8 หัวข้อ 3.3.4 รูปร่างโมเลกุลโคเวเลนต์','Lesson plan 8, topic 3.3.4 shapes of covalent molecules'),
+ role:T('เกมเสริมของเกมหลัก "จากรูปร่างสู่สภาพขั้ว" เน้นการหารูปร่างโมเลกุลจากโครงสร้างลิวอิสด้วยทฤษฎี VSEPR','A supporting game for the main game "From Shape to Polarity", focused on getting molecular shapes from Lewis structures with VSEPR'),
+ flow:T('สร้างโครงสร้างลิวอิส → นับกลุ่มอิเล็กตรอนรอบอะตอมกลางเป็นสูตร AXE → เลือกรูปร่างสามมิติ → ตอบมุมพันธะ (โมเลกุลอะตอมคู่ตอบชนิดพันธะ)','Build the Lewis structure → count the electron domains around the central atom as AXE → choose the 3D shape → give the bond angle (diatomic molecules: the bond type)'),
+ time:T('ด่านละ 3–5 นาที','3–5 minutes per level'),
+ book:[T('ทบทวน 3.3.1 พันธะเดี่ยว คู่ สาม (โมเลกุลอะตอมคู่เป็นเส้นตรง)','Review of 3.3.1 single, double and triple bonds (diatomic molecules are linear)'),T('3.3.4 ทฤษฎี VSEPR คู่โดดเดี่ยวกำหนดรูปร่าง','3.3.4 VSEPR: lone pairs set the shape'),T('3.3.4 พันธะคู่หรือพันธะสามนับเป็น 1 กลุ่มอิเล็กตรอน และ BF₃ ที่ไม่ครบออกเตต','3.3.4 a double or triple bond counts as one domain, and BF₃ with an incomplete octet'),T('3.3.4 อะตอมกลางที่เกินออกเตต','3.3.4 expanded octets')],
+ stages:[
+  ['A',['ch4'],T('ให้ทำนายก่อนเล่นว่ามุมพันธะของ CH₄ เป็น 90° ตามที่เห็นบนกระดาษหรือไม่','Before playing, ask whether CH₄’s bond angle is the 90° seen on paper')],
+  ['M',['ch4','nh3','h2o','co2','bf3'],T('ชุดฝึกหลัก (ราว 20 นาที) หลังสรุปทฤษฎี VSEPR ในขั้น O','Core practice set (about 20 minutes) after VSEPR is summarised in stage O')],
+  ['M',['so2','pcl5','sf4','xef4'],T('ชุดท้าทายสำหรับกลุ่มที่ทำชุดหลักเสร็จก่อน','Challenge set for groups who finish the core set early')],
+  ['ซ่อมเสริม|Support',['hcl','o2','n2'],T('สำหรับนักเรียนที่ยังเขียนโครงสร้างลิวอิสไม่คล่อง','For students who are not yet fluent with Lewis structures')],
+  ['นอกห้อง|Homework',['hcn','ch2o','xef2','sf6'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ','Use in the spaced retrieval sets')]],
+ mis:[
+  [T('รูปร่างบนกระดาษคือรูปร่างจริง เช่น CH₄ มีมุม 90°','The shape on paper is the real shape, e.g. CH₄ at 90°'),['ch4'],T('บัตรสรุปเทียบมุม 90° บนกระดาษกับทรงสี่หน้า 109.5° ในแบบจำลองสามมิติ','The summary contrasts the 90° on paper with the 109.5° tetrahedron in the 3D model')],
+  [T('คู่โดดเดี่ยวไม่มีผลต่อรูปร่าง','Lone pairs do not affect the shape'),['nh3','h2o','so2'],T('ขั้นนับกลุ่มอิเล็กตรอนแยก X กับ E และมุมพันธะลดลงจาก 109.5° เป็นประมาณ 107° และ 104.5°','The domain step separates X from E, and the angle drops from 109.5° to about 107° and 104.5°')],
+  [T('พันธะคู่หรือพันธะสามนับเป็นหลายกลุ่มอิเล็กตรอน','A double or triple bond counts as several domains'),['co2','hcn','ch2o'],T('ขั้นนับ AXE ให้นับพันธะหลายชั้นเป็น 1 กลุ่ม CO₂ จึงเป็น AX₂ รูปร่างเส้นตรง','The AXE step counts a multiple bond as one domain, so CO₂ is AX₂ and linear')],
+  [T('ชื่อรูปร่างนับรวมคู่โดดเดี่ยว เช่น H₂O เป็นทรงสี่หน้า','The shape name includes the lone pairs, e.g. H₂O is tetrahedral'),['h2o','sf4','xef4'],T('ตัวเลือกรูปร่างตั้งชื่อตามตำแหน่งของอะตอม จึงต้องเลือก มุมงอ ทรงสี่หน้าบิดเบี้ยว และสี่เหลี่ยมแบนราบ','Shape choices are named by atom positions, so the answers are bent, see-saw and square planar')],
+  [T('อะตอมกลางต้องมี 4 กลุ่มอิเล็กตรอนเสมอ','A central atom always has 4 electron domains'),['bf3','pcl5','sf6'],T('BF₃ มี 3 กลุ่ม PCl₅ มี 5 กลุ่ม และ SF₆ มี 6 กลุ่ม แต่ละแบบได้รูปร่างต่างกัน','BF₃ has 3 domains, PCl₅ 5 and SF₆ 6, each giving a different shape')]],
+ prep:[T('ก่อนสอน: ลองด่าน SF₄, XeF₂ และ XeF₄ ด้วยตนเอง เพราะคู่โดดเดี่ยวอยู่ตำแหน่งที่นักเรียนมักวางผิด','Before the lesson: try SF₄, XeF₂ and XeF₄ yourself; students often misplace their lone pairs'),T('จัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน','Plan one device per two students')]
+};
+
+GAMES['electron-sea']={
+ plan:T('แผนการจัดการเรียนรู้ที่ 10 หัวข้อ 3.4.1 การเกิดพันธะโลหะ 3.4.2 สมบัติของโลหะ และ 3.5 การใช้ประโยชน์ของสารประกอบไอออนิก สารโคเวเลนต์ และโลหะ','Lesson plan 10, topics 3.4.1 forming the metallic bond, 3.4.2 properties of metals and 3.5 uses of ionic compounds, covalent substances and metals'),
+ role:T('เกมหลักของแผน ใช้ในขั้น T หลังจบแผนนี้ใช้เกม "โรงหลอมพันธะ" ทบทวนทั้งหน่วย','The main game of the plan, used in stage T. After this plan, "Chemical Bond Forge" reviews the whole unit'),
+ flow:T('ดูแบบจำลองไอออนบวกในทะเลอิเล็กตรอนบนกระดาน → ตอบ 3 ขั้น (นับเวเลนซ์อิเล็กตรอน เลือกคำอธิบาย เรียงลำดับข้อมูล หรือเลือกหลายข้อ) จบด่านมีบัตร "สรุปสิ่งที่ได้เรียนรู้"','Watch the model of cations in an electron sea → answer three steps (count valence electrons, choose an explanation, order data or select several answers). Each level ends with a "What I learned" card'),
+ time:T('ด่านละ 3–5 นาที','3–5 minutes per level'),
+ book:[T('3.4.1 การเกิดพันธะโลหะ แบบจำลองทะเลอิเล็กตรอน และปัจจัยที่มีผลต่อความแข็งแรงของพันธะโลหะ','3.4.1 forming the metallic bond, the electron-sea model, and what makes a metallic bond strong'),T('3.4.2 สมบัติของโลหะ: การนำไฟฟ้าและความร้อน การตีแผ่และดึงเป็นเส้น ความมันวาว และจุดหลอมเหลว','3.4.2 properties of metals: conducting electricity and heat, malleability and ductility, lustre and melting point'),T('3.5 การใช้ประโยชน์ของสารประกอบไอออนิก สารโคเวเลนต์ และโลหะ และการระบุชนิดของพันธะจากสมบัติของสาร','3.5 uses of ionic compounds, covalent substances and metals, and identifying bond type from properties')],
+ stages:[
+  ['A',['na'],T('เปิดบนจอใหญ่ให้นักเรียนทำนายก่อนเล่นว่า "เวเลนซ์อิเล็กตรอนในก้อนโซเดียมอยู่กับอะตอมใด" แล้วเขียนลงบัตรความคิดก่อนเรียน และใช้คำถามจากเกม "ห้องทดสอบเกลือ" เป็นการฝึกดึงความรู้เรื่องการนำไฟฟ้าของสารประกอบไอออนิก','Project the level and ask students to predict "Which atom do the valence electrons in sodium belong to?", then write it on the pre-lesson idea card. Use questions from "Salt Test Lab" as retrieval practice on how ionic compounds conduct')],
+  ['T','auto',T('ด่านแรกของทุกบททุกคู่เล่นเพื่อปูพื้น จากนั้นแบ่งด่านที่เหลือให้คู่ ก และคู่ ข แล้วแลกข้อมูลกันในขั้น O','Every pair plays the first level of each chapter; the rest are split between pair A and pair B, who swap findings in stage O')],
+  ['O',['mg','au'],T('ใช้เป็นข้อมูลท้าทายกฎ: Mg หลอมเหลวที่ 650 °C แต่ Na หลอมเหลวที่ 98 °C และโลหะตีแผ่ได้แต่ผลึก NaCl แตก ให้กลุ่มสร้างกฎว่าความแข็งแรงของพันธะโลหะขึ้นกับอะไร และเหตุใดพันธะที่ไม่มีทิศทางจึงทำให้โลหะไม่แตก','Rule-challenging data: Mg melts at 650 °C but Na at 98 °C, and metals bend while an NaCl crystal shatters. Groups build rules for what makes a metallic bond strong and why a bond with no direction keeps a metal from breaking')],
+  ['M',['myst','use'],T('ถ่ายโยงสู่การระบุชนิดของสารจากจุดหลอมเหลวและการนำไฟฟ้า และการเลือกวัสดุให้เหมาะกับงาน ซึ่งเชื่อมพันธะทั้งสามชนิด','Transfer to identifying substances from melting point and conductivity, and choosing materials for a job, linking all three bond types')],
+  ['นอกห้อง|Homework',['al','w','cu'],T('ใช้ในชุดฝึกดึงความรู้แบบเว้นระยะ เล่นซ้ำแล้วแคปหน้าจอผลส่งครู','Use in the spaced retrieval sets; replay and screenshot the result for the teacher')]],
+ mis:[
+  [T('เวเลนซ์อิเล็กตรอนในโลหะยังเป็นของอะตอมเดิม หรือโลหะยึดกันเป็นคู่ ๆ เหมือนพันธะโคเวเลนต์','Valence electrons in a metal stay with their own atoms, or metal atoms bond in pairs like covalent bonds'),['na','al'],T('แบบจำลองบนกระดานแสดงอิเล็กตรอนเคลื่อนที่ทั่วทั้งก้อน และบัตรสรุประบุว่าพันธะโลหะไม่มีทิศทาง','The model shows electrons moving through the whole piece, and the summary card states that the metallic bond has no direction')],
+  [T('กระแสไฟฟ้าในลวดโลหะเกิดจากไอออนบวกเคลื่อนที่','Current in a metal wire is carried by moving cations'),['cu'],T('ขั้นแรกของด่าน Cu ถามว่าอนุภาคใดเคลื่อนที่ และขั้นเลือกหลายข้อเทียบโลหะกับ NaCl(s)','The first Cu step asks what moves, and the multi-select step compares metals with NaCl(s)')],
+  [T('สารที่มีไอออนนำไฟฟ้าได้ในทุกสถานะ','Anything containing ions conducts in every state'),['cu','myst'],T('ตัวอย่าง A ในแฟ้มสารปริศนานำไฟฟ้าเฉพาะเมื่อหลอมเหลว ต่างจากโลหะที่นำไฟฟ้าทั้งของแข็งและของเหลว','Sample A in the mystery files conducts only when molten, unlike a metal, which conducts as solid and liquid')],
+  [T('โลหะทุกชนิดมีจุดหลอมเหลวสูงเท่า ๆ กัน หรือจุดหลอมเหลวขึ้นกับมวลอะตอม','All metals melt equally high, or melting point follows atomic mass'),['mg','al','w'],T('ขั้นเรียงจุดหลอมเหลวใช้ข้อมูลจริงที่ Na หลอมเหลวที่ 98 °C และ W สูงกว่า 3,400 °C พร้อมเหตุผลเรื่องจำนวนเวเลนซ์อิเล็กตรอนและขนาดไอออนบวก','The ordering steps use real data, with Na melting at 98 °C and W above 3,400 °C, plus reasoning from valence electron count and cation size')],
+  [T('โลหะตีแผ่ได้เพราะพันธะโลหะอ่อน','Metals are malleable because the metallic bond is weak'),['au','w'],T('ด่านตีแผ่อธิบายว่าชั้นไอออนเลื่อนได้โดยทะเลอิเล็กตรอนยังยึดไว้ และด่าน W แสดงว่าโลหะเดียวกันก็มีจุดหลอมเหลวสูงมาก','The malleability level shows layers sliding while the electron sea still holds them, and the W level shows metals can also melt extremely high')]],
+ prep:[T('ก่อนสอน: เตรียมตัวอย่างจริง เช่น ลวดทองแดง อะลูมิเนียมฟอยล์ หม้อที่มีด้ามจับพลาสติก และชุดทดสอบการนำไฟฟ้า เพื่อเชื่อมกับบทที่ 2–3','Before the lesson: bring real samples such as copper wire, aluminium foil, a pot with a plastic handle and a conductivity tester to link with chapters 2–3'),T('จุดหลอมเหลวในเกมเป็นข้อมูลจริง ปัดเป็นจำนวนเต็ม ทดลองเล่นด่านแฟ้มสารปริศนาด้วยตนเอง และจัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน','Melting points in the game are real data, rounded to whole numbers. Try the mystery files level yourself, and plan one device per two students')]
+};
+GAMES['bond-forge']={
+ plan:T('ทบทวนท้ายหน่วยที่ 3 พันธะเคมี (บทที่ 3 ทั้งบท หัวข้อ 3.1–3.5) หลังจบแผนการจัดการเรียนรู้ที่ 10','End-of-unit review for unit 3 chemical bonding (all of chapter 3, topics 3.1–3.5), after lesson plan 10'),
+ role:T('เกมทบทวนของหน่วย ใช้ในขั้น S ของแผนที่ 10 หรือคาบทบทวนก่อนสอบ และแยกด่านรายบทไปใช้เป็นชุดฝึกดึงความรู้แบบเว้นระยะในขั้น A ระหว่างหน่วยได้','The unit review game, used in stage S of plan 10 or a revision lesson before the test. Its chapters can also be used separately as spaced retrieval sets in stage A during the unit'),
+ flow:T('ดูแบบจำลองบนกระดาน → ตอบ 3 ขั้นต่อด่าน (นับ เลือกคำตอบ เรียงลำดับ หรือเลือกหลายข้อ) จบด่านมีบัตร "สรุปสิ่งที่ได้เรียนรู้" ที่เชื่อมเนื้อหาข้ามหัวข้อ','Look at the model on the board → answer three steps per level (count, choose, order or select several). Each level ends with a "What I learned" card that links ideas across topics'),
+ time:T('ด่านละ 3–5 นาที ทั้งเกมราว 45–60 นาที','3–5 minutes per level, about 45–60 minutes for the whole game'),
+ book:[T('3.1 สัญลักษณ์แบบจุดของลิวอิสและกฎออกเตต และการทำนายชนิดของพันธะจากชนิดของธาตุ','3.1 Lewis symbols and the octet rule, and predicting bond type from the kinds of elements'),T('3.2 พันธะไอออนิก: สูตรและชื่อ (3.2.2) พลังงานกับการเกิดสารประกอบไอออนิก (3.2.3) และสมการไอออนิกสุทธิ (3.2.5)','3.2 ionic bonding: formulas and names (3.2.2), energy and forming ionic compounds (3.2.3) and net ionic equations (3.2.5)'),T('3.3 พันธะโคเวเลนต์: โครงสร้างลิวอิส รูปร่างและสภาพขั้ว ความยาวพันธะ สูตรและชื่อ และแรงยึดเหนี่ยวระหว่างโมเลกุล','3.3 covalent bonding: Lewis structures, shape and polarity, bond length, formulas and names, and intermolecular forces'),T('3.4 พันธะโลหะ และ 3.5 การใช้ประโยชน์ (ระบุชนิดของสารจากสมบัติ และทดสอบรวมทั้งบท)','3.4 metallic bonding and 3.5 uses (identifying substances from their properties, and a whole-chapter review)')],
+ stages:[
+  ['A',['al2o3','bh','ppt'],T('ขั้น A ของแผนที่ 5–6: ใช้ด่านพันธะไอออนิกเป็นการฝึกดึงความรู้แบบเว้นระยะหลังจบแผนที่ 1–4 ให้นักเรียนเล่นเองก่อนแล้วเทียบคำตอบกับเพื่อน','Stage A of plans 5–6: the ionic levels serve as spaced retrieval after plans 1–4. Students play alone first, then compare with a partner')],
+  ['A',['nh3','co2','name','imf'],T('ขั้น A ของแผนที่ 10: ดึงความรู้พันธะโคเวเลนต์ก่อนเริ่มเรื่องพันธะโลหะ','Stage A of plan 10: retrieve covalent bonding before starting metallic bonding')],
+  ['S',['met','case','final'],T('ขั้น S ของแผนที่ 10: สรุปทั้งหน่วย ให้กลุ่มเปรียบเทียบสมบัติของสารสามประเภทจากแฟ้มสารปริศนา แล้วทำด่านทดสอบรวมทั้งบท','Stage S of plan 10: summarise the unit. Groups compare the three kinds of substance in the mystery files, then do the whole-chapter review')],
+  ['ทบทวน|Revision',['oct','type'],T('คาบทบทวนก่อนสอบ: เล่นทั้งเกมเรียงตามบท โดยเริ่มจากด่านกฎออกเตตและการทำนายชนิดพันธะเพื่อปูพื้น','Revision lesson before the test: play the whole game chapter by chapter, starting with the octet and bond-type levels')],
+  ['ซ่อมเสริม|Support',['final'],T('ใช้ผลคะแนนรายด่านหาบทที่นักเรียนยังอ่อน แล้วส่งกลับไปเล่นเกมหลักของแผนนั้น เช่น ด่านพลังงานได้คะแนนต่ำ ให้เล่น "บันไดพลังงานไอออนิก"','Use level scores to find weak chapters and send students back to that plan’s main game, e.g. a low energy score points to "Born–Haber Ladder"')]],
+ mis:[
+  [T('โลหะกับอโลหะยึดกันด้วยการใช้อิเล็กตรอนร่วมกันเสมอ หรือสารที่มี H เป็นสารไอออนิก','Metals and nonmetals always share electrons, or anything containing H is ionic'),['type'],T('ด่านทำนายชนิดพันธะเปรียบเทียบ NaCl, HCl และ Cu ในด่านเดียว','The bond-type level compares NaCl, HCl and Cu side by side')],
+  [T('ชื่อสารประกอบไอออนิกใช้คำบอกจำนวนเหมือนสารโคเวเลนต์','Ionic compounds take number prefixes like covalent ones'),['al2o3','name'],T('ด่าน Al₂O₃ และด่านสูตรและชื่อสารโคเวเลนต์อยู่ในเกมเดียวกัน ให้นักเรียนเห็นความต่างของกฎ','The Al₂O₃ level and the covalent naming level sit in the same game, so students see the two rules side by side')],
+  [T('การเกิดสารประกอบไอออนิกคายพลังงานทุกขั้น','Every step of forming an ionic compound releases energy'),['bh'],T('ขั้นเลือกขั้นที่คายพลังงานมากที่สุด และการคำนวณ ΔH = −411 kJ/mol จากขั้นที่ดูดและคายพลังงาน','The step on the biggest energy release and the ΔH = −411 kJ/mol calculation from absorbing and releasing steps')],
+  [T('พันธะคู่ยาวกว่าพันธะเดี่ยวเพราะมีอิเล็กตรอนมากกว่า','A double bond is longer than a single bond because it has more electrons'),['co2'],T('ขั้นอ่านตารางความยาวพันธะในด่าน CO₂','The bond-length table step in the CO₂ level')],
+  [T('เมื่อน้ำเดือด พันธะ O–H ในโมเลกุลแตกออก','When water boils, its O–H bonds break'),['imf'],T('ขั้นสุดท้ายของด่านแรงยึดเหนี่ยวระหว่างโมเลกุลถามว่าสิ่งใดถูกทำลายเมื่อเดือด','The last step of the intermolecular forces level asks what is overcome on boiling')],
+  [T('สารที่มีจุดหลอมเหลวสูงมากต้องเป็นสารประกอบไอออนิก','A very high melting point means an ionic compound'),['case','final'],T('ตัวอย่าง C ในแฟ้มสารปริศนาหลอมเหลวราว 3,550 °C แต่ไม่นำไฟฟ้า และด่านทดสอบรวมถามเรื่องแกรไฟต์','Sample C in the mystery files melts around 3,550 °C yet does not conduct, and the review asks about graphite')]],
+ prep:[T('ใช้หลังนักเรียนเล่นเกมหลักของแผนที่เกี่ยวข้องแล้ว เพราะด่านในเกมนี้สั้นและเน้นการดึงความรู้ ไม่ได้สอนเนื้อหาใหม่','Use it after students have played the main game for each plan; its levels are short and focus on retrieval, not new teaching'),T('ให้นักเรียนบันทึกเกียรติบัตรรวมเมื่อผ่านครบทุกด่านเป็นหลักฐานการทบทวนท้ายหน่วย และจัดเครื่อง 1 เครื่องต่อนักเรียน 1–2 คน','Ask students to save the all-levels certificate as evidence of the unit review, and plan one device per one or two students')]
+};
+
+/* ---------- engine adapter (เกมหลัก 5 เกม และจากพันธะสู่รูปร่าง) ---------- */
+function engine(id){
+  const cfg=GAMES[id],LG=()=>lang,R=o=>o==null?'':typeof o==='string'?o:(LG()==='en'?o.en:o.th);
+  const isB2S=id==='bond-to-shape';
+  const Ls=()=>isB2S?LEVELS:window.GAME.levels,CHs=()=>isB2S?CHAPTERS:window.GAME.chapters;
+  const idx=lid=>Ls().findIndex(l=>l.id===lid);
+  const lf=L=>/^[?0-9.\u2013\s-]+$/.test(String(L.f))?esc2(tx(L.name)):fH(L.f);
+  const lab=lid=>{const i=idx(lid);return i<0?lid:`${i+1}. ${lf(Ls()[i])}`};
+  const labs=a=>a.map(lab).join(', ');
+  const ot=o=>typeof optTxt==='function'?optTxt(o):(o&&o.f?fH(o.f):esc2(tx(o)));
+  function spec(){
+    const H=TGuide.H,Lv=Ls(),CH=CHs(),N=Lv.length;
+    const byCh=CH.map((c,ci)=>Lv.map((L,i)=>[L,i]).filter(([L])=>L.ch===ci));
+    const chRows=byCh.map((ls,ci)=>[`${R(UI.thCh)} ${ci+1}`,esc2(tx(CH[ci])),ls.map(([L,i])=>`${i+1}. ${lf(L)}`).join(' · '),R(cfg.book[ci])]);
+    const first=byCh.map(ls=>ls[0]).filter(Boolean),rest=byCh.map(ls=>ls.slice(1));
+    const pa=rest.flatMap(ls=>ls.filter((_,k)=>k%2===0)),pb=rest.flatMap(ls=>ls.filter((_,k)=>k%2===1));
+    const lv=a=>a.map(([L,i])=>`${i+1}. ${lf(L)}`).join(', ');
+    const stRows=cfg.stages.map(([s,ids,how])=>{const sl=s.includes('|')?s.split('|')[LG()==='en'?1:0]:s;
+      const lvs=ids==='auto'?`<b>${R(UI.allPairs)}:</b> ${lv(first)}<br><b>${R(UI.pairA)}:</b> ${lv(pa)}<br><b>${R(UI.pairB)}:</b> ${lv(pb)}`:labs(ids);return [sl,lvs,R(how)]});
+    const misRows=cfg.mis.map(([m,ids,ev])=>[R(m),labs(ids).split(', ').join('<br>'),R(ev)]);
+    const maxAll=N*100;
+    const score=isB2S?{rows:[
+        [R(T('สร้างโครงสร้างลิวอิส','Lewis structure')),'50',R(T('กดตรวจแล้วยังไม่ถูกหักครั้งละ 10 ต่ำสุด 20 · ถ้ากดดูเฉลยได้ 15','Each failed check costs 10, minimum 20 · Show answer gives 15'))],
+        [R(T('นับกลุ่มอิเล็กตรอน (AXE)','Electron domains (AXE)')),'20',R(T('ตอบผิดหักครั้งละ 5 ต่ำสุด 5','Each wrong answer costs 5, minimum 5'))],
+        [R(T('เลือกรูปร่าง','Choose the shape')),'20',R(T('ตอบผิดหักครั้งละ 7 ต่ำสุด 5','Each wrong answer costs 7, minimum 5'))],
+        [R(T('มุมพันธะหรือชนิดพันธะ','Bond angle or bond type')),'10',R(T('ตอบผิดหักครั้งละ 5 ต่ำสุด 0','Each wrong answer costs 5, minimum 0'))],
+        [R(T('ทั้งด่าน','Whole level')),'100',R(ENGINE_SCORE.rows[2][2])]],notes:ENGINE_SCORE.notes}:ENGINE_SCORE;
+    const ar=isB2S?[T('ด่านที่ผ่านแล้วดูแบบจำลองสามมิติในห้อง AR ได้ ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย และเอียงเครื่องเพื่อมองจากมุมอื่น','Passed levels can be viewed as 3D models in the AR room: drag to rotate, pinch to zoom, tilt to look from another angle'),...ENGINE_AR.slice(1)]:ENGINE_AR;
+    return {
+      eyebrow:`${R(UI.eyebrow)} · ${esc2(t('appName'))}`,title:R(UI.title),printLbl:R(UI.print),closeLbl:R(UI.close),navLbl:R(UI.nav),
+      sections:[
+        {nav:R(UI.n1),h:R(UI.h1),html:H.list([`<b>${R(UI.useWith)}</b> ${R(cfg.plan)}`,`<b>${R(UI.role)}</b> ${R(cfg.role)}`,`<b>${R(UI.size)}</b> ${R(T(`${N} ด่าน ${CH.length} บท คะแนนเต็ม ${maxAll.toLocaleString()} คะแนน (ด่านละ 100)`,`${N} levels in ${CH.length} chapters, ${maxAll.toLocaleString()} points in total (100 per level)`))} · ${R(cfg.time)}`,`<b>${R(UI.flow)}</b> ${R(cfg.flow)}`])},
+        {nav:R(UI.n2),h:R(UI.h2),html:H.table([R(UI.thCh),R(UI.thChName),R(UI.thLv),R(UI.thBook)],chRows,[0])+H.note(R(LO))},
+        {nav:R(UI.n3),h:R(UI.h3),html:H.table([R(UI.thStage),R(UI.thLv),R(UI.thUse)],stRows,[0])+H.note(R(SUGGEST))},
+        {nav:R(UI.n4),h:R(UI.h4),html:H.table([R(UI.thMis),R(UI.thLv),R(UI.thEv)],misRows,[1])},
+        {nav:R(UI.n6),h:R(UI.h6),html:H.table([R(UI.thStep),R(UI.thPts),R(UI.thRule)],score.rows.map(r=>r.map(c=>R(c))),[1])+H.list(score.notes.map(R))},
+        {nav:R(UI.n7),h:R(UI.h7),html:H.list([...ar.map(R),...cfg.prep.map(R)])}],
+      credit:R(CREDIT)};
+  }
+  function label(){const m=document.getElementById('tgMount');if(!m)return;m.querySelector('[data-tg="h"]').textContent=R(UI.mountH);m.querySelector('[data-tg="p"]').textContent=R(cfg.plan);const b=m.querySelector('#tgBtn');b.textContent=R(UI.mountBtn)}
+  function boot(){
+    const b=document.getElementById('tgBtn');if(b)b.addEventListener('click',()=>TGuide.open(spec()));
+    label();
+    if(typeof applyStatic==='function'){const _a=applyStatic;applyStatic=function(){const r=_a.apply(this,arguments);label();if(TGuide.isOpen())TGuide.open(spec());return r}}
+  }
+  return {boot,spec,label};
+}
+function esc2(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+/* ---------- adapter: ฉลากหายในห้องแล็บ (เกมภาษาไทย) ---------- */
+function lab(){
+  const X=window.__LAB,LG=()=>(X.lang?X.lang():'th'),R=o=>o==null?'':typeof o==='string'?o:(LG()==='en'?o.en:o.th);
+  const fx=k=>X.C[k].f.map(([e,n])=>e+(n>1?`<sub>${n}</sub>`:'')).join('');
+  const PLAN=T('แผนการจัดการเรียนรู้ที่ 6 หัวข้อ 3.3.2 สูตรโมเลกุลและชื่อของสารโคเวเลนต์','Lesson plan 6, topic 3.3.2 molecular formulas and names of covalent substances');
+  const BOOK={s1:T('คำนำหน้าบอกจำนวนอะตอม 1–10 (มอนอ ถึง เดคะ)','Number prefixes 1–10 (mono to deca)'),s2:T('ธาตุตัวหลังเปลี่ยนท้ายเป็น -ไอด์ และ มอนอ + ออกไซด์ → มอนอกไซด์','The second element takes -ide, and mono + oxide → monoxide'),s3:T('เรียกชื่อจากสูตร','Naming from the formula'),s4:T('เขียนสูตรจากชื่อ','Writing the formula from the name'),s5:T('ตรวจฉลากที่ผิดกฎ (รวมกฎทุกข้อ รวมลำดับการเขียนธาตุ)','Spotting labels that break a rule (all rules, including element order)'),s6:T('นับอะตอมจากแบบจำลองสามมิติแล้วจับคู่กับชื่อ','Counting atoms in 3D models and matching them to names')};
+  function spec(){
+    const H=TGuide.H,ST=X.STAGES,tot=ST.reduce((a,s)=>a+s.n*s.per,0),nq=ST.reduce((a,s)=>a+s.n,0),keys=Object.keys(X.C),shelf=keys.filter(k=>X.C[k].g).length;
+    const sl=id=>{const s=ST.find(x=>x.id===id);return s?`${R(T('ด่าน','Level'))} ${s.no} ${s.th}`:id};
+    const stRows=ST.map(s=>[`${R(T('ด่าน','Level'))} ${s.no}`,s.th,`${s.n} ${R(T('ข้อ','items'))} × ${s.per} = ${s.n*s.per}`,R(BOOK[s.id])]);
+    const use=[
+      ['O',R(T('บัตรสรุป 6 ใบ','The 6 summary cards')),R(T('หลังกลุ่มสรุปกฎการเรียกชื่อจากเกมหลัก "จากสูตรสู่ชื่อ" ให้เปิดบัตรสรุปเพื่อตรวจว่ากฎของกลุ่มครบหรือยัง','After groups write their own naming rules from the main game "From Formula to Name", open the summary cards to check the rules are complete'))],
+      ['M',`${sl('s3')}<br>${sl('s4')}`,R(T('ฝึกเรียกชื่อและเขียนสูตรให้คล่อง ข้อสุ่มใหม่ทุกครั้งที่เล่น','Fluency practice for names and formulas; new random items every time'))],
+      ['M',sl('s5'),R(T('ใช้ตรวจความเข้าใจกฎ นักเรียนต้องบอกได้ว่าฉลากผิดตรงไหน','Checks understanding of the rules: students must say where a label is wrong'))],
+      ['S',sl('s6'),R(T('ใช้เป็นกิจกรรมปิดคาบหรือการแข่งขันในห้อง','A closing activity or a class challenge'))],
+      [R(T('ซ่อมเสริม','Support')),`${sl('s1')}<br>${sl('s2')}`,R(T('สำหรับนักเรียนที่ยังจำคำนำหน้าหรือการเปลี่ยนท้ายเป็น -ไอด์ ไม่ได้','For students who have not yet learned the prefixes or the -ide endings'))],
+      [R(T('นอกห้อง','Homework')),R(T('ทุกด่าน','Any level')),R(T('ข้อในแต่ละด่านสุ่มใหม่ทุกครั้ง จึงเหมาะกับการฝึกดึงความรู้แบบเว้นระยะ ให้แคปหน้าจอผลด่านหรือบันทึกเกียรติบัตรส่งครู','Items are re-drawn every time, which suits spaced retrieval practice; students screenshot the result or save the certificate'))]];
+    const mis=[
+      [T('ต้องใส่ มอนอ ให้ธาตุตัวหน้าเสมอ','The first element always takes mono'),['s1','s5'],T('ฉลาก "มอนอคาร์บอนมอนอกไซด์" (CO) ในด่าน 05 และเหตุผลที่แสดงหลังตอบ','The label "monocarbon monoxide" (CO) in level 05 and the reason shown after answering')],
+      [T('ไม่ใส่คำนำหน้าให้ธาตุตัวหน้า แม้มีหลายอะตอม','No prefix on the first element, even with several atoms'),['s3','s5'],T('ฉลาก "ไนโตรเจนเตตระออกไซด์" (N₂O₄) และการประกอบชื่อจากชิ้นคำในด่าน 03','The label "nitrogen tetraoxide" (N₂O₄) and building names from word pieces in level 03')],
+      [T('ไม่เปลี่ยนชื่อธาตุตัวหลังเป็น -ไอด์','The second element keeps its element name'),['s2','s5'],T('ฉลาก "ฟอสฟอรัสเพนตะคลอรีน" และ "โบรอนไตรฟลูออรีน" และป้ายสะกดที่ถูกต้องในด่าน 02','The labels "phosphorus pentachlorine" and "boron trifluorine", and the correctly spelled tags in level 02')],
+      [T('ธาตุตัวหลังที่มี 1 อะตอมไม่ต้องใส่ มอนอ','A single second atom needs no mono'),['s2','s5'],T('ฉลาก "ไดไนโตรเจนออกไซด์" (N₂O) และกฎ มอนอ + ออกไซด์ → มอนอกไซด์','The label "dinitrogen oxide" (N₂O) and the rule mono + oxide → monoxide')],
+      [T('สับสนคำนำหน้าที่ใกล้กัน เช่น เฮกซะ (6) กับ เฮปตะ (7)','Mixing up neighbouring prefixes, e.g. hexa (6) and hepta (7)'),['s1','s5'],T('ฉลาก "ไดคลอรีนเฮกซะออกไซด์" (Cl₂O₇) และ "ซัลเฟอร์เฮปตะฟลูออไรด์" (SF₆)','The labels "dichlorine hexoxide" (Cl₂O₇) and "sulfur heptafluoride" (SF₆)')],
+      [T('อ่านธาตุตัวหลังก่อน หรือเขียนธาตุใดไว้หน้าก็ได้','Reading the second element first, or writing either element first'),['s5'],T('ฉลาก "ไตรคลอไรด์ฟอสฟอรัส" (PCl₃) และบัตรสรุปใบที่ 2 ที่เรียงธาตุตามค่า EN (OF₂ มี O ขึ้นก่อน)','The label "trichloride phosphorus" (PCl₃) and summary card 2, which orders elements by EN (OF₂ starts with O)')]
+    ].map(([m,ids,ev])=>[R(m),ids.map(sl).join('<br>'),R(ev)]);
+    return {eyebrow:`${R(UI.eyebrow)} · ฉลากหายในห้องแล็บ`,title:R(UI.title),printLbl:R(UI.print),closeLbl:R(UI.close),navLbl:R(UI.nav),
+      sections:[
+        {nav:R(UI.n1),h:R(UI.h1),html:H.list([`<b>${R(UI.useWith)}</b> ${R(PLAN)}`,`<b>${R(UI.role)}</b> ${R(T('เกมเสริมของเกมหลัก "จากสูตรสู่ชื่อ" เน้นฝึกเรียกชื่อและเขียนสูตรให้คล่องในห้อง AR','A supporting game for the main game "From Formula to Name", for fluent naming and formula writing in an AR room'))}`,`<b>${R(UI.size)}</b> ${R(T(`บัตรสรุป ${X.LESSON.length} ใบ · ${ST.length} ด่าน ${nq} ข้อ คะแนนเต็ม ${tot} · คลังขวดสาร ${shelf} โมเลกุลแบบสามมิติ · ด่านละ 4–6 นาที`,`${X.LESSON.length} summary cards · ${ST.length} levels with ${nq} items, ${tot} points in total · a shelf of ${shelf} 3D molecules · 4–6 minutes per level`))}`,`<b>${R(T('ลักษณะการเล่น','How it plays'))}</b> ${R(T('ป้ายคำ ขวดสาร และโมเลกุลลอยรอบตัวนักเรียน หมุนตัวหรือเอียงเครื่องเพื่อหา แล้วแตะคำตอบ ข้อในแต่ละด่านสุ่มใหม่ทุกครั้งที่เล่น','Word tags, bottles and molecules float around the student; turn or tilt the phone to find them, then tap the answer. Items are re-drawn every time'))}`])},
+        {nav:R(UI.n2),h:R(UI.h2),html:H.table([R(UI.thLv),R(T('ชื่อด่าน','Level name')),R(T('จำนวนข้อ × คะแนน','Items × points')),R(UI.thBook)],stRows,[0])+H.note(`${R(T('บัตรสรุปในเกม','Summary cards in the game'))}: ${X.LESSON.map((c,i)=>`${i+1}. ${c.t}`).join(' · ')}`)+H.note(R(LO))},
+        {nav:R(UI.n3),h:R(UI.h3),html:H.table([R(UI.thStage),R(UI.thLv),R(UI.thUse)],use,[0])+H.note(R(SUGGEST))},
+        {nav:R(UI.n4),h:R(UI.h4),html:H.table([R(UI.thMis),R(UI.thLv),R(UI.thEv)],mis,[1])},
+        {nav:R(UI.n6),h:R(UI.h6),html:H.table([R(UI.thStep),R(UI.thPts),R(UI.thRule)],[
+            [R(T('แต่ละข้อ','Each item')),R(T('ตามด่าน (10–25)','per level (10–25)')),R(T('ตอบถูกครั้งแรกได้เต็ม ครั้งที่สองได้ครึ่งหนึ่ง ตอบผิด 2 ครั้งเกมแสดงเฉลยและข้อนั้นได้ 0','Right first time earns full points, second try half; after 2 wrong tries the game shows the answer and the item scores 0'))],
+            [R(T('แต่ละด่าน','Each level')),R(T('ร้อยละ','percent')),R(T('ทอง 90 ขึ้นไป · เงิน 75 ขึ้นไป · ทองแดง 60 ขึ้นไป ได้ตั้งแต่ 60 จึงรับเกียรติบัตรด่านนั้น','Gold 90+ · silver 75+ · bronze 60+. A level certificate needs at least 60'))],
+            [R(T('เกียรติบัตรรวม','Overall certificate')),String(tot),R(T('ต้องได้ตั้งแต่ร้อยละ 60 ครบทุกด่าน','Needs at least 60% on every level'))]],[1])+H.list([R(T('ครูตั้งชื่อโรงเรียน ชื่อครู ผู้อำนวยการ และแนบลายเซ็นได้ที่ปุ่ม "ตั้งค่าเกียรติบัตร (ครู)" ท้ายหน้าหลัก','Set the school, teacher and director names and add signatures with the "Certificate settings (teacher)" button at the bottom of the home screen')),R(T('คะแนนเก็บไว้ในเบราว์เซอร์ของเครื่องที่เล่นเท่านั้น ถ้าใช้เครื่องร่วมกัน ให้ล้างคะแนนในหน้าตั้งค่าก่อนเปลี่ยนคน','Scores stay in that device’s browser; on shared devices, clear them in settings before the next student'))])},
+        {nav:R(UI.n7),h:R(UI.h7),html:H.list([R(T('ทั้งเกมเล่นในห้อง AR กด "เปิดกล้อง AR" แล้วป้ายและโมเลกุลจะลอยบนภาพจากกล้องหลัง หมุนตัวหรือเอียงเครื่องเพื่อหา ถ้าไม่เปิดกล้อง ใช้นิ้วลากเพื่อหมุนมองรอบห้องจำลองได้','The whole game runs in an AR room. Tap "Open AR camera" and the tags and molecules float over the rear-camera view; turn or tilt to find them. Without the camera, drag to look around the simulated room')),R(T('กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari และ iPhone หรือ iPad จะขออนุญาตใช้กล้องและเซนเซอร์การเคลื่อนไหว ให้กดอนุญาต','The camera works when the .html file is opened directly in Chrome or Safari; iPhone and iPad ask for camera and motion permission, so tap Allow')),R(T('การเล่นต้องหมุนตัวรอบทิศ จัดพื้นที่ให้นักเรียนยืนห่างกันเล็กน้อย หรือให้นั่งเก้าอี้หมุนแล้วใช้นิ้วลากแทน','Play involves turning around, so give students a little space, or let them stay seated and drag instead')),R(T('เกมนี้ยังเป็นภาษาไทยอย่างเดียว','This game is in Thai only for now')),R(T('ก่อนสอน: ลองด่าน 05 และ 06 ด้วยตนเอง และอ่านบัตรสรุปทั้ง 6 ใบให้ตรงกับคำที่ใช้ในเล่มแผน','Before the lesson: try levels 05 and 06 yourself, and check the 6 summary cards match the wording in the plan book'))])}],
+      credit:R(CREDIT)};
+  }
+  function label(){const m=document.getElementById('tgMount');if(!m)return;m.querySelector('[data-tg="h"]').textContent=R(UI.mountH);m.querySelector('[data-tg="p"]').textContent=R(PLAN);m.querySelector('#tgBtn').textContent=R(UI.mountBtn)}
+  function boot(){const b=document.getElementById('tgBtn');if(b)b.addEventListener('click',()=>TGuide.open(spec()));label()}
+  return {boot,spec,label};
+}
+window.TGuideGames={engine,lab,GAMES,UI,T,CREDIT,SUGGEST,LO};
+
+})();
+
+TGuideGames.engine('bond-to-shape').boot();
+</script>
+</body></html>
