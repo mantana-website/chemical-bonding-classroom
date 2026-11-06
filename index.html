@@ -51,7 +51,7 @@ td.sec{white-space:nowrap;font-weight:600}
   <p class="sub">รายวิชาเคมี 1 ว30221 ม.4 · หน่วยที่ 3 พันธะเคมี · เรียงตามลำดับเนื้อหาในหนังสือเรียน สสวท. และแผนการจัดการเรียนรู้ · ผู้ออกแบบและพัฒนาเกม นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม</p>
   <ol class="how">
     <li><b>เปิดเกม</b> แตะชื่อเกมในตาราง ไฟล์เกมทุกไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับหน้านี้</li>
-    <li><b>ใช้กล้อง AR</b> เปิดด้วย Chrome หรือ Safari โดยตรง แล้วกดอนุญาตกล้อง</li>
+    <li><b>ใช้กล้อง AR</b> ทุกด่านของทุกเกมมีปุ่มกล้อง AR เปิดด้วย Chrome หรือ Safari โดยตรง แล้วกดอนุญาตกล้อง</li>
     <li><b>เกมหลัก</b> ใช้ในชั่วโมงเรียนตามแผน <b>เกมทบทวน</b> ใช้ต้นคาบแผนที่ 1, 5, 10 และสรุปท้ายแผนที่ 10</li>
     <li><b>ตั้งค่าเกียรติบัตร</b> ครูกดปุ่มตั้งค่าในเกมครั้งเดียวก่อนให้นักเรียนเล่นในเครื่องเดียวกัน</li>
   </ol>
@@ -265,7 +265,8 @@ function spec(){
     T('รายละเอียดเกณฑ์คะแนนรายขั้นอยู่ในคู่มือครูของแต่ละเกม','Step-by-step scoring is in each game’s own teacher’s guide')];
   const ar=[
     T('ทุกเกมในชุดมีห้อง AR ที่แสดงแบบจำลองสามมิติบนภาพจากกล้องหลัง ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย เอียงเครื่องเพื่อมองจากมุมอื่น และกดถ่ายภาพ AR เก็บไว้ได้','Every game in the set has an AR room showing 3D models over the rear-camera view; drag to rotate, pinch to zoom, tilt to see another side and take AR photos'),
-    T('เกมพันธะไอออนิก 4 เกมมีห้อง AR แบบเดียวกัน แสดงผลึกไอออนิก ไอออนกลุ่มอะตอม บันไดพลังงานการเกิด NaCl และไอออนในน้ำ เปิดได้จากหน้าหลักและจากทุกด่าน','The 4 ionic games have the same AR room, showing ionic lattices, polyatomic ions, the NaCl energy ladder and ions in water, opened from the home screen or any level'),
+    T('ทุกด่านของทุกเกมเปิดกล้อง AR ได้ระหว่างเล่น: เกมพันธะไอออนิก 4 เกมใช้ปุ่ม "ดูแบบ AR" ใต้ชื่อด่าน (แสดงผลึกไอออนิก ไอออนกลุ่มอะตอม บันไดพลังงานการเกิด NaCl และไอออนในน้ำ) ส่วนอีก 7 เกมใช้ปุ่ม "กล้อง AR" ที่แถบด้านบนของด่าน','Every level of every game can open the AR camera while playing: the 4 ionic games use the "View in AR" button under the level title (ionic lattices, polyatomic ions, the NaCl energy ladder and ions in water); the other 7 games use the "AR camera" button in the level’s top bar'),
+    T('ขณะที่ยังเล่นด่านไม่จบ กล้อง AR ใน 7 เกมนั้นแสดงแบบจำลองเดียวกับบนโต๊ะทดลองและซ่อนข้อมูลที่เป็นคำตอบ (เช่น ชื่อสาร ชนิดพันธะ สภาพขั้ว) จนกว่าจะผ่านด่าน ในเกมจากอิเล็กตรอนสู่พันธะ ระหว่างขั้นสร้างพันธะจะเห็นเฉพาะอะตอม','While a level is unfinished, the AR camera in those 7 games shows the same model as the bench and hides answer details (name, bond type, polarity) until the level is cleared; in From Electrons to Bonds it shows atoms only during the bond-building steps'),
     T('กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari ถ้าเปิดผ่านลิงก์หรือเปิดกล้องไม่ได้ ห้อง AR จะแสดงแบบจำลองบนฉากหลังจำลองแทน iPhone และ iPad จะขออนุญาตใช้กล้องและเซนเซอร์การเคลื่อนไหว ให้กดอนุญาต','The camera works when the .html file is opened directly in Chrome or Safari; otherwise the AR room uses a simulated backdrop. iPhone and iPad ask for camera and motion permission; tap Allow'),
     T('ให้นักเรียนนั่งกับที่ขณะใช้กล้อง และจัดเครื่อง 1 เครื่องต่อนักเรียน 2 คน','Keep students seated while using the camera, and plan one device per two students'),
     T('ไฟล์เกมทุกไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับหน้านี้ ลิงก์ในตารางจึงจะเปิดได้','Keep every game file in the same folder as this page so the links work'),

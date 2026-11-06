@@ -146,6 +146,8 @@ section.block{padding-block:28px}
 .stepper li{font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);background:var(--sheet)}
 .stepper li.now{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
 .stepper li.done{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.plar{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;background:#FFB627;color:#1E1400;font:inherit;font-weight:700;font-size:.9rem;min-height:40px;padding:8px 15px 8px 12px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.18)}
+.plar:hover{background:#FFC85C}.plar:focus-visible{outline:3px solid var(--ink,#17212b);outline-offset:2px}.plar .ar-ico{width:20px;height:20px;flex:none}
 .plscore{font-family:var(--mono);font-size:.86rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .plscore b{color:var(--ink);font-size:1.1rem}
 .playgrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;padding-top:16px;align-items:start}
@@ -477,6 +479,7 @@ dialog#ar::backdrop{background:#06090C}
       <div class="pl-title"><span class="eyebrow" id="plChap"></span><h2 id="plFormula"></h2></div>
       <ol class="stepper" id="stepper"></ol>
       <div class="plscore" id="plScore"></div>
+      <button class="plar" type="button" id="plArBtn"><svg class="ar-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M12 7.5 16 10v4.5L12 17l-4-2.5V10z"/><path d="M8 10l4 2.4 4-2.4M12 12.4V17"/></svg><span id="plArLbl">กล้อง AR</span></button>
     </div>
     <div class="playgrid">
       <div class="stage">
@@ -946,7 +949,7 @@ const total=()=>S.pts.reduce((a,b)=>a+b,0);
 const floorPts=st=>Math.round(st.pts*.3);
 const starsFor=s=>s>=90?3:s>=70?2:1;
 function renderPlay(){
-  const L=S.L;renderRail();
+  const L=S.L;renderRail();{const P=ARPLAY[lang]||ARPLAY.th;$('#plArLbl').textContent=P.btn;$('#plArBtn').setAttribute('aria-label',P.aria)}
   $('#plChap').textContent=`${t('level')} ${S.i+1} · ${t('chapter')} ${L.ch+1} ${tx(CHAPTERS[L.ch])}`;
   $('#plFormula').innerHTML=G.playTitle?G.playTitle(S):`<span>${fH(L.f)}</span> <small>${esc(tx(L.name))}</small>`;
   $('#stepper').innerHTML=L.steps.map((st,j)=>`<li class="${S.done||S.k>j?'done':S.k===j?'now':''}">${j+1} ${esc(tx(st.lbl))}</li>`).join('');
@@ -1226,19 +1229,31 @@ function wireSettings(){
 }
 
 /* ---------- AR mode ---------- */
+const ARPLAY={th:{btn:'กล้อง AR',aria:'เปิดกล้อง AR ของด่านนี้',note:'แบบจำลองเดียวกับบนโต๊ะทดลอง · ข้อมูลสรุปของสารจะแสดงเมื่อผ่านด่านนี้',note2:'ข้อมูลสรุปของสารจะแสดงเมื่อผ่านด่านนี้'},en:{btn:'AR camera',aria:'Open the AR camera for this level',note:'The same model as on the bench · the substance summary appears once you clear this level',note2:'The substance summary appears once you clear this level'}};
 const AR={on:false,list:[],i:0,model:null,src:'cam',pref:'cam',stream:null,photoURL:'',yaw:.6,pitch:.3,zoom:1.05,idle:0,ptr:new Map(),drag:null,pinch:null,gyro:false,g:null,g0:null,gyroSeen:false,gyroTimer:0,shot:null,token:0};
 const clampN=(v,a,b)=>Math.max(a,Math.min(b,v));
 function arCleared(cur){return LEVELS.map((L,i)=>i).filter(i=>LEVELS[i].model&&(progress[LEVELS[i].id]||i===cur))}
 function arRenderInfo(){
-  const L=LEVELS[AR.list[AR.i]];AR.model=L.model();
+  const L=LEVELS[AR.list[AR.i]];AR.get=null;AR.safe=null;
+  if(AR.play&&S&&!S.done&&AR.list[AR.i]===S.i){
+    const bv=viewers.find(v=>v.cv.isConnected&&$('#benchBody').contains(v.cv));
+    AR.get=bv?bv.getModel:null;const pre=!AR.get&&G.arPre?G.arPre(S):null;AR.model=AR.get?AR.get():pre?pre.m:(L.mk?L.mk():L.model());
+    const tt=$('#plFormula').cloneNode(true);tt.querySelectorAll('sub').forEach(x=>x.textContent=x.textContent.replace(/\d/g,d=>SUBD[d]));tt.querySelectorAll('sup').forEach(x=>x.textContent=[...x.textContent].map(c=>SUPD[c]||c).join(''));
+    const P=ARPLAY[lang]||ARPLAY.th,step=`${t('level')} ${S.i+1} · ${tx(curStep().lbl)}`;
+    AR.safe={t:tt.textContent.replace(/\s+/g,' ').trim(),m:step};
+    $('#arTitle').innerHTML=$('#plFormula').innerHTML;
+    $('#arMeta').innerHTML=`<span class="m">${esc(step)}</span><span class="lp">${esc(pre&&pre.note?tx(pre.note):AR.get?P.note:P.note2)}</span>`;
+    const n=AR.list.length;$('#arNav').hidden=n<2;$('#arCount').textContent=`${AR.i+1} / ${n}`;
+    $('#arPrev').disabled=AR.i===0;$('#arNext').disabled=AR.i===n-1;arGyroLabel();return}
+  AR.model=L.model();
   $('#arTitle').innerHTML=`${fH(L.f)}<small>${esc(tx(L.name))}</small>`;
   $('#arMeta').innerHTML=`${esc(tx(L.tag))}${L.tag2?` · <span class="m">${esc(tx(L.tag2))}</span>`:''}${L.arNote?`<span class="lp">${esc(tx(L.arNote))}</span>`:''}`;
   const n=AR.list.length;$('#arNav').hidden=n<2;$('#arCount').textContent=`${AR.i+1} / ${n}`;
   $('#arPrev').disabled=AR.i===0;$('#arNext').disabled=AR.i===n-1;arGyroLabel();
 }
 function arGyroLabel(){const b=$('#arGyro');b.textContent=AR.gyro?t('arGyroOn'):t('arGyroOff');b.setAttribute('aria-pressed',AR.gyro);$('#arHint').textContent=AR.gyro?t('arHint'):t('arHintNoGyro')}
-function openAR(list,i){
-  if(!list.length)return;AR.list=list;AR.i=Math.max(0,list.indexOf(i));
+function openAR(list,i,fromPlay){
+  if(!list.length)return;AR.list=list;AR.i=Math.max(0,list.indexOf(i));AR.play=!!fromPlay;
   AR.yaw=.6;AR.pitch=.3;AR.zoom=1.05;AR.idle=0;AR.ptr.clear();AR.drag=AR.pinch=null;
   arRenderInfo();$('#arSheet').hidden=true;$('#arMsg').hidden=true;
   const d=$('#ar');if(!d.open)d.showModal();AR.on=true;arGyroStart();arSetSource(AR.pref);$('#arClose').focus();
@@ -1272,7 +1287,7 @@ function arGround(ctx,cx,cy,unit,dpr,ts){const gy=cy+unit*1.5,rx=unit*1.55,ry=un
   ctx.save();ctx.translate(cx,gy);ctx.scale(1,ry/rx);const g=ctx.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,'rgba(0,0,0,.55)');g.addColorStop(.6,'rgba(0,0,0,.22)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,Math.PI*2);ctx.fill();ctx.restore();
   ctx.save();ctx.setLineDash([unit*.16,unit*.1]);ctx.lineDashOffset=reduced?0:-(ts||0)*.03;ctx.strokeStyle='rgba(255,182,39,.9)';ctx.lineWidth=2.2*dpr;ctx.beginPath();ctx.ellipse(cx,gy,rx*.78,ry*.78,0,0,Math.PI*2);ctx.stroke();
   ctx.setLineDash([]);ctx.strokeStyle='rgba(255,210,122,.35)';ctx.lineWidth=1*dpr;ctx.beginPath();ctx.ellipse(cx,gy,rx*.52,ry*.52,0,0,Math.PI*2);ctx.stroke();ctx.restore()}
-function arFrame(ts,dt){if(!AR.model||!$('#arSheet').hidden)return;const live=AR.gyro&&AR.gyroSeen;
+function arFrame(ts,dt){if(AR.get){try{const m=AR.get();if(m)AR.model=m}catch(e){}}if(!AR.model||!$('#arSheet').hidden)return;const live=AR.gyro&&AR.gyroSeen;
   if(!AR.drag&&!AR.pinch&&!live&&!reduced&&ts-AR.idle>2500)AR.yaw+=dt*.00045;
   const p=arPose(),lift=-innerHeight*.07;
   draw3D($('#arCv'),AR.model,p.yaw,p.pitch,{zoom:AR.zoom,ox:p.ox,oy:p.oy+lift,pre:(ctx,cx,cy,u,dpr)=>arGround(ctx,cx,cy,u,dpr,ts)})}
@@ -1288,12 +1303,12 @@ function arCapture(){
   const L=LEVELS[AR.list[AR.i]],s=W/innerWidth,bandH=Math.round(150*s);
   const gr=ctx.createLinearGradient(0,H-bandH*1.4,0,H);gr.addColorStop(0,'rgba(4,7,10,0)');gr.addColorStop(.35,'rgba(4,7,10,.72)');gr.addColorStop(1,'rgba(4,7,10,.9)');ctx.fillStyle=gr;ctx.fillRect(0,H-bandH*1.4,W,bandH*1.4);
   const mw=W-32*s;
-  drawSegs(ctx,[{f:L.f},{t:'  '+tx(L.name)}],W/2,H-bandH+40*s,30*s,FF.disp,700,'#FFFFFF',mw);
-  fitText(ctx,tx(L.tag)+(L.tag2?' · '+tx(L.tag2):''),W/2,H-bandH+76*s,18*s,FF.body,600,'#FFC85C',mw);
+  if(AR.safe)fitText(ctx,AR.safe.t,W/2,H-bandH+40*s,30*s,FF.disp,700,'#FFFFFF',mw);else drawSegs(ctx,[{f:L.f},{t:'  '+tx(L.name)}],W/2,H-bandH+40*s,30*s,FF.disp,700,'#FFFFFF',mw);
+  fitText(ctx,AR.safe?AR.safe.m:tx(L.tag)+(L.tag2?' · '+tx(L.tag2):''),W/2,H-bandH+76*s,18*s,FF.body,600,'#FFC85C',mw);
   const who=[cfg.student,cfg.klass].filter(Boolean).join(' · ');
   fitText(ctx,(who?who+'  ·  ':'')+t('arFooterT',{app:t('appName')})+'  ·  '+fmtDate(),W/2,H-bandH+108*s,14*s,FF.body,500,'#C6D2DB',mw);
   AR.shot={cv:out,name:`${G.key}-ar-${L.id}.png`};
-  $('#arShotImg').src=out.toDataURL('image/png');$('#arShotImg').alt=t('arShotTitle',{f:fU(L.f)});$('#arShotTitle').textContent=t('arShotTitle',{f:fU(L.f)});
+  $('#arShotImg').src=out.toDataURL('image/png');const shotT=t('arShotTitle',{f:AR.safe?AR.safe.t:fU(L.f)});$('#arShotImg').alt=shotT;$('#arShotTitle').textContent=shotT;
   $('#arSheet').hidden=false;$('#arSave').focus();
 }
 function wireAR(){
@@ -1319,6 +1334,7 @@ function wireAR(){
   $('#arNext').onclick=()=>{if(AR.i<AR.list.length-1){AR.i++;arRenderInfo()}};
   $('#arClose').onclick=()=>$('#ar').close();
   $('#ar').addEventListener('close',()=>{AR.on=false;AR.token++;arStop();arStatus(null);arGyroStop();$('#arSheet').hidden=true;$('#arMsg').hidden=true});
+  $('#plArBtn').onclick=()=>{if(S)openAR(arCleared(S.i),S.i,true)};
   $('#arHomeBtn').onclick=()=>{const l=arCleared(-1);if(l.length)openAR(l,l[0]);else openAR(G.showcase.slice(),G.showcase[0])};
 }
 
@@ -1672,7 +1688,7 @@ const ENGINE_SCORE={
   T('หลักฐาน: ให้นักเรียนบันทึกเกียรติบัตรรายด่านหรือแคปหน้าจอผลด่านส่งครู ผลเก็บไว้ในเบราว์เซอร์ของเครื่องที่เล่นเท่านั้น ถ้าใช้เครื่องร่วมกัน ให้ล้างความคืบหน้าในหน้าตั้งค่าก่อนเปลี่ยนคน','Evidence: students save their level certificates or screenshot the level result. Progress stays in that device’s browser; on shared devices, clear progress in settings before the next student')]
 };
 const ENGINE_AR=[
- T('ปุ่ม "ดูแบบ AR" บนหน้าหลัก และปุ่ม AR บนด่านที่ผ่านแล้ว เปิดห้อง AR ที่แสดงแบบจำลองสามมิติลอยบนภาพจากกล้องหลัง ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย เอียงเครื่องเพื่อมองจากมุมอื่น และกดถ่ายภาพ AR เก็บไว้ได้','The "View in AR" button on the home screen, and the AR button on passed levels, open the AR room: a 3D model floats over the rear-camera view. Drag to rotate, pinch to zoom, tilt to look from another angle, and capture an AR photo'),
+ T('ปุ่ม "ห้อง AR" บนหน้าหลัก ปุ่ม "กล้อง AR" ที่แถบด้านบนของทุกด่าน (กดได้ทุกขั้นระหว่างเล่น) และปุ่ม AR บนด่านที่ผ่านแล้ว เปิดห้อง AR ที่แสดงแบบจำลองสามมิติลอยบนภาพจากกล้องหลัง ลากเพื่อหมุน ถ่างสองนิ้วเพื่อย่อขยาย เอียงเครื่องเพื่อมองจากมุมอื่น และกดถ่ายภาพ AR เก็บไว้ได้','The "View in AR" button on the home screen, the "AR camera" button in the top bar of every level (usable at every step while playing) and the AR button on passed levels open the AR room: a 3D model floats over the rear-camera view. Drag to rotate, pinch to zoom, tilt to look from another angle, and capture an AR photo'),
  T('กล้องใช้ได้เมื่อเปิดไฟล์ .html โดยตรงใน Chrome หรือ Safari ถ้าเปิดผ่านลิงก์หรือเปิดกล้องไม่ได้ ห้อง AR จะแสดงแบบจำลองบนฉากหลังจำลองแทน','The camera works when the .html file is opened directly in Chrome or Safari. Through a link, or if the camera is unavailable, the AR room shows the model on a simulated backdrop'),
  T('iPhone และ iPad จะขออนุญาตใช้กล้องและเซนเซอร์การเคลื่อนไหว ให้กดอนุญาต และให้นักเรียนนั่งกับที่ขณะใช้กล้อง','iPhone and iPad ask for camera and motion permission; tap Allow, and keep students seated while using the camera'),
  T('ปุ่ม ไทย/EN บนหน้าหลักสลับภาษาได้ทั้งเกม รวมถึงคู่มือนี้','The ไทย/EN buttons on the home screen switch the whole game, including this guide')
