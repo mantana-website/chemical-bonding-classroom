@@ -52,7 +52,7 @@ td.sec{white-space:nowrap;font-weight:600}
   <ol class="how">
     <li><b>เปิดเกม</b> แตะชื่อเกมในตาราง ไฟล์เกมทุกไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับหน้านี้</li>
     <li><b>ใช้กล้อง AR</b> เปิดด้วย Chrome หรือ Safari โดยตรง แล้วกดอนุญาตกล้อง</li>
-    <li><b>เกมหลัก</b> ใช้ในชั่วโมงเรียนตามแผน <b>เกมทบทวน</b> ใช้หลังจบแผนที่ 10</li>
+    <li><b>เกมหลัก</b> ใช้ในชั่วโมงเรียนตามแผน <b>เกมทบทวน</b> ใช้ต้นคาบแผนที่ 1, 5, 10 และสรุปท้ายแผนที่ 10</li>
     <li><b>ตั้งค่าเกียรติบัตร</b> ครูกดปุ่มตั้งค่าในเกมครั้งเดียวก่อนให้นักเรียนเล่นในเครื่องเดียวกัน</li>
   </ol>
 
@@ -86,7 +86,7 @@ td.sec{white-space:nowrap;font-weight:600}
       <tr><td class="no">10</td><td class="sec">3.4.1 การเกิดพันธะโลหะ<br>3.4.2 สมบัติของโลหะ<br>3.5 การใช้ประโยชน์</td><td class="g"><a href="electron-sea.html">ทะเลอิเล็กตรอน: ไขความลับโลหะ</a><small>ไอออนบวกในทะเลอิเล็กตรอน สมบัติ แฟ้มสารปริศนา การเลือกวัสดุ</small></td><td>8</td><td><span class="tag main">เกมหลัก</span></td></tr>
     </tbody></table></div>
 
-  <div class="unit"><h2>ทบทวนท้ายหน่วย</h2><span>หลังจบแผนที่ 10</span></div>
+  <div class="unit"><h2>ทบทวนท้ายหน่วย</h2><span>ใช้ในแผนที่ 1, 5 และ 10 · จบก่อนสอบหลังเรียน</span></div>
   <div class="tw"><table class="rev">
     <thead><tr><th>ช่วงเวลา</th><th>หัวข้อในหนังสือเรียน</th><th>เกม</th><th>ด่าน</th><th>ประเภท</th></tr></thead>
     <tbody>
@@ -233,7 +233,7 @@ const PLANS=[
   ['8',T('3.3.4 รูปร่างโมเลกุล และ 3.3.5 สภาพขั้วของโมเลกุลโคเวเลนต์','3.3.4 molecular shape and 3.3.5 polarity of covalent molecules'),'sp',null,'12'],
   ['9',T('3.3.6 แรงยึดเหนี่ยวระหว่างโมเลกุลและสมบัติของสารโคเวเลนต์ รวมสารโคเวเลนต์โครงผลึกร่างตาข่าย','3.3.6 intermolecular forces and properties of covalent substances, including network covalent solids'),'fp',null,'12'],
   ['10',T('3.4.1 การเกิดพันธะโลหะ 3.4.2 สมบัติของโลหะ และ 3.5 การใช้ประโยชน์','3.4.1 forming the metallic bond, 3.4.2 properties of metals and 3.5 uses'),'es',null,'8'],
-  [T('ทบทวน','Review'),T('บทที่ 3 ทั้งบท (3.1–3.5) หลังจบแผนที่ 10','All of chapter 3 (3.1–3.5), after plan 10'),null,'bf','12']];
+  [T('ทบทวน','Review'),T('บทที่ 3 ทั้งบท (3.1–3.5) ใช้ในขั้น A ของแผนที่ 1, 5, 10 และขั้น S ของแผนที่ 10','All of chapter 3 (3.1–3.5), used in stage A of plans 1, 5 and 10 and stage S of plan 10'),null,'bf','12']];
 function spec(){
   const H=TGuide.H;
   const planRows=PLANS.map(([n,topic,main,extra,lv])=>[R(n),R(topic),main?g(main):'—',extra?R(G[extra]):'—',lv]);
@@ -276,7 +276,7 @@ function spec(){
       {nav:R(UI.n1),h:R(UI.h1),html:H.list([
         `<b>${R(T('ใช้กับ','Used with'))}</b> ${R(T('รายวิชาเคมี 1 ว30221 ม.4 หน่วยที่ 3 พันธะเคมี (หนังสือเรียนรายวิชาเพิ่มเติมเคมี สสวท. เล่ม 1 บทที่ 3) แผนการจัดการเรียนรู้ 10 แผน','Chemistry 1 (ว30221), Grade 10, unit 3 chemical bonding (IPST additional chemistry textbook, book 1, chapter 3), 10 lesson plans'))}`,
         `<b>${R(T('ขนาด','Size'))}</b> ${R(T('11 เกม: เกมหลัก 10 เกม (1 เกมต่อ 1 แผน) และเกมทบทวนท้ายหน่วย 1 เกม','11 games: 10 main games (one per plan) and 1 end-of-unit review game'))}`,
-        `<b>${R(T('บทบาท','Roles'))}</b> ${R(T('เกมหลักใช้ในขั้น T ของแผน และเกมทบทวนใช้ในขั้น S ของแผนที่ 10','Main games are used in stage T; the review game is used in stage S of plan 10'))}`,
+        `<b>${R(T('บทบาท','Roles'))}</b> ${R(T('เกมหลักใช้ในขั้น T ของแผน และเกมทบทวนใช้ช่วงสั้นในขั้น A ของแผนที่ 1, 5, 10 และขั้น S ของแผนที่ 10 ก่อนสอบหลังเรียน','Main games are used in stage T; the review game is used in short slots in stage A of plans 1, 5 and 10 and stage S of plan 10, before the post-test'))}`,
         `<b>${R(T('คู่มือรายเกม','Per-game guides'))}</b> ${R(T('ทุกเกมมีคู่มือครูของตนเองแบบเดียวกับหน้านี้ ระบุแผนที่ใช้ ด่านในแต่ละขั้น มโนทัศน์ที่คลาดเคลื่อน เกณฑ์คะแนน และการเตรียมก่อนสอน','Every game has its own teacher’s guide in this format, giving the plan, levels for each stage, misconceptions, scoring and preparation'))}`])},
       {nav:R(UI.n2),h:R(UI.h2),html:H.table([R(T('แผนที่','Plan')),R(T('หัวข้อในหนังสือเรียน','Textbook topic')),R(T('เกมหลัก','Main game')),R(T('เกมทบทวน','Review game')),R(T('ด่าน','Levels'))],planRows,[0])+H.note(R(T('ผลการเรียนรู้ให้ใช้ตามเล่มแผน (ผลการเรียนรู้ชุด 13 ข้อของหน่วยพันธะเคมี: ข้อ 1–5 ไอออนิก ข้อ 6–11 โคเวเลนต์ ข้อ 12–13 โลหะ)','Use the learning outcomes as written in the plan book (the 13 outcomes of the bonding unit: 1–5 ionic, 6–11 covalent, 12–13 metallic).')))},
       {nav:R(UI.n3),h:R(UI.h3),html:H.table([R(T('ขั้น','Stage')),R(T('เกมหรือด่านที่ใช้','Games or levels')),R(T('วิธีใช้','How to use them'))],stageRows,[0])+H.note(R(T('ด่านที่แนะนำรายขั้นเป็นข้อเสนอ ให้ปรับให้ตรงกับภาคผนวก ค.6 (การจัดสรรด่าน) และ ค.7 (บันทึกการทำงานนอกห้องเรียน) ในเล่มแผน','The suggested levels are a starting point. Adjust them to match appendix ค.6 (level allocation) and ค.7 (out-of-class log) in the plan book.')))},
