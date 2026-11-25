@@ -89,6 +89,7 @@ tr.hot td{background:#4a1d26}
 .enchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .enchips span{background:#0c1328;border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-size:13px}
 .progress{font-weight:700;color:var(--ok)}
+.guide a{color:#9cc2ff}
 </style>
 </head>
 <body>
@@ -163,6 +164,9 @@ tr.hot td{background:#4a1d26}
    ผู้สร้างและพัฒนาเกม: นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม
    ใส่ลิงก์แบบฟอร์มรับรหัสผลของห้องไว้ตรงนี้ก่อนฝากเว็บ (ถ้ามี)
    ===================================================================== */
+
+var HOST_TH="<li>ชุดเกมฝากไว้บนเว็บ GitHub Pages ที่ <a href='https://mantana-website.github.io/chemical-bonding-classroom/' target='_blank' rel='noopener'>mantana-website.github.io/chemical-bonding-classroom</a> ก่อนสอนให้เปิดทดสอบบนอุปกรณ์ของโรงเรียน กดปุ่ม AR และอนุญาตให้ใช้กล้อง ถ้าแก้ไฟล์เกม ให้อัปโหลดไฟล์ใหม่ทับใน repo mantana-website/chemical-bonding-classroom (เข้าสู่ระบบด้วยบัญชี mantana-website) แล้วรอ 1–2 นาทีให้เว็บอัปเดต</li><li>QR code มี 2 แบบ (1) ลิงก์รวมของเกม คือที่อยู่ของไฟล์เกมโดยไม่มีเครื่องหมาย # เกมละ 1 อัน เปิดแล้วเข้าหน้าแรกที่เลือกได้ทุกโหมดและทุกด่านท้าทาย (2) ลิงก์ในแท็บ \"ลิงก์สำหรับ QR code\" ซึ่งลงท้ายด้วย # เปิดเข้าโหมดหรือด่านนั้นโดยตรง ใช้ทำ QR code กลุ่มละ 1 ชุดสำหรับงานกลุ่ม หรือฉายขึ้นจอสำหรับงานเดี่ยว ลิงก์ของครู (ครูฉายขึ้นจอและหน้าครู) ไม่ต้องแจกนักเรียน</li><li>แบบฟอร์มรับรหัสผล (ชื่อ-สกุล ชั้น-เลขที่ รหัสผล และเหตุผลของข้อที่ตอบผิด) ใส่ไว้ในเกมแล้ว นักเรียนกดปุ่ม \"เปิดแบบฟอร์มส่งรหัสผล\" หลังเล่นด่านท้าทายจบ ถ้าเปลี่ยนแบบฟอร์ม ให้แก้ลิงก์ในบรรทัด var FORM_URL ที่ต้นสคริปต์ของทุกไฟล์เกม แล้วอัปโหลดทับใน repo</li>";
+var HOST_EN="<li>The games are hosted on GitHub Pages at <a href='https://mantana-website.github.io/chemical-bonding-classroom/' target='_blank' rel='noopener'>mantana-website.github.io/chemical-bonding-classroom</a>. Test on school devices before class, press AR and allow the camera. After changing a game file, upload it over the old one in the mantana-website/chemical-bonding-classroom repo (signed in as mantana-website) and wait 1–2 minutes.</li><li>Two kinds of QR code: (1) the game's main link (the file address without #), one per game, opens the home page with every mode and challenge; (2) the links in the \"Links for QR codes\" tab end with # and open one mode or challenge directly, for group sets or projected individual work. Teacher links (teacher screen, teacher page) are not for students.</li><li>The result form (name, class and number, result code, reasons for wrong items) is already set in every game; students press \"Open the result form\" after a challenge. To change the form, edit var FORM_URL at the top of every game file and upload them again.</li>";
 var FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdkG9ndvI_hNgYcYLN0nfKMMLuEmoTfnBKGgpID3cYzljlWVA/viewform";
 
 // ---------- DATA-START ----------
@@ -444,8 +448,8 @@ var STR = {
   molecule:"โมเลกุล", nWrong:"จำนวนผู้ทำนายผิด", pct:"ร้อยละ", valid:"รหัสที่อ่านได้", invalid:"รหัสที่อ่านไม่ได้",
   hot:"เกินร้อยละ 30 · ใช้เป็นคำถามข้อสุดท้ายของกิจวัตรที่ 1",
   formLabel:"ลิงก์แบบฟอร์มรับรหัสผล (บันทึกไว้ในเครื่องนี้เท่านั้น)", saveForm:"บันทึก",
-  formNote:"เครื่องของนักเรียนไม่ได้รับค่านี้ ให้ครูใส่ลิงก์แบบฟอร์มในบรรทัด var FORM_URL = \"\" ที่ต้นสคริปต์ของไฟล์เกมก่อนฝากเว็บ หรือต่อท้ายลิงก์เกมด้วย ?form=ลิงก์แบบฟอร์ม",
-  dlGame:"ดาวน์โหลดไฟล์เกม (HTML) สำหรับฝากเว็บ", dlNote:"กล้อง AR ทำงานเมื่อเปิดเกมจากเว็บ https ของครูเอง เช่น Netlify Drop หน้านี้ใน Claude เปิดกล้องไม่ได้",
+  formNote:"ลิงก์แบบฟอร์มของชุดเกมนี้ใส่ไว้ในบรรทัด var FORM_URL ของทุกไฟล์แล้ว นักเรียนเห็นปุ่มส่งรหัสผลได้ทันที ช่องด้านบนใช้ทดลองลิงก์อื่นเฉพาะเครื่องนี้ ถ้าจะเปลี่ยนแบบฟอร์มให้ทุกคน ให้แก้บรรทัด FORM_URL ในทุกไฟล์แล้วอัปโหลดทับใน repo",
+  dlGame:"ดาวน์โหลดไฟล์เกม (HTML) สำหรับฝากเว็บ", dlNote:"กล้อง AR ทำงานเมื่อเปิดเกมจากเว็บ https ของชุดเกม (mantana-website.github.io/chemical-bonding-classroom) ถ้าเปิดไฟล์จากเครื่องโดยตรงหรือเปิดในหน้า Claude กล้องจะไม่ทำงาน",
   copyLink:"คัดลอก", openNow:"เปิด", revealShort:"โมเลกุลแสดงผลทันที ไม่ต้องทำนายซ้ำ", noGame12:"ขั้นที่ 1 และขั้นที่ 2 ไม่ใช้เกม ตามแผน รายการด้านล่างเริ่มจากขั้นที่ 3 และแสดงทุกข้อตามลำดับในแผน ข้อที่ไม่ใช้เกมแสดงเป็นตัวอักษรสีจาง", startCh:"เริ่มด่านท้าทาย", revealNote:"โมเลกุลเหล่านี้ทดสอบแล้วในขั้นที่ 3 จึงแสดงผลทันที ไม่ต้องทำนายซ้ำ", teacherStep4Note:"ขั้นที่ 4 ส่วนที่ครูฉายขึ้นจอ (ชุดเทียบข้อ 4.3 ของชั่วโมงที่ 1–2 และ H₂O ข้อ 4.4 ของชั่วโมงที่ 3) ครูเปิดจากหน้าครู แท็บลิงก์สำหรับ QR code", lkStudents:"ลิงก์สำหรับนักเรียน (นำไปทำ QR code)", lkTeacherScreen:"ภาพสำหรับครูฉายขึ้นจอ (กด เปิด บนเครื่องที่ต่อจอ แล้วกด Aa ขยายตัวอักษร)", lkOther:"อื่น ๆ", linksNote:"ลิงก์ทั้งหมดใช้ส่วนท้าย # เพื่อเปิดเข้าโหมดนั้นทันที นำลิงก์ไปสร้าง QR code กลุ่มละ 1 ชุดสำหรับงานกลุ่ม และฉาย QR code ขึ้นจอสำหรับงานเดี่ยว ใช้ได้เมื่อเปิดจากเว็บที่ครูฝากไว้",
   lkPush:"โหมดผลัก (ชั่วโมงที่ 1–2 · ขั้นที่ 3 และขั้นที่ 4 งานกลุ่ม และขั้นที่ 5 ข้อ 5.1 งานเดี่ยว)", lkPull:"โหมดดึง (ชั่วโมงที่ 3 · ขั้นที่ 3 และขั้นที่ 4 งานกลุ่ม และขั้นที่ 5 ข้อ 5.1 งานเดี่ยว)", lkCmp1:"ชุดเทียบ CH₄ NH₃ H₂O (ขั้นที่ 4 ข้อ 4.3 ครูฉาย)",
   lkWater:"H₂O โหมดดึง (ขั้นที่ 4 ข้อ 4.4 ครูฉาย)", lkLabel:"CCl₄ · CH₂Cl₂ (ขั้นที่ 5 ข้อ 5.2 ครูฉายตอนเฉลย ไม่อยู่ในรายการของนักเรียน)", lkChP:"ด่านท้าทายโหมดผลัก (มอบหมายในขั้นที่ 5 ข้อ 5.4 ของชั่วโมงที่ 1–2)", lkChD:"ด่านท้าทายโหมดดึง (มอบหมายในขั้นที่ 5 ข้อ 5.4 ของชั่วโมงที่ 3)", lkTeacher:"หน้าครู",
@@ -486,8 +490,8 @@ var STR = {
   molecule:"Molecule", nWrong:"Students wrong", pct:"Percent", valid:"Codes read", invalid:"Unreadable codes",
   hot:"Over 30% · use as the last question of Routine 1",
   formLabel:"Result form link (saved on this device only)", saveForm:"Save",
-  formNote:"Students' devices do not receive this. Put the form link in the line var FORM_URL = \"\" at the top of the game's script before hosting, or add ?form=<link> to the game link.",
-  dlGame:"Download the game file (HTML) for hosting", dlNote:"The AR camera works when the game is opened from your own https site, e.g. Netlify Drop. This page inside Claude cannot open the camera.",
+  formNote:"The form link is already set in var FORM_URL in every file, so students see the result-form button. The box above only tries another link on this device; to change the form for everyone, edit FORM_URL in every file and upload them again.",
+  dlGame:"Download the game file (HTML) for hosting", dlNote:"The AR camera works when the game is opened from the set's https site (mantana-website.github.io/chemical-bonding-classroom). It does not work from a file on the computer or inside Claude.",
   copyLink:"Copy", openNow:"Open", revealShort:"Molecules show results at once", noGame12:"Steps 1 and 2 do not use the game. The list starts at Step 3 and shows every item in plan order; items without the game appear in grey.", startCh:"Start challenge", revealNote:"These molecules were tested in Step 3, so results show at once with no new prediction.", teacherStep4Note:"Step 4 teacher-screen views (4.3 set in hours 1–2, H₂O for 4.4 in hour 3) open from the Teacher page, Links tab.", lkStudents:"Links for students (make QR codes)", lkTeacherScreen:"Teacher screen views (press Open on the projected device, then Aa for large text)", lkOther:"Other", linksNote:"Each link ends with # to open that mode directly. Turn the links into QR codes: one set per group for group work, and project them for individual work. They work when opened from your hosted site.",
   lkPush:"Push mode (hours 1–2 · Steps 3 and 4 group work and Step 5, 5.1 individual)", lkPull:"Pull mode (hour 3 · Steps 3 and 4 group work and Step 5, 5.1 individual)", lkCmp1:"CH₄ NH₃ H₂O side by side (Step 4, 4.3 teacher screen)",
   lkWater:"H₂O pull mode (Step 4, 4.4 teacher screen)", lkLabel:"CCl₄ · CH₂Cl₂ (Step 5, 5.2 teacher screen after the video; not in the students' list)", lkChP:"Push-mode challenge (assigned in Step 5, 5.4 of hours 1–2)", lkChD:"Pull-mode challenge (assigned in Step 5, 5.4 of hour 3)", lkTeacher:"Teacher page",
@@ -1074,9 +1078,7 @@ function decodeAll(){
 }
 var GUIDE_TH=[
 "<h2>ก่อนสอน</h2><ol>",
-"<li>ฝากไฟล์เกมไว้บนเว็บ https ของครู เช่น Netlify Drop แล้วเปิดทดสอบบนอุปกรณ์ของโรงเรียน อนุญาตให้ใช้กล้อง และตรวจว่าเปิดโมเลกุลได้ครบทุกตัว</li>",
-"<li>นำลิงก์ในแท็บ \"ลิงก์สำหรับ QR code\" ไปสร้าง QR code กลุ่มละ 1 ชุด ลิงก์แต่ละอันเปิดเข้าโหมดที่ใช้ได้ทันที</li>",
-"<li>สร้างแบบฟอร์มออนไลน์ของห้อง มีช่องชื่อ เลขที่ รหัสผล และเหตุผลของข้อที่ผิด แล้วใส่ลิงก์แบบฟอร์มในบรรทัด FORM_URL ที่ต้นสคริปต์ก่อนฝากเว็บ</li>",
+""+HOST_TH+"",
 "<li>งานกลุ่มใช้เครื่องกลุ่มละ 1 เครื่อง ผู้ควบคุม AR ถือเครื่อง สมาชิกคนอื่นเก็บเครื่องไว้เพื่อดูจอเดียวกัน งานเดี่ยวในข้อ 5.1 และด่านท้าทายที่บ้านใช้เครื่องของแต่ละคน ในข้อ 5.1 ฉาย QR code ของโหมดขึ้นจอให้ทุกคนสแกนเปิดเกมไว้ตั้งแต่เริ่มข้อ เกมซ่อนคำตอบไว้จนกว่าจะกดเปิด ถ้าเครื่องไม่พอให้สองคนใช้ร่วมกัน โดยแต่ละคนเขียนคำทำนายของตนเองให้เสร็จก่อนเปิดเกม</li>",
 "<li>ระหว่างคาบเกมไม่แสดงคะแนน นักเรียนทำนายบนใบกิจกรรมแล้วจึงแตะเปิดดูผล ปุ่มทำนาย คะแนน และเกียรติบัตรมีเฉพาะในด่านท้าทาย</li></ol>",
 "<h2>ชั่วโมงที่ 1–2 โหมดผลัก (รูปร่างโมเลกุล)</h2><ol>",
@@ -1098,9 +1100,7 @@ var GUIDE_TH=[
 "<h2>ข้อตกลงของข้อมูล</h2><p>มุมพันธะใช้ค่าตามหนังสือเรียน สสวท. (เช่น 109.5° 107° 104.5°) โมเลกุลที่แผนไม่ระบุมุมแสดงเฉพาะชื่อรูปร่าง ค่า EN ใช้ทศนิยม 2 ตำแหน่งชุดเดียวกับใบกิจกรรม ลูกศรไดโพลมีเครื่องหมายบวกที่หาง ชี้ไปทางอะตอมที่มีค่า EN สูงกว่า และยาวตาม ΔEN</p>"
 ].join("");
 var GUIDE_EN=[
-"<h2>Before class</h2><ol><li>Host the game file on your own https site (e.g. Netlify Drop), test it on school devices and allow the camera.</li>",
-"<li>Turn the links in the \"Links for QR codes\" tab into QR codes, one set per group.</li>",
-"<li>Make a class online form (name, number, result code, reason for wrong items) and put its link in FORM_URL at the top of the script before hosting.</li>",
+"<h2>Before class</h2><ol>"+HOST_EN+"",
 "<li>Group work uses one device per group, held by the AR controller; other members put their devices away so everyone watches one screen. Individual work (5.1) and the home challenges use each student's own device. In 5.1, project the mode's QR code so everyone opens the game at the start; answers stay hidden until revealed. If devices are short, two students may share, each finishing their own written prediction first.</li>",
 "<li>In class the game shows no score: students predict on the sheet, then reveal. Prediction buttons, scores and certificates are only in the challenges.</li></ol>",
 "<h2>Hours 1–2 · Push mode</h2><ol><li>Step 3, cycle 1: BeCl₂ BF₃ CH₄ (side by side; measure CH₄ = 109.5°), CO₂ (card 1), PCl₅ SF₆ (card 2).</li>",

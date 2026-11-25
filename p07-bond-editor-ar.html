@@ -104,6 +104,7 @@ button.mbtn{background:var(--mc,#3a63ff);border:none;color:#10132a;font-weight:7
 .pickopts button.right{background:#1d5c45;border-color:var(--ok)}
 .pickopts button.wrongpick{background:#6b2230;border-color:var(--bad)}
 .kv{display:inline-block;background:#0c1328;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 2px 0;font-size:calc(14px*var(--big))}
+.guide a{color:#9cc2ff}
 
 </style>
 </head>
@@ -146,6 +147,8 @@ button.mbtn{background:var(--mc,#3a63ff);border:none;color:#10132a;font-weight:7
    ใส่ลิงก์แบบฟอร์มรับรหัสผลของห้องไว้ตรงนี้ก่อนฝากเว็บ (ถ้ามี)
    ===================================================================== */
 var FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdkG9ndvI_hNgYcYLN0nfKMMLuEmoTfnBKGgpID3cYzljlWVA/viewform";
+var HOST_TH="<li>ชุดเกมฝากไว้บนเว็บ GitHub Pages ที่ <a href='https://mantana-website.github.io/chemical-bonding-classroom/' target='_blank' rel='noopener'>mantana-website.github.io/chemical-bonding-classroom</a> ก่อนสอนให้เปิดทดสอบบนอุปกรณ์ของโรงเรียน กดปุ่ม AR และอนุญาตให้ใช้กล้อง ถ้าแก้ไฟล์เกม ให้อัปโหลดไฟล์ใหม่ทับใน repo mantana-website/chemical-bonding-classroom (เข้าสู่ระบบด้วยบัญชี mantana-website) แล้วรอ 1–2 นาทีให้เว็บอัปเดต</li><li>QR code มี 2 แบบ (1) ลิงก์รวมของเกม คือที่อยู่ของไฟล์เกมโดยไม่มีเครื่องหมาย # เกมละ 1 อัน เปิดแล้วเข้าหน้าแรกที่เลือกได้ทุกโหมดและทุกด่านท้าทาย (2) ลิงก์ในแท็บ \"ลิงก์สำหรับ QR code\" ซึ่งลงท้ายด้วย # เปิดเข้าโหมดหรือด่านนั้นโดยตรง ใช้ทำ QR code กลุ่มละ 1 ชุดสำหรับงานกลุ่ม หรือฉายขึ้นจอสำหรับงานเดี่ยว ลิงก์ของครู (ครูฉายขึ้นจอและหน้าครู) ไม่ต้องแจกนักเรียน</li><li>แบบฟอร์มรับรหัสผล (ชื่อ-สกุล ชั้น-เลขที่ รหัสผล และเหตุผลของข้อที่ตอบผิด) ใส่ไว้ในเกมแล้ว นักเรียนกดปุ่ม \"เปิดแบบฟอร์มส่งรหัสผล\" หลังเล่นด่านท้าทายจบ ถ้าเปลี่ยนแบบฟอร์ม ให้แก้ลิงก์ในบรรทัด var FORM_URL ที่ต้นสคริปต์ของทุกไฟล์เกม แล้วอัปโหลดทับใน repo</li>";
+var HOST_EN="<li>The games are hosted on GitHub Pages at <a href='https://mantana-website.github.io/chemical-bonding-classroom/' target='_blank' rel='noopener'>mantana-website.github.io/chemical-bonding-classroom</a>. Test on school devices before class, press AR and allow the camera. After changing a game file, upload it over the old one in the mantana-website/chemical-bonding-classroom repo (signed in as mantana-website) and wait 1–2 minutes.</li><li>Two kinds of QR code: (1) the game's main link (the file address without #), one per game, opens the home page with every mode and challenge; (2) the links in the \"Links for QR codes\" tab end with # and open one mode or challenge directly, for group sets or projected individual work. Teacher links (teacher screen, teacher page) are not for students.</li><li>The result form (name, class and number, result code, reasons for wrong items) is already set in every game; students press \"Open the result form\" after a challenge. To change the form, edit var FORM_URL at the top of every game file and upload them again.</li>";
 // ---------- ไลบรารีเคมีที่ใช้ร่วมกัน ----------
 var D2R=Math.PI/180;
 var EL = {
@@ -549,7 +552,7 @@ GAME.views={
   ch4:{mode:"react",ids:["x_ch4"],label:M_("แถบพลังงานการเผาไหม้มีเทน (ชั่วโมงที่ 3 ขั้นที่ 4 ข้อ 4.2)","Methane combustion energy bars (hour 3, Step 4, 4.2)"),ctx:{hr:"h3",step:4,sub:M_("ข้อ 4.2","4.2"),work:"teacher",stage:1}}
 };
 GAME.guide={
-th:["<h2>ก่อนสอน</h2><ol><li>ฝากไฟล์เกมไว้บนเว็บ https ของครู ทำ QR code จากแท็บลิงก์ และใส่ลิงก์แบบฟอร์มในบรรทัด FORM_URL</li></ol>",
+th:["<h2>ก่อนสอน</h2><ol>"+HOST_TH+"</ol>",
 "<h2>วงรอบที่ 1 (โหมดวัดพันธะ)</h2><ol><li><b>ขั้นที่ 3:</b> อีเทน (C–C) เอทีน (C=C) เอไทน์ (C≡C) และ N₂ พันธะที่จะวัดมีวงสีฟ้า กด ① แล้วแตะพันธะเพื่อดูไม้บรรทัดและความยาว กด ② เปิดพลังงานพันธะตามตาราง ก.1 ความยาวพันธะในภาพเป็นสัดส่วนตามค่าจริง</li>",
 "<li><b>บัตรที่ 1:</b> ใช้ปุ่ม \"วางเรียงกัน\" เมทานอล (C–O 143 pm) กับอีเทน (C–C 154 pm)</li><li><b>ข้อ 4.3 ครูฉาย:</b> เปิดลิงก์ C–C C=C C≡C เรียงกันคู่กับแบบจำลองสปริง ย้ำว่าเปลวไฟเชื่อมร้อนไม่ได้เกิดจากพันธะ C≡C แข็งแรง</li><li><b>ข้อ 5.1:</b> H₂O₂ (O–O 148 pm, 144 kJ/mol) และ O₂ (O=O 121 pm, 498 kJ/mol)</li></ol>",
 "<h2>วงรอบที่ 2 (โหมดเรโซแนนซ์)</h2><ol><li><b>ข้อ 3.2:</b> O₃ CO₃²⁻ NO₃⁻ เบนซีน ก่อนกด ① เกมแสดงโครงสร้างลิวอิสแบบเดียว กด ① เกมสลับแสดงโครงสร้างทุกแบบ กด ② ซ้อนเป็นลูกผสม (เส้นประคือพันธะที่อิเล็กตรอนกระจาย) พร้อมความยาวพันธะ 128 129 124 และ 139 pm</li>",
@@ -558,7 +561,7 @@ th:["<h2>ก่อนสอน</h2><ol><li>ฝากไฟล์เกมไว�
 "<li><b>บัตรข้อมูล:</b> N₂ + O₂ → 2NO ได้ +183 kJ</li><li><b>ข้อ 4.2 ครูฉาย:</b> เปิดลิงก์การเผาไหม้มีเทน (เริ่มที่การสลายพันธะ) วางคู่กับเปลวไฟเตาแก๊สชีวภาพ</li><li><b>ข้อ 5.1:</b> การเผาไหม้โพรเพน −2,034 kJ</li></ol>",
 "<h2>ด่านท้าทายและรหัสผล</h2><p>อักษรนำ U = วัดพันธะ V = เรโซแนนซ์ W = สลายและสร้างพันธะ ความยาวและพลังงานพันธะทุกค่าในด่านท้าทายมาจากตาราง ก.1 และ ก.2 ของแผนที่ 7</p>",
 "<table><tr><th>ด่าน</th><th>ข้อ</th></tr><tr><td>วัดพันธะ</td><td>N≡N/C≡C (สั้นกว่า), O=O/C=C, N≡N/C≡C (แข็งแรงกว่า), N≡N/C=C, N≡N/O=O, O–O/C–C/C=C</td></tr><tr><td>เรโซแนนซ์</td><td>CH₃COO⁻ HCO₃⁻ HCOO⁻ CH₃COOH CH₂O O₂ (SO₂ และ NO₂⁻ อยู่ในใบกิจกรรมที่ 7.2 จึงไม่ใช้ซ้ำ)</td></tr><tr><td>สลายและสร้างพันธะ</td><td>2H₂O₂ → 2H₂O + O₂, 2NH₃ → N₂ + 3H₂, H₂ + O₂ → H₂O₂, 2HCl → H₂ + Cl₂, C₂H₆ → C₂H₄ + H₂, 2NO → N₂ + O₂</td></tr></table>"].join(""),
-en:["<h2>Overview</h2><p>Cycle 1 (measure): ethane, ethene, ethyne and N₂; tap the outlined bond, then ② energy (table A.1). Card 1: methanol vs ethane. 5.1: H₂O₂ and O₂.</p>",
+en:["<h2>Before class</h2><ol>"+HOST_EN+"</ol><h2>Overview</h2><p>Cycle 1 (measure): ethane, ethene, ethyne and N₂; tap the outlined bond, then ② energy (table A.1). Card 1: methanol vs ethane. 5.1: H₂O₂ and O₂.</p>",
 "<p>Cycle 2 (resonance): O₃, CO₃²⁻, NO₃⁻, benzene; ① cycles through the structures, ② shows the hybrid with lengths.</p><p>Hour 3 (break and make): four reactions from table A.2; card: N₂ + O₂ → 2NO (+183 kJ); 5.1: propane (−2,034 kJ).</p>",
 "<h2>Challenges</h2><p>Code letters: U = measure, V = resonance, W = break and make.</p>"].join("")
 };
@@ -588,8 +591,8 @@ var BASE_STR = {
   item:"ข้อ/สาร", nWrong:"จำนวนผู้ตอบผิด", pct:"ร้อยละ", valid:"รหัสที่อ่านได้", invalid:"รหัสที่อ่านไม่ได้", otherGame:"รหัสของเกมอื่น",
   hot:"เกินร้อยละ 30 · ใช้เป็นคำถามข้อสุดท้ายของกิจวัตรที่ 1",
   formLabel:"ลิงก์แบบฟอร์มรับรหัสผล (บันทึกไว้ในเครื่องนี้เท่านั้น)", saveForm:"บันทึก",
-  formNote:"เครื่องของนักเรียนไม่ได้รับค่านี้ ให้ครูใส่ลิงก์แบบฟอร์มในบรรทัด var FORM_URL = \"\" ที่ต้นสคริปต์ของไฟล์เกมก่อนฝากเว็บ หรือต่อท้ายลิงก์เกมด้วย ?form=ลิงก์แบบฟอร์ม",
-  dlGame:"ดาวน์โหลดไฟล์เกม (HTML) สำหรับฝากเว็บ", dlNote:"กล้อง AR ทำงานเมื่อเปิดเกมจากเว็บ https ของครูเอง เช่น Netlify Drop หน้านี้ใน Claude เปิดกล้องไม่ได้",
+  formNote:"ลิงก์แบบฟอร์มของชุดเกมนี้ใส่ไว้ในบรรทัด var FORM_URL ของทุกไฟล์แล้ว นักเรียนเห็นปุ่มส่งรหัสผลได้ทันที ช่องด้านบนใช้ทดลองลิงก์อื่นเฉพาะเครื่องนี้ ถ้าจะเปลี่ยนแบบฟอร์มให้ทุกคน ให้แก้บรรทัด FORM_URL ในทุกไฟล์แล้วอัปโหลดทับใน repo",
+  dlGame:"ดาวน์โหลดไฟล์เกม (HTML) สำหรับฝากเว็บ", dlNote:"กล้อง AR ทำงานเมื่อเปิดเกมจากเว็บ https ของชุดเกม (mantana-website.github.io/chemical-bonding-classroom) ถ้าเปิดไฟล์จากเครื่องโดยตรงหรือเปิดในหน้า Claude กล้องจะไม่ทำงาน",
   copyLink:"คัดลอก", openNow:"เปิด", revealShort:"แสดงผลทันที ไม่ต้องทำนายซ้ำ",
   noGame12:"ขั้นที่ 1 และขั้นที่ 2 ไม่ใช้เกม ตามแผน รายการด้านล่างเริ่มจากขั้นที่ 3 และแสดงทุกข้อตามลำดับในแผน ข้อที่ไม่ใช้เกมแสดงเป็นตัวอักษรสีจาง",
   startCh:"เริ่มด่านท้าทาย", lkStudents:"ลิงก์สำหรับนักเรียน (นำไปทำ QR code)",
@@ -618,8 +621,8 @@ var BASE_STR = {
   item:"Item", nWrong:"Students wrong", pct:"Percent", valid:"Codes read", invalid:"Unreadable codes", otherGame:"Codes from other games",
   hot:"Over 30% · use as the last question of Routine 1",
   formLabel:"Result form link (saved on this device only)", saveForm:"Save",
-  formNote:"Students' devices do not receive this. Put the form link in the line var FORM_URL = \"\" at the top of the game's script before hosting, or add ?form=<link> to the game link.",
-  dlGame:"Download the game file (HTML) for hosting", dlNote:"The AR camera works when the game is opened from your own https site, e.g. Netlify Drop. This page inside Claude cannot open the camera.",
+  formNote:"The form link is already set in var FORM_URL in every file, so students see the result-form button. The box above only tries another link on this device; to change the form for everyone, edit FORM_URL in every file and upload them again.",
+  dlGame:"Download the game file (HTML) for hosting", dlNote:"The AR camera works when the game is opened from the set's https site (mantana-website.github.io/chemical-bonding-classroom). It does not work from a file on the computer or inside Claude.",
   copyLink:"Copy", openNow:"Open", revealShort:"Results show at once",
   noGame12:"Steps 1 and 2 do not use the game. The list starts at Step 3 and shows every item in plan order; items without the game appear in grey.",
   startCh:"Start challenge", lkStudents:"Links for students (make QR codes)",
