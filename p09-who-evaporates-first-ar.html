@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ใครระเหยก่อน</title>
+<style>
+:root{
+  --bg:#0f1730; --panel:#172248; --panel2:#1f2d5c; --line:#2d3d73; --ink:#eef2ff; --mute:#a9b4d8;
+  --push:#ff9a3c; --pull:#b48cff; --ok:#45d39a; --bad:#ff6b7a; --amber:#ffc94a; --mag:#ff5fd2;
+  --font:"Noto Sans Thai","Sarabun","Leelawadee UI","Thonburi","Tahoma",system-ui,sans-serif;
+  --big:1;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--font);overflow:hidden}
+body.bigtext{--big:1.35}
+button{font-family:inherit;font-size:calc(15px*var(--big));color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer}
+button:active{transform:scale(.97)}
+button.primary{background:linear-gradient(135deg,#3a63ff,#7b4dff);border:none;font-weight:600}
+button.push{background:linear-gradient(135deg,#ff8a2b,#ffb35c);border:none;color:#2a1500;font-weight:700}
+button.pull{background:linear-gradient(135deg,#8f62ff,#c39bff);border:none;color:#1b0b3a;font-weight:700}
+button.on{background:#2f6bff;border-color:#2f6bff}
+button.ghost{background:transparent}
+button:disabled{opacity:.45}
+input,textarea{font-family:inherit;font-size:15px;background:#0c1328;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
+.screen{position:absolute;inset:0;display:none;overflow:auto}
+.screen.show{display:block}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 40px}
+h1{font-size:30px;margin:6px 0 2px;line-height:1.2}
+h2{font-size:20px;margin:22px 0 8px}
+h3{font-size:16px;margin:16px 0 6px;color:var(--mute);font-weight:600}
+.sub{color:var(--mute);margin:0 0 16px}
+.topbar{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700}
+.chip.push{background:var(--push);color:#2a1500}.chip.pull{background:var(--pull);color:#1b0b3a}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;text-align:left}
+.card b{font-size:19px;display:block;margin-bottom:4px}
+.card span{color:var(--mute);font-size:14px}
+.card.push,.card.pull{background:var(--panel);color:var(--ink);font-weight:400}.card.push{border-left:6px solid var(--push)}.card.pull{border-left:6px solid var(--pull)}
+.card.ch{border-left:6px solid var(--ok)}.card.tc{border-left:6px solid #6fa8ff}
+.credit{margin-top:26px;color:var(--mute);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
+.grid{display:flex;flex-wrap:wrap;gap:8px}
+.grid button{min-width:84px;font-size:calc(18px*var(--big));font-weight:600}
+.cyc{font-size:calc(18px*var(--big));margin:22px 0 8px;color:#fff}.cyc span{font-weight:400;color:var(--mute);font-size:calc(14px*var(--big))}
+.stepblk{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:10px 0 14px}
+.stepblk.s3{border-left-color:#4f8cff}.stepblk.s4{border-left-color:#ffc94a}.stepblk.s5{border-left-color:#45d39a}
+.stephead{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+.stepchip{font-size:calc(13px*var(--big));font-weight:700;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.workchip{font-size:calc(12px*var(--big));color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.item{margin:8px 0 10px}.item.nogame{margin:4px 0}.item.nogame .itlab{color:var(--mute);margin-bottom:0}.item.nogame .grid{display:none}.itlab{font-size:calc(14px*var(--big));margin-bottom:6px;color:#dfe6ff}
+button.cmpbtn{background:#1b3a7a;border-color:#4f8cff;font-size:calc(14px*var(--big))!important}
+.note{color:var(--mute);font-size:14px}
+/* viewer */
+#viewer{overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#24356e 0%,#0f1730 70%)}
+#viewer.cam{background:#000}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.vtop{position:absolute;left:0;right:0;top:0;padding:10px 10px 0;display:flex;gap:6px;align-items:center;z-index:5;padding-top:max(10px,env(safe-area-inset-top))}
+.vtop .ttl{flex:1;font-weight:700;font-size:calc(19px*var(--big));text-shadow:0 1px 3px #000;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.vtop button{padding:8px 11px;background:rgba(23,34,72,.85)}
+.vstep{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 48px);max-width:calc(100% - 20px);z-index:5;font-size:calc(13px*var(--big));font-weight:600;color:#fff;background:rgba(23,34,72,.88);border:1px solid var(--line);border-left:4px solid var(--push);border-radius:10px;padding:5px 10px;line-height:1.4}
+.vstep.pull{border-left-color:var(--pull)}.vstep:empty{display:none}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:rgba(15,23,48,.92);border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:12px 14px calc(14px + env(safe-area-inset-bottom));max-height:52%;overflow:auto;backdrop-filter:blur(6px)}
+.sheet .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.sheet .info{font-size:calc(16px*var(--big));line-height:1.5}
+.sheet .info b{color:#fff}
+.hint{color:var(--mute);font-size:calc(14px*var(--big))}
+.verdict{font-size:calc(22px*var(--big));font-weight:800;margin:4px 0}
+.verdict.polar{color:var(--mag)}.verdict.nonpolar{color:var(--ok)}
+.toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:#000c;border:1px solid var(--line);padding:10px 14px;border-radius:12px;z-index:9;font-size:14px;max-width:90%;display:none;text-align:center}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.opts button{text-align:left}
+.opts button.right{background:#1d5c45;border-color:var(--ok)}
+.opts button.wrongpick{background:#6b2230;border-color:var(--bad)}
+.fb{border-radius:12px;padding:10px 12px;margin:8px 0;font-size:calc(15px*var(--big));line-height:1.5}
+.fb.ok{background:#123d30;border:1px solid var(--ok)}.fb.no{background:#3d1520;border:1px solid var(--bad)}
+.code{font-size:40px;font-weight:800;letter-spacing:4px;background:#0c1328;border:2px dashed var(--ok);border-radius:14px;padding:10px 18px;display:inline-block;margin:6px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+th{background:var(--panel2)}
+tr.hot td{background:#4a1d26}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.guide p,.guide li{line-height:1.6}
+.guide ol{padding-left:20px}
+.linkrow{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.linkrow code{background:#0c1328;padding:6px 8px;border-radius:8px;font-size:13px;word-break:break-all;flex:1;min-width:200px}
+#certImg{max-width:100%;border-radius:10px;margin-top:10px;display:none}
+.enchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.enchips span{background:#0c1328;border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-size:13px}
+.progress{font-weight:700;color:var(--ok)}
+.card.mode{border-left:6px solid var(--mc,#6fa8ff)}
+.chip.mode{background:var(--mc,#6fa8ff);color:#10132a}
+button.mbtn{background:var(--mc,#3a63ff);border:none;color:#10132a;font-weight:700}
+.vstep{border-left-color:var(--mc,#ff9a3c)!important}
+.ctrlrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.ctrlrow .lbl{min-width:70px;font-weight:700}
+.cnt{font-size:22px;font-weight:800;min-width:34px;text-align:center}
+.meter{height:14px;border-radius:8px;background:#0c1328;border:1px solid var(--line);position:relative;overflow:hidden;flex:1;min-width:160px}
+.meter i{position:absolute;top:0;bottom:0;background:var(--amber)}
+.okline{color:var(--ok);font-weight:700}.badline{color:var(--bad);font-weight:700}
+.pickopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:6px 0}
+.pickopts button{text-align:left}
+.pickopts button.right{background:#1d5c45;border-color:var(--ok)}
+.pickopts button.wrongpick{background:#6b2230;border-color:var(--bad)}
+.kv{display:inline-block;background:#0c1328;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 2px 0;font-size:calc(14px*var(--big))}
+
+</style>
+</head>
+<body>
+<div id="home" class="screen"><div class="wrap">
+  <div class="topbar"><span class="chip" style="background:#2f6bff;color:#fff">AR</span><button id="langBtn1" class="ghost" onclick="toggleLang()">EN</button></div>
+  <h1 data-t="title"></h1><p class="sub" data-t="subtitle"></p>
+  <div class="cards" id="homeCards"></div>
+  <div class="credit"><span data-t="creditLabel"></span> <b data-t="creditName"></b></div>
+</div></div>
+<div id="picker" class="screen"><div class="wrap">
+  <div class="topbar"><button onclick="go('home')" data-t="home"></button><span id="pickChip" class="chip mode"></span><button class="ghost" onclick="toggleLang()" id="langBtn2">EN</button></div>
+  <h1 id="pickTitle"></h1><p class="sub" id="pickSub"></p><div id="pickGroups"></div>
+</div></div>
+<div id="viewer" class="screen">
+  <video id="cam" playsinline muted autoplay></video>
+  <canvas id="cv"></canvas>
+  <div class="vtop">
+    <button onclick="viewerBack()">←</button><div class="ttl" id="vTitle"></div>
+    <button id="arBtn" onclick="toggleCam()">AR</button><button id="bigBtn" onclick="toggleBig()">Aa</button>
+    <button class="ghost" onclick="toggleLang()" id="langBtn3">EN</button>
+  </div>
+  <div class="vstep" id="vStep"></div><div class="toast" id="toast"></div><div class="sheet" id="sheet"></div>
+</div>
+<div id="summary" class="screen"><div class="wrap" id="sumWrap"></div></div>
+<div id="teacher" class="screen"><div class="wrap">
+  <div class="topbar"><button onclick="go('home')" data-t="home"></button><button class="ghost" onclick="toggleLang()" id="langBtn4">EN</button></div>
+  <h1 data-t="teacherTitle"></h1>
+  <div class="tabs">
+    <button onclick="tTab('guide')" id="tb-guide" data-t="tabGuide"></button><button onclick="tTab('links')" id="tb-links" data-t="tabLinks"></button>
+    <button onclick="tTab('decode')" id="tb-decode" data-t="tabDecode"></button><button onclick="tTab('form')" id="tb-form" data-t="tabForm"></button>
+  </div>
+  <div id="tBody"></div>
+  <div class="credit"><span data-t="creditLabel"></span> <b data-t="creditName"></b></div>
+</div></div>
+<script>
+/* =====================================================================
+   ใครระเหยก่อน — เกม AR แผนที่ 9 แรงยึดเหนี่ยวระหว่างโมเลกุล พันธะไฮโดรเจน และสารโคเวเลนต์โครงร่างตาข่าย
+   ผู้สร้างและพัฒนาเกม: นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม
+   ใส่ลิงก์แบบฟอร์มรับรหัสผลของห้องไว้ตรงนี้ก่อนฝากเว็บ (ถ้ามี)
+   ===================================================================== */
+var FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdkG9ndvI_hNgYcYLN0nfKMMLuEmoTfnBKGgpID3cYzljlWVA/viewform";
+// ---------- ไลบรารีเคมีที่ใช้ร่วมกัน ----------
+var D2R=Math.PI/180;
+var EL = {
+  H:{c:"#f4f4f4",tc:"#222",r:.30,z:1}, He:{c:"#d9ffff",tc:"#222",r:.32,z:2}, Li:{c:"#cc80ff",tc:"#222",r:.42,z:3}, Be:{c:"#c6ff3d",tc:"#222",r:.40,z:4},
+  B:{c:"#ffb0a8",tc:"#222",r:.42,z:5}, C:{c:"#4b4f58",tc:"#fff",r:.42,z:6}, N:{c:"#3f63ff",tc:"#fff",r:.40,z:7}, O:{c:"#ff3b30",tc:"#fff",r:.40,z:8},
+  F:{c:"#8fe055",tc:"#222",r:.37,z:9}, Ne:{c:"#b3e3f5",tc:"#222",r:.36,z:10}, Na:{c:"#ab5cf2",tc:"#fff",r:.50,z:11}, Mg:{c:"#8aff00",tc:"#222",r:.48,z:12},
+  Al:{c:"#bfa6a6",tc:"#222",r:.48,z:13}, Si:{c:"#f0c8a0",tc:"#222",r:.50,z:14}, P:{c:"#ff8a00",tc:"#222",r:.50,z:15}, S:{c:"#ffd21f",tc:"#222",r:.50,z:16},
+  Cl:{c:"#2fe04a",tc:"#222",r:.48,z:17}, Ar:{c:"#80d1e3",tc:"#222",r:.46,z:18}, K:{c:"#8f40d4",tc:"#fff",r:.56,z:19}, Ca:{c:"#3dff8a",tc:"#222",r:.54,z:20},
+  Fe:{c:"#e06633",tc:"#fff",r:.50,z:26}, Cu:{c:"#c88033",tc:"#fff",r:.50,z:29}, Zn:{c:"#7d80b0",tc:"#fff",r:.50,z:30}, Br:{c:"#a62929",tc:"#fff",r:.54,z:35},
+  Rb:{c:"#702eb0",tc:"#fff",r:.60,z:37}, Sr:{c:"#00ff00",tc:"#222",r:.58,z:38}, Ag:{c:"#c0c0c0",tc:"#222",r:.52,z:47}, Sn:{c:"#668080",tc:"#fff",r:.54,z:50},
+  I:{c:"#940094",tc:"#fff",r:.60,z:53}, Xe:{c:"#429eb0",tc:"#fff",r:.58,z:54}, Cs:{c:"#57178f",tc:"#fff",r:.64,z:55}, Ba:{c:"#00c900",tc:"#222",r:.62,z:56},
+  Pb:{c:"#575961",tc:"#fff",r:.56,z:82}, Se:{c:"#ffa100",tc:"#222",r:.54,z:34}, Te:{c:"#d47a00",tc:"#fff",r:.58,z:52}, Au:{c:"#ffd123",tc:"#222",r:.52,z:79}, Ge:{c:"#668f8f",tc:"#fff",r:.50,z:32}
+};
+function elc(e){ return (EL[e]||{c:"#9aa"}).c; }
+function eltc(e){ return (EL[e]||{tc:"#fff"}).tc; }
+function elr(e){ return (EL[e]||{r:.45}).r; }
+var SUP={"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹","+":"⁺","-":"⁻"};
+var SUB={"0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉"};
+function chg(q){ if(!q) return ""; var a=Math.abs(q); return (a>1?String(a).split("").map(function(c){return SUP[c];}).join(""):"")+(q>0?"⁺":"⁻"); }
+function sub(n){ return n>1?String(n).split("").map(function(c){return SUB[c];}).join(""):""; }
+function ionTxt(el,q){ return el+chg(q); }
+
+// ---------- อะตอมแบบชั้นพลังงาน (ป้ายลอย) ----------
+// cx,cy หน่วยแบบจำลอง; cfg เช่น [2,8,1]; o: {lose:n, gain:n, u:0..1, scale, charge, label, protons, evCol}
+function bohr(R,cx,cy,el,cfg,o){
+  o=o||{}; var s=(o.scale||1)*R.sc, C=R.B(cx,cy), n=cfg.length, rr=function(k){return s*(0.42+0.36*k);};
+  var u=o.u||0, lose=o.lose||0, gain=o.gain||0, col=o.ecol||"#ffe37a", gcol=o.gcol||"#7cf0ff";
+  ctx.save();
+  // ชั้นพลังงาน
+  for(var k=0;k<n;k++){
+    var fade=(lose&&k===n-1&&cfg[k]===lose)?1-0.75*u:1;
+    ctx.strokeStyle="rgba(170,190,255,"+(0.45*fade)+")"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(C.x,C.y,rr(k+1),0,7); ctx.stroke();
+  }
+  if(gain&&cfg[n-1]+gain>8){} // ไม่ใช้
+  // นิวเคลียส
+  var g=ctx.createRadialGradient(C.x-s*0.12,C.y-s*0.12,s*0.05,C.x,C.y,s*0.36);
+  g.addColorStop(0,shade(elc(el),0.5)); g.addColorStop(1,shade(elc(el),-0.3)); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(C.x,C.y,s*0.36,0,7); ctx.fill();
+  txt(C.x,C.y-s*0.08,el,eltc(el),Math.max(11,s*0.24)/bigK());
+  if(o.protons) txt(C.x,C.y+s*0.16,o.protons+"p⁺",eltc(el),Math.max(9,s*0.15)/bigK(),"center",600);
+  // อิเล็กตรอน
+  var t0=(o.spin===false)?0:Date.now()/4000;
+  for(var k=0;k<n;k++){
+    var cnt=cfg[k], r=rr(k+1);
+    for(var i=0;i<cnt;i++){
+      var a=t0*(1+0.15*k)+i*2*Math.PI/cnt+(k*0.4), x=C.x+r*Math.cos(a), y=C.y+r*Math.sin(a), al=1, cc=col;
+      if(k===n-1&&lose&&i<lose){ var d=r+u*s*2.2; x=C.x+d*Math.cos(a); y=C.y+d*Math.sin(a); al=1-u*0.45; }
+      ctx.globalAlpha=al; dot(x,y,Math.max(2.5,s*0.07),cc); ctx.globalAlpha=1;
+    }
+  }
+  if(gain){
+    var k2=n-1, r2=rr(k2+1), tot=cfg[k2]+gain;
+    for(var j=0;j<gain;j++){
+      var a2=t0*(1+0.15*k2)+(cfg[k2]+j)*2*Math.PI/tot+(k2*0.4), d2=r2+(1-u)*s*2.2;
+      dot(C.x+d2*Math.cos(a2),C.y+d2*Math.sin(a2),Math.max(2.5,s*0.07),gcol);
+    }
+  }
+  if(o.label) tag(C.x,C.y+rr(n)+s*0.35,o.label,o.labelCol||"#fff",15);
+  ctx.restore();
+  return {x:C.x,y:C.y,r:rr(n)};
+}
+
+// ---------- โครงสร้างลิวอิส (ป้ายลอย) ----------
+// S={atoms:[{el,x,y,lp:[deg...],one:[deg...],q,col}], bonds:[{a,b,o,coord:i,dash}]}
+// o: {scale, dots:true แสดงคู่ร่วมเป็นจุด, ecol:fn(atomIndex)->สี, hl:{atom:i}, count:true}
+function lewis(R,cx,cy,Sx,o){
+  o=o||{}; var s=(o.scale||1)*R.sc, C=R.B(cx,cy), P=function(a){return {x:C.x+a.x*s,y:C.y-a.y*s};};
+  var fs=Math.max(13,s*0.42), er=Math.max(2.4,s*0.06);
+  ctx.save();
+  var ecol=function(i){ return o.ecol?o.ecol(i):"#ffe37a"; };
+  (Sx.bonds||[]).forEach(function(b){
+    var A=P(Sx.atoms[b.a]),B=P(Sx.atoms[b.b]),dx=B.x-A.x,dy=B.y-A.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,nx=-uy,ny=ux,tr=s*0.3;
+    var ax=A.x+ux*tr,ay=A.y+uy*tr,bx=B.x-ux*tr,by=B.y-uy*tr, ord=b.o||1, offs=ord===1?[0]:(ord===2||ord===1.5)?[-1,1]:[-1.6,0,1.6];
+    if(b.hl){ ctx.strokeStyle="rgba(255,95,210,.35)"; ctx.lineWidth=s*0.34; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke(); }
+    offs.forEach(function(k,idx){
+      var ox=nx*k*s*0.07,oy=ny*k*s*0.07;
+      if(o.dots){ // คู่อิเล็กตรอนร่วมเป็นจุด 2 จุด สีตามอะตอมที่มาของอิเล็กตรอน
+        var mx=(ax+bx)/2+ox*1.6,my=(ay+by)/2+oy*1.6, from1=b.coord!==undefined?b.coord:b.a, from2=b.coord!==undefined?b.coord:b.b;
+        dot(mx-ux*er*1.6,my-uy*er*1.6,er,ecol(from1)); dot(mx+ux*er*1.6,my+uy*er*1.6,er,ecol(from2));
+      }else{
+        ctx.strokeStyle=b.col||"#e6ecff"; ctx.lineWidth=Math.max(2,s*0.05); if((b.dash||ord===1.5)&&idx===offs.length-1) ctx.setLineDash([s*0.08,s*0.07]); else ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(ax+ox,ay+oy); ctx.lineTo(bx+ox,by+oy); ctx.stroke(); ctx.setLineDash([]);
+      }
+    });
+    if(b.coord!==undefined&&o.arrow!==false&&!o.dots){ var from=b.coord===b.a; var sx=from?ax:bx,sy=from?ay:by,ex=from?bx:ax,ey=from?by:ay;
+      arrow2(sx+(ex-sx)*0.15,sy+(ey-sy)*0.15,sx+(ex-sx)*0.85,sy+(ey-sy)*0.85,"#ff5fd2",Math.max(2,s*0.04),s*0.14); }
+    if(b.len) tag((ax+bx)/2+nx*s*0.32,(ay+by)/2+ny*s*0.32,b.len,"#7cf0ff",12);
+  });
+  Sx.atoms.forEach(function(a,i){
+    var p=P(a), hl=o.hl&&o.hl.atom===i;
+    if(hl||a.ring){ ctx.strokeStyle=a.ring||"#7cf0ff"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(p.x,p.y,s*0.62,0,7); ctx.stroke(); }
+    ctx.fillStyle=a.col||"#ffffff"; ctx.font="800 "+Math.round(fs)+"px "+FONT(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(a.el,p.x,p.y+1);
+    (a.lp||[]).forEach(function(d){ var r=d*D2R, cx2=p.x+Math.cos(r)*s*0.36, cy2=p.y-Math.sin(r)*s*0.36, px=-Math.sin(r)*er*1.6, py=-Math.cos(r)*er*1.6;
+      dot(cx2+px,cy2+py,er,ecol(i)); dot(cx2-px,cy2-py,er,ecol(i)); });
+    (a.one||[]).forEach(function(d){ var r=d*D2R; dot(p.x+Math.cos(r)*s*0.36,p.y-Math.sin(r)*s*0.36,er,a.oneCol||ecol(i)); });
+    if(a.q) tag(p.x+s*0.38,p.y-s*0.38,(a.q>0?"+":"−")+(Math.abs(a.q)>1?Math.abs(a.q):""),"#ffb0b0",12);
+    if(a.badge) tag(p.x,p.y+s*0.66,a.badge,a.badgeCol||"#7cf0ff",13);
+  });
+  if(Sx.br){ // วงเล็บไอออน
+    var xs=Sx.atoms.map(function(a){return a.x;}),ys=Sx.atoms.map(function(a){return a.y;});
+    var x0=C.x+(Math.min.apply(0,xs)-0.75)*s,x1=C.x+(Math.max.apply(0,xs)+0.75)*s,y0=C.y-(Math.max.apply(0,ys)+0.75)*s,y1=C.y-(Math.min.apply(0,ys)-0.75)*s;
+    ctx.strokeStyle="#cfd8ff";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0+8,y0);ctx.lineTo(x0,y0);ctx.lineTo(x0,y1);ctx.lineTo(x0+8,y1);ctx.moveTo(x1-8,y0);ctx.lineTo(x1,y0);ctx.lineTo(x1,y1);ctx.lineTo(x1-8,y1);ctx.stroke();
+    txt(x1+10,y0+4,Sx.br,"#ffb0b0",16,"left");
+  }
+  ctx.restore();
+}
+
+// ---------- โมเลกุลแบบลูกบอลและแท่ง ----------
+// m={a:[[el,x,y,z],...], b:[[i,j,ord],...]}  o:{scale, alpha, hl:{bond:k}, labels}
+function mol3(R,m,o){
+  o=o||{}; var k=o.scale||1, off=o.off||[0,0,0], pos=m.a.map(function(a){return vadd(vmul([a[1],a[2],a[3]],k),off);});
+  (m.b||[]).forEach(function(b,i){ var c1=elc(m.a[b[0]][0]),c2=elc(m.a[b[1]][0]);
+    if(o.hl&&o.hl.bond===i){ R.line(pos[b[0]],pos[b[1]],"#7cf0ff",Math.max(6,R.sc*0.32),null,0.55); }
+    R.bond(pos[b[0]],pos[b[1]],c1,c2,b[2]||1,(o.bw||0.15)*k);
+    if(o.bondHit) { var A=R.P(pos[b[0]]),B=R.P(pos[b[1]]); R.hit((A.x+B.x)/2,(A.y+B.y)/2,Math.max(22,R.sc*0.4),{bond:i}); } });
+  m.a.forEach(function(a,i){ R.ball(pos[i],elr(a[0])*k*(o.rk||1),elc(a[0]),o.noLabel?"":a[0],{tc:eltc(a[0]),alpha:o.alpha,hit:o.atomHit?{atom:i}:null}); });
+  return pos;
+}
+// รูปทรงพื้นฐาน
+var GEO={
+  tet:function(){var y=-1/3,r=Math.sqrt(8/9),b=[[0,1,0]];[90,210,330].forEach(function(a){b.push([r*Math.cos(a*D2R),y,r*Math.sin(a*D2R)]);});return b;},
+  trig:function(){return [[0,1,0],[Math.cos(210*D2R),Math.sin(210*D2R),0],[Math.cos(330*D2R),Math.sin(330*D2R),0]];},
+  pyr:function(th){var c2=(Math.cos(th*D2R)+0.5)/1.5,ca=Math.sqrt(c2),sa=Math.sqrt(1-c2),b=[];[90,210,330].forEach(function(a){b.push([sa*Math.cos(a*D2R),-ca,sa*Math.sin(a*D2R)]);});return b;},
+  bent:function(th){var h=th/2*D2R;return [[-Math.sin(h),-Math.cos(h),0],[Math.sin(h),-Math.cos(h),0]];},
+  tbp:function(){var b=[[0,1,0],[0,-1,0]];[90,210,330].forEach(function(a){b.push([Math.cos(a*D2R),0,Math.sin(a*D2R)]);});return b;},
+  oct:function(){return [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];},
+  lin:function(){return [[-1,0,0],[1,0,0]];}
+};
+// สร้างโมเลกุลจากอะตอมกลาง: center, ligands, ทิศ, ความยาว, อันดับพันธะ
+function AXn(c,ligs,dirs,len,ords){
+  var m={a:[[c,0,0,0]],b:[]};
+  ligs.forEach(function(l,i){var L0=(typeof len==="number")?len:len[i],d=dirs[i]; var LL=(l==="H")?L0*0.72:L0; m.a.push([l,d[0]*LL,d[1]*LL,d[2]*LL]); m.b.push([0,i+1,ords?ords[i]:1]);});
+  return m;
+}
+// ---------- แลตทิซ ----------
+function rocksalt(n,cat,an){ var a=[]; for(var i=0;i<n;i++)for(var j=0;j<n;j++)for(var k=0;k<n;k++){ var c=(n-1)/2; a.push({p:[i-c,j-c,k-c],t:((i+j+k)%2===0)?0:1}); } return a; }
+function csclLat(n){ var a=[]; var c=(n-1)/2; for(var i=0;i<n;i++)for(var j=0;j<n;j++)for(var k=0;k<n;k++){ a.push({p:[i-c,j-c,k-c],t:1}); if(i<n-1&&j<n-1&&k<n-1) a.push({p:[i-c+0.5,j-c+0.5,k-c+0.5],t:0}); } return a; }
+function fluoriteLat(){ // เซลล์หน่วย fcc ของไอออนบวก + ไอออนลบในช่องทรงสี่หน้า 8 ตำแหน่ง
+  var a=[],h=1; [[0,0,0],[1,0,0],[0,1,0],[0,0,1],[1,1,0],[1,0,1],[0,1,1],[1,1,1],[.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]].forEach(function(p){a.push({p:[(p[0]-.5)*2*h,(p[1]-.5)*2*h,(p[2]-.5)*2*h],t:0});});
+  [[.25,.25,.25],[.75,.25,.25],[.25,.75,.25],[.25,.25,.75],[.75,.75,.25],[.75,.25,.75],[.25,.75,.75],[.75,.75,.75]].forEach(function(p){a.push({p:[(p[0]-.5)*2*h,(p[1]-.5)*2*h,(p[2]-.5)*2*h],t:1});});
+  return a;
+}
+function neighbors(list,i,tol){ var p=list[i].p,ds=[]; list.forEach(function(q,j){ if(j!==i&&q.t!==list[i].t) ds.push([vlen(vsub(q.p,p)),j]); });
+  if(!ds.length) return []; ds.sort(function(a,b){return a[0]-b[0];}); var d0=ds[0][0]; return ds.filter(function(d){return d[0]<d0*(tol||1.08);}).map(function(d){return d[1];}); }
+
+// ---------- แถบพลังงาน (ป้ายลอย) ----------
+function ebar(x,yBase,h,w,col,label,val){ // h>0 ขึ้น (ดูด), h<0 ลง (คาย)
+  ctx.save(); var y=h>0?yBase-h:yBase; var g=ctx.createLinearGradient(x,y,x+w,y); g.addColorStop(0,shade(col,0.25)); g.addColorStop(1,shade(col,-0.25));
+  ctx.fillStyle=g; roundRect(x,y,w,Math.max(2,Math.abs(h)),4); ctx.fill(); ctx.restore();
+  if(val) tag(x+w/2,h>0?y-12:y+Math.abs(h)+12,val,"#fff",12);
+  if(label) txt(x+w/2,yBase+(h>0?14:-14),label,"#cfe0ff",11);
+}
+
+//@title ใครระเหยก่อน
+//@head เกม AR แผนที่ 9 แรงยึดเหนี่ยวระหว่างโมเลกุล พันธะไฮโดรเจน และสารโคเวเลนต์โครงร่างตาข่าย
+//@out p09-who-evaporates-first-ar.html
+var GAME = {id:"p9", file:"p09-who-evaporates-first-ar.html", order:["imf","hb","net"]};
+GAME.str = {
+ th:{title:"ใครระเหยก่อน", subtitle:"เกม AR แผนที่ 9 แรงยึดเหนี่ยวระหว่างโมเลกุลและโครงร่างตาข่าย · เคมี 1 ม.4", bp:"จุดเดือด", mass:"มวลโมเลกุล"},
+ en:{title:"Who Evaporates First?", subtitle:"AR game for Lesson Plan 9: Intermolecular Forces and Network Covalent Solids · Chemistry 1, Grade 10", bp:"Boiling point", mass:"Molar mass"}
+};
+function anim(S,ms){ return ease((now()-S.t0)/(ms||1500)); }
+function lin(S,ms){ return clamp((now()-S.t0)/(ms||1500),0,1); }
+function fr(v){ return v-Math.floor(v); }
+function hsh(i,k){ return fr(Math.sin(i*12.9898+k*78.233)*43758.5453); }
+// ---------- แม่แบบโมเลกุล 2 มิติ (หน่วยแบบจำลอง) ----------
+var T2={
+  F2:{a:[["F",-.19,0],["F",.19,0]],b:[[0,1]]}, Cl2:{a:[["Cl",-.25,0],["Cl",.25,0]],b:[[0,1]]}, Br2:{a:[["Br",-.28,0],["Br",.28,0]],b:[[0,1]]}, I2:{a:[["I",-.33,0],["I",.33,0]],b:[[0,1]]},
+  N2:{a:[["N",-.17,0],["N",.17,0]],b:[[0,1,3]]}, O2:{a:[["O",-.17,0],["O",.17,0]],b:[[0,1,2]]}, Ne:{a:[["Ne",0,0]],b:[]}, Ar:{a:[["Ar",0,0]],b:[]},
+  CH4:{a:[["C",0,0],["H",-.25,0],["H",.25,0],["H",0,.25],["H",0,-.25]],b:[[0,1],[0,2],[0,3],[0,4]]}, SiH4:{a:[["Si",0,0],["H",-.32,0],["H",.32,0],["H",0,.32],["H",0,-.32]],b:[[0,1],[0,2],[0,3],[0,4]]},
+  HCl:{a:[["Cl",.08,0],["H",-.26,0]],b:[[0,1]],pol:1}, HBr:{a:[["Br",.08,0],["H",-.3,0]],b:[[0,1]],pol:1}, HF:{a:[["F",.06,0],["H",-.22,0]],b:[[0,1]],pol:1,hb:[1],acc:[0]},
+  H2O:{a:[["O",0,0],["H",-.22,-.17],["H",.22,-.17]],b:[[0,1],[0,2]],pol:1,hb:[1,2],acc:[0]}, H2S:{a:[["S",0,0],["H",-.27,-.2],["H",.27,-.2]],b:[[0,1],[0,2]],pol:1}, H2Se:{a:[["Se",0,0],["H",-.3,-.22],["H",.3,-.22]],b:[[0,1],[0,2]],pol:1}, H2Te:{a:[["Te",0,0],["H",-.33,-.24],["H",.33,-.24]],b:[[0,1],[0,2]],pol:1},
+  CO2:{a:[["C",0,0],["O",-.3,0],["O",.3,0]],b:[[0,1,2],[0,2,2]]}, CS2:{a:[["C",0,0],["S",-.36,0],["S",.36,0]],b:[[0,1,2],[0,2,2]]},
+  C3H8:{a:[["C",-.3,-.06],["C",0,.08],["C",.3,-.06]],b:[[0,1],[1,2]],lab:"C₃H₈"}, C4H10:{a:[["C",-.42,-.06],["C",-.14,.08],["C",.14,-.06],["C",.42,.08]],b:[[0,1],[1,2],[2,3]],lab:"C₄H₁₀"},
+  C5H12:{a:[["C",-.56,-.06],["C",-.28,.08],["C",0,-.06],["C",.28,.08],["C",.56,-.06]],b:[[0,1],[1,2],[2,3],[3,4]],lab:"C₅H₁₂"},
+  CH3CHO:{a:[["C",-.22,0],["C",.08,.06],["O",.3,-.14]],b:[[0,1],[1,2,2]],pol:1,lab:"CH₃CHO"}, ACE:{a:[["C",-.3,-.05],["C",0,.07],["C",.3,-.05],["O",0,.36]],b:[[0,1],[1,2],[1,3,2]],pol:1,lab:"(CH₃)₂CO"},
+  EtOH:{a:[["C",-.32,0],["C",-.04,.1],["O",.22,-.05],["H",.42,.08]],b:[[0,1],[1,2],[2,3]],pol:1,hb:[3],acc:[2],lab:"C₂H₅OH"},
+  DME:{a:[["C",-.3,-.04],["O",0,.1],["C",.3,-.04]],b:[[0,1],[1,2]],pol:1,acc:[1],lab:"CH₃OCH₃"},
+  OIL:{a:[0,1,2,3,4,5,6,7].map(function(i){return ["C",-.63+i*.18,(i%2?.06:-.06)];}),b:[0,1,2,3,4,5,6].map(function(i){return [i,i+1];}),lab:"น้ำมัน"},
+  MeOH:{a:[["C",-.18,0],["O",.12,.06],["H",.32,-.08]],b:[[0,1],[1,2]],pol:1,hb:[2],acc:[1],lab:"CH₃OH"}, MeF:{a:[["C",-.14,0],["F",.16,0]],b:[[0,1]],pol:1,lab:"CH₃F"},
+  HCHO:{a:[["C",-.1,0],["O",.18,0],["H",-.3,.16],["H",-.3,-.16]],b:[[0,1,2],[0,2],[0,3]],pol:1,acc:[1]}, HCOOH:{a:[["C",-.1,0],["O",.1,.22],["O",.14,-.18],["H",.38,-.2],["H",-.34,0]],b:[[0,1,2],[0,2],[2,3],[0,4]],pol:1,hb:[3],acc:[1,2]},
+  PH3:{a:[["P",0,.04],["H",-.28,-.14],["H",.28,-.14],["H",0,-.3]],b:[[0,1],[0,2],[0,3]],pol:1}, N2H4:{a:[["N",-.15,0],["N",.15,0],["H",-.32,.17],["H",-.32,-.17],["H",.32,.17],["H",.32,-.17]],b:[[0,1],[0,2],[0,3],[1,4],[1,5]],pol:1,hb:[2,3,4,5],acc:[0,1]}
+};
+function drawM2(R,key,cx,cy,ang,k,o){ o=o||{}; var T=T2[key],c=Math.cos(ang),s=Math.sin(ang),pts=T.a.map(function(a){ var x=a[1]*k,y=a[2]*k; return R.B(cx+x*c-y*s,cy+x*s+y*c); });
+  ctx.save(); if(o.alpha!==undefined) ctx.globalAlpha=o.alpha;
+  T.b.forEach(function(b){ var A=pts[b[0]],B=pts[b[1]],ord=b[2]||1,dx=B.x-A.x,dy=B.y-A.y,l=Math.hypot(dx,dy)||1,nx=-dy/l*2.5,ny=dx/l*2.5,offs=ord===1?[0]:ord===2?[-1,1]:[-1.5,0,1.5];
+    ctx.strokeStyle="#e6ecff"; ctx.lineWidth=Math.max(2,R.sc*0.035); offs.forEach(function(q){ ctx.beginPath(); ctx.moveTo(A.x+nx*q,A.y+ny*q); ctx.lineTo(B.x+nx*q,B.y+ny*q); ctx.stroke(); }); });
+  T.a.forEach(function(a,i){ var P=pts[i],r=R.sc*k*Math.max(0.07,elr(a[0])*0.32)*(a[0]==="H"?0.8:1); var g=ctx.createRadialGradient(P.x-r*.3,P.y-r*.3,r*.1,P.x,P.y,r); g.addColorStop(0,shade(elc(a[0]),.5)); g.addColorStop(1,shade(elc(a[0]),-.35));
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(P.x,P.y,r,0,7); ctx.fill(); if(r>9&&a[0]!=="C"||r>11) txt(P.x,P.y+1,a[0],eltc(a[0]),Math.max(8,r*0.8)/bigK()); });
+  ctx.restore(); return pts; }
+// ---------- โหมดแรงระหว่างโมเลกุล ----------
+function MQ(id,f,key,mass,bp,pol,extra){ var o={id:id,f:f,key:key,mass:mass,bp:bp,pol:pol}; for(var k in extra||{}) o[k]=extra[k]; return o; }
+GAME.objs={};
+[ MQ("F2","F₂","F2",38,-188,0),MQ("Cl2","Cl₂","Cl2",71,-34,0),MQ("Br2","Br₂","Br2",160,59,0),MQ("I2","I₂","I2",254,184,0),
+  MQ("C3H8","C₃H₈","C3H8",44,-42,0),MQ("CH3CHO","CH₃CHO","CH3CHO",44,20,1),MQ("C4H10","C₄H₁₀","C4H10",58,null,0,{name:M_("บิวเทน","butane"),bpq:M_("เดือดต่ำกว่า เป็นแก๊สที่อุณหภูมิห้อง","lower b.p., a gas at room temperature"),rk:-40}),MQ("ACE","(CH₃)₂CO","ACE",58,null,1,{name:M_("แอซีโทน","acetone"),bpq:M_("เดือดสูงกว่า เป็นของเหลว ระเหยง่าย","higher b.p., a volatile liquid"),rk:40}),
+  // ด่านท้าทาย: จุดเดือดจากใบความรู้ที่ 9.1–9.2 และบัตรที่ 2 ของแผนที่ 9 เท่านั้น
+  MQ("H2Sm","H₂S","H2S",34,-60,1),MQ("H2Se","H₂Se","H2Se",81,-41,1),MQ("H2Te","H₂Te","H2Te",130,-2,1),MQ("DMEm","CH₃OCH₃","DME",46,-24,1,{name:M_("ไดเมทิลอีเทอร์","dimethyl ether")})
+].forEach(function(o){GAME.objs[o.id]=o;});
+function bpS(o){ return o.bp===null||o.bp===undefined?L(o.bpq):fmt(o.bp)+" °C"; }
+function liquidPos(n,i,u,S,k){ // ตำแหน่งโมเลกุลในภาชนะ u = ระดับการเดือด
+  var col=i%4,row=Math.floor(i/4),bx=-1.2+col*0.8+(row%2)*0.3,by=-1.15+row*0.5, tm=Date.now()/1000, esc=hsh(i,3)<u*1.05;
+  var j=(0.04+0.06*u)*Math.sin(tm*(3+hsh(i,1)*3)+i), x=bx+j, y=by+0.04*Math.cos(tm*4+i*2);
+  if(esc){ var t2=fr(tm*0.18+hsh(i,5)); x=-1.4+hsh(i,7)*2.6+0.2*Math.sin(tm+i); y=0.2+t2*1.7; }
+  return {x:x,y:y,a:hsh(i,2)*6.28+(esc?tm*(0.8+hsh(i,4)):0.3*Math.sin(tm+i)),esc:esc}; }
+var IMF={
+  letter:"X", color:"#7be0ff", hr:"h12", noRotate:true,
+  title:M_("โหมดแรงระหว่างโมเลกุล","Intermolecular-forces mode"), short:M_("แรงระหว่างโมเลกุล","Intermolecular forces"),
+  desc:M_("ชั่วโมงที่ 1–2 วงรอบที่ 1 · ขั้นที่ 3 และขั้นที่ 4 (งานกลุ่ม และครูฉายในข้อ 4.3) และข้อ 5.1 (งานเดี่ยว) · ให้ความร้อนแก่ของเหลวเสมือน โมเลกุลแยกจากกันโดยพันธะในโมเลกุลยังอยู่ แตะโมเลกุลดูการกระจายอิเล็กตรอนชั่วขณะ",
+          "Hours 1–2, cycle 1 · Steps 3–4 (group; teacher screen in 4.3) and 5.1 (individual) · heat a virtual liquid; molecules separate but their bonds stay; tap a molecule to see an instantaneous dipole"),
+  linkNote:M_("ชั่วโมงที่ 1–2 วงรอบที่ 1 ขั้นที่ 3–4 และข้อ 5.1","Hours 1–2, cycle 1, Steps 3–4 and 5.1"), chWhen:M_("มอบหมายในขั้นที่ 5 ข้อ 5.4 ของชั่วโมงที่ 1–2","assigned in Step 5, 5.4 of hours 1–2"),
+  pickSub:M_("ทดสอบ F₂ Cl₂ Br₂ I₂ ตามตารางวงรอบที่ 1 ในใบกิจกรรมที่ 9.1 ทำนายจุดเดือดในแถว ก ก่อนเปิด","Test F₂, Cl₂, Br₂, I₂ (sheet 9.1, cycle 1). Predict boiling points in row A first."),
+  hidden:M_("ทำนายก่อนเปิด: เขียนคำทำนายจุดเดือดในแถว ก ก่อน แล้วจึงให้ความร้อน","Predict first: write your boiling-point prediction in row A, then heat."),
+  stages:[M_("① ให้ความร้อนจนเดือด","① Heat until it boils"),M_("② แสดงแรงและจุดเดือด","② Show the forces and boiling point")],
+  stageHint:{1:M_("แตะโมเลกุลใดก็ได้เพื่อดูการกระจายอิเล็กตรอนชั่วขณะ สังเกตว่าอะตอมในโมเลกุลที่หลุดออกไปยังติดกันอยู่","Tap any molecule to see its instantaneous electron distribution. Notice the escaping molecules stay in one piece.")},
+  init:function(o,S,X){ X.sel=5; },
+  tap:function(o,S,X,d){ if(S.stage<1) return false; X.sel=d.i; return true; },
+  scene:function(R,o,S,X){ if(o.pair){ pairScene(R,o,S); return; }
+    var s=R.sc,u=S.stage>=2?1:S.stage>=1?lin(S,4000):0,box=R.B(-1.55,1.95),bw=s*3.1,bh=s*3.4; panel(box.x,box.y,bw,bh,"rgba(10,16,40,.35)");
+    var n=12,pos=[],lv=S.stage>=2?0.3:u*0.75; for(var i=0;i<n;i++) pos.push(liquidPos(n,i,lv,S));
+    if(S.stage>=2){ ctx.save(); ctx.strokeStyle=o.pol?"rgba(255,95,210,.55)":"rgba(255,201,74,.5)"; ctx.setLineDash([4,5]); ctx.lineWidth=2;
+      pos.forEach(function(p,i){ if(p.esc) return; pos.forEach(function(q,j){ if(j<=i||q.esc) return; var d=Math.hypot(p.x-q.x,p.y-q.y); if(d<0.95){ var A=R.B(p.x,p.y),B=R.B(q.x,q.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); } }); }); ctx.restore(); }
+    var k=1.0;
+    pos.forEach(function(p,i){ var sel=S.stage>=1&&i===X.sel&&!p.esc;
+      if(sel||(o.pol&&S.stage>=2&&!p.esc)){ var P=R.B(p.x,p.y),tm=Date.now()/500,sh=o.pol?0.6:Math.sin(tm+i);
+        var g=ctx.createRadialGradient(P.x+sh*s*0.16*Math.cos(p.a),P.y-sh*s*0.16*Math.sin(p.a),2,P.x,P.y,s*0.5); g.addColorStop(0,"rgba(110,170,255,.55)"); g.addColorStop(1,"rgba(110,170,255,0)");
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(P.x,P.y,s*0.5,0,7); ctx.fill();
+        if(sel){ var e1=Math.cos(p.a)*sh,e2=-Math.sin(p.a)*sh; tag(P.x+e1*s*0.42,P.y+e2*s*0.42,"δ−","#a9c8ff",12); tag(P.x-e1*s*0.42,P.y-e2*s*0.42,"δ+","#ffb0b0",12); } }
+      drawM2(R,o.key,p.x,p.y,p.a,k,{alpha:p.esc?0.95:1}); var P2=R.B(p.x,p.y); R.hit(P2.x,P2.y,s*0.35,{i:i}); });
+    var th=R.B(1.85,-1.25); if(o.bp!==null) txt(th.x,th.y-R.sc*0.1,(S.stage>=1?(S.stage>=2?o.bp:Math.round(o.bp-40+40*Math.min(1,u*1.6))):o.bp-40)+" °C","#ffe9a8",14);
+    if(S.stage>=1){ var fl=R.B(-0.05,-1.62); for(var f2=0;f2<5;f2++){ var x=fl.x-s*1.2+f2*s*0.6, hh=s*(0.18+0.06*Math.sin(Date.now()/90+f2)); ctx.fillStyle="rgba(255,140,60,.75)"; ctx.beginPath(); ctx.moveTo(x-6,fl.y); ctx.lineTo(x,fl.y+hh); ctx.lineTo(x+6,fl.y); ctx.fill(); } }
+    if(S.stage>=2&&R.n===1){ var B=R.B(0,2.25); tag(B.x,B.y,(o.pol?(lang==="en"?"London + dipole–dipole":"แรงลอนดอน + แรงระหว่างขั้ว"):(lang==="en"?"London forces":"แรงลอนดอน"))+" · "+(o.bp===null?L(o.bpq):t("bp")+" "+fmt(o.bp)+" °C"),"#fff",14); }
+  },
+  caption:function(o,S){ return S.stage>=2&&!o.pair?[(o.bp===null?"":fmt(o.bp)+" °C · ")+(lang==="en"?"M ":"มวล ")+o.mass,"#ffe9a8"]:null; },
+  info0:function(o){ return o.pair?"":"<b>"+o.f+"</b>"+(o.name?" ("+L(o.name)+")":"")+" · "+t("mass")+" "+o.mass; },
+  info:function(o,S){ if(o.pair) return ""; var h=lang==="en"?"Molecules leave the liquid whole: the covalent bonds inside them do not break when boiling.":"โมเลกุลหลุดออกไปทั้งโมเลกุล พันธะโคเวเลนต์ภายในโมเลกุลไม่สลายเมื่อเดือด";
+    if(S.stage>=2) h+="<br>"+(lang==="en"?"Force between molecules: ":"แรงระหว่างโมเลกุล: ")+"<b>"+(o.pol?(lang==="en"?"London + dipole–dipole (polar molecule)":"แรงลอนดอน + แรงระหว่างขั้ว (โมเลกุลมีขั้ว)"):(lang==="en"?"London forces only (non-polar)":"แรงลอนดอนเท่านั้น (โมเลกุลไม่มีขั้ว)"))+"</b> · "+(o.bp===null?"<b>"+L(o.bpq)+"</b>":t("bp")+" <b>"+fmt(o.bp)+" °C</b>")+
+      (o.pol?"":"<br><span class='hint'>"+(lang==="en"?"Bigger molecules have more electrons, so instantaneous dipoles are larger and London forces stronger.":"โมเลกุลใหญ่มีอิเล็กตรอนมาก ขั้วชั่วขณะเกิดได้มาก แรงลอนดอนจึงมากขึ้น")+"</span>");
+    return h; },
+  challenge:{q:M_("สารใดมีจุดเดือดสูงกว่า","Which has the higher boiling point?"),stage:2,items:[]}
+};
+function pairScene(R,o,S){ var A=GAME.objs[o.pair[0]],B=GAME.objs[o.pair[1]];
+  [A,B].forEach(function(m,i){ var x=i?1.1:-1.1; for(var j=0;j<3;j++) drawM2(R,m.key,x+(j-1)*0.5,0.5-j*0.55,0.4*j,1.1);
+    var P=R.B(x,1.35); tag(P.x,P.y,m.f+" · "+(lang==="en"?"M ":"มวล ")+m.mass,"#fff",14);
+    if(S.stage>=2){ var Q=R.B(x,-1.3); tag(Q.x,Q.y,m.bp===null?L(m.bpq):(m.sub?(lang==="en"?"sublimes ":"ระเหิด "):(lang==="en"?"b.p. ":"เดือด "))+fmt(m.bp)+" °C","#ffe9a8",14); } }); }
+[["H2Sm","H2Se",M_("มีขั้วทั้งคู่และไม่เกิดพันธะไฮโดรเจน H₂Se มีมวลและจำนวนอิเล็กตรอนมากกว่า แรงลอนดอนจึงมากกว่า","Both are polar without hydrogen bonds; H₂Se is heavier with more electrons, so its London forces are stronger.")],
+ ["H2Se","H2Te",M_("มีขั้วทั้งคู่และไม่เกิดพันธะไฮโดรเจน H₂Te มีมวลและจำนวนอิเล็กตรอนมากกว่า แรงลอนดอนจึงมากกว่า","Both are polar without hydrogen bonds; H₂Te is heavier with more electrons, so its London forces are stronger.")],
+ ["F2","C3H8",M_("ไม่มีขั้วทั้งคู่ C₃H₈ มีมวลมากกว่า แรงลอนดอนจึงมากกว่า","Both are non-polar; C₃H₈ is heavier, so its London forces are stronger.")],
+ ["Cl2","C3H8",M_("ไม่มีขั้วทั้งคู่ Cl₂ มีมวลมากกว่า แรงลอนดอนจึงมากกว่า","Both are non-polar; Cl₂ is heavier, so its London forces are stronger.")],
+ ["C3H8","DMEm",M_("มวลใกล้เคียงกัน (44 กับ 46) แต่ CH₃OCH₃ มีขั้ว จึงมีแรงระหว่างขั้วเพิ่มจากแรงลอนดอน","Similar masses (44 and 46), but CH₃OCH₃ is polar, so it has dipole–dipole forces on top of London forces.")],
+ ["Br2","CH3CHO",M_("CH₃CHO มีขั้ว แต่ Br₂ มีมวลมากกว่ามาก (160 กับ 44) แรงลอนดอนของ Br₂ จึงมากกว่าแรงรวมของ CH₃CHO","CH₃CHO is polar, but Br₂ is far heavier (160 vs 44), so its London forces outweigh CH₃CHO's combined forces.")]].forEach(function(p,i){
+  var id="pq"+i,A=GAME.objs[p[0]],B=GAME.objs[p[1]],hi=A.bp>B.bp?A:B,lo=hi===A?B:A; GAME.objs[id]={id:id,f:A.f+" · "+B.f,pair:[p[0],p[1]]};
+  IMF.challenge.items.push({id:id,opts:[{k:p[0],th:A.f,en:A.f},{k:p[1],th:B.f,en:B.f}],ans:hi.id,
+    hint:M_(A.f+" มวล "+A.mass+(A.pol?" มีขั้ว":" ไม่มีขั้ว")+" · "+B.f+" มวล "+B.mass+(B.pol?" มีขั้ว":" ไม่มีขั้ว"),A.f+" M "+A.mass+(A.pol?" polar":" non-polar")+" · "+B.f+" M "+B.mass+(B.pol?" polar":" non-polar")),
+    why:M_(hi.f+" ("+fmt(hi.bp)+" °C) สูงกว่า "+lo.f+" ("+fmt(lo.bp)+" °C) "+L2(p[2],"th"),hi.f+" ("+fmt(hi.bp)+" °C) is higher than "+lo.f+" ("+fmt(lo.bp)+" °C). "+L2(p[2],"en"))}); });
+function L2(o,l){ return l==="en"?o.en:o.th; }
+
+// ---------- โหมดพันธะไฮโดรเจน ----------
+function HQ(id,f,key,den,bp,kind,extra){ var o={id:id,f:f,key:key,den:den,bp:bp,kind:kind}; for(var k in extra||{}) o[k]=extra[k]; return o; }
+[ HQ("hH2O","H₂O","H2O",1.24,100,"hb"),HQ("hH2S","H₂S","H2S",0.38,-60,"dd"),HQ("hHF","HF","HF",1.78,20,"hb"),HQ("hHCl","HCl","HCl",0.96,-85,"dd"),
+  HQ("hEtW","เอทานอล + น้ำ","H2O",null,null,"mixE",{fe:"ethanol + water"}),HQ("hOilW","น้ำมัน + น้ำ","H2O",null,null,"mixO",{fe:"oil + water"}),
+  HQ("hEtOH","C₂H₅OH","EtOH",null,78,"hb",{name:M_("เอทานอล","ethanol")}),HQ("hDME","CH₃OCH₃","DME",null,-24,"dd",{name:M_("ไดเมทิลอีเทอร์","dimethyl ether")}),
+  HQ("cMeOH","CH₃OH","MeOH",null,null,"hb"),HQ("cMeF","CH₃F","MeF",null,null,"dd"),HQ("cHCHO","CH₂O","HCHO",null,null,"dd"),HQ("cHCOOH","HCOOH","HCOOH",null,null,"hb"),HQ("cPH3","PH₃","PH3",null,null,"dd"),HQ("cN2H4","N₂H₄","N2H4",null,null,"hb")
+].forEach(function(o){ if(o.fe){ var th=o.f,en=o.fe; Object.defineProperty(o,"f",{get:function(){return lang==="en"?en:th;}}); } GAME.objs[o.id]=o; });
+function ringLayout(n,r){ var p=[{x:0,y:0.15}]; for(var i=0;i<n-1;i++){ var a=i*2*Math.PI/(n-1)+0.3; p.push({x:Math.cos(a)*r,y:0.15+Math.sin(a)*r*0.92}); } return p; }
+function hAngle(T,hIdx){ var c=T.a[T.b.filter(function(b){return b[1]===hIdx||b[0]===hIdx;})[0][0]===hIdx?T.b.filter(function(b){return b[1]===hIdx||b[0]===hIdx;})[0][1]:T.b.filter(function(b){return b[1]===hIdx||b[0]===hIdx;})[0][0]];
+  var h=T.a[hIdx]; return Math.atan2(h[2],h[1]); }
+var HB={
+  letter:"Y", color:"#ff8fd0", hr:"h12", noRotate:true,
+  title:M_("โหมดพันธะไฮโดรเจน","Hydrogen-bond mode"), short:M_("พันธะไฮโดรเจน","Hydrogen bonds"),
+  desc:M_("ชั่วโมงที่ 1–2 วงรอบที่ 2 · ขั้นที่ 3 และขั้นที่ 4 (งานกลุ่ม และครูฉายในข้อ 4.3) และข้อ 5.1 (งานเดี่ยว) · ไฮไลต์แรงดึงดูดระหว่าง H ของโมเลกุลหนึ่งกับคู่โดดเดี่ยวของอีกโมเลกุล และผสมเอทานอลหรือน้ำมันกับน้ำ",
+          "Hours 1–2, cycle 2 · Steps 3–4 (group; teacher screen in 4.3) and 5.1 (individual) · highlight H attracted to a lone pair on another molecule; mix ethanol or oil with water"),
+  linkNote:M_("ชั่วโมงที่ 1–2 วงรอบที่ 2 ขั้นที่ 3–4 และข้อ 5.1","Hours 1–2, cycle 2, Steps 3–4 and 5.1"), chWhen:M_("มอบหมายในขั้นที่ 5 ข้อ 5.4 ของชั่วโมงที่ 1–2","assigned in Step 5, 5.4 of hours 1–2"),
+  pickSub:M_("ทดสอบ H₂O H₂S HF HCl และการผสม ตามตารางวงรอบที่ 2 ในใบกิจกรรมที่ 9.1 ทำนายจุดเดือดในแถว ก ก่อนเปิด","Test H₂O, H₂S, HF, HCl and the mixtures (sheet 9.1, cycle 2). Predict first."),
+  hidden:M_("ทำนายก่อนเปิด: เขียนคำทำนายในแถว ก ก่อน แล้วจึงเปิดประจุบางส่วน","Predict first: write your prediction in row A, then show partial charges."),
+  stages:[M_("① แสดงประจุบางส่วน δ+ δ−","① Show partial charges δ+ δ−"),M_("② ไฮไลต์แรงระหว่างโมเลกุล","② Highlight the intermolecular forces")],
+  scene:function(R,o,S){ var s=R.sc,tm=Date.now()/1000,mols=[];
+    if(o.kind==="mixE"||o.kind==="mixO"){ var P=ringLayout(7,1.25); P.forEach(function(p,i){ mols.push({k:(o.kind==="mixE"&&i%2===1)?"EtOH":"H2O",x:p.x,y:p.y-(o.kind==="mixO"?0.45:0)}); });
+      if(o.kind==="mixO"){ mols.forEach(function(m){ m.y=m.y*0.7-0.55; }); [-1.0,0.2,1.2].forEach(function(x,i){ mols.push({k:"OIL",x:x-0.1,y:1.55+0.25*(i%2),oil:true}); }); } }
+    else { var P2=ringLayout(7,1.3); P2.forEach(function(p){ mols.push({k:o.key,x:p.x,y:p.y}); }); }
+    // จัดทิศให้ H ของโมเลกุลหนึ่งชี้ไปยังอะตอมรับของโมเลกุลถัดไป
+    var ring=mols.filter(function(m){return !m.oil;});
+    ring.forEach(function(m,i){ var T=T2[m.k],nx=ring[(i+1)%ring.length],dir=Math.atan2(nx.y-m.y,nx.x-m.x), hi=T.hb?T.hb[0]:(T.a.length>1?T.a.length-1:0), ha=Math.atan2(T.a[hi][2],T.a[hi][1]);
+      m.a=dir-ha+0.08*Math.sin(tm+i); if(i===0) m.a=dir-ha; m.hi=hi; });
+    mols.forEach(function(m){ if(m.oil) m.a=0.05*Math.sin(tm+m.x); });
+    var pts=mols.map(function(m){ return drawM2(R,m.k,m.x,m.y,m.a,1.15); });
+    if(S.stage>=1) ring.forEach(function(m,i){ var T=T2[m.k],P=pts[mols.indexOf(m)]; if(!T.pol) return;
+      var neg=T.a.findIndex(function(a){return a[0]!=="H"&&a[0]!=="C";}), pos=T.a.findIndex(function(a){return a[0]==="H";});
+      if(neg>=0) tag(P[neg].x,P[neg].y-s*0.22,"δ−","#a9c8ff",10); if(pos>=0) tag(P[pos].x,P[pos].y+s*0.2,"δ+","#ffb0b0",10); });
+    if(S.stage>=2){ ring.forEach(function(m,i){ var T=T2[m.k],n2=ring[(i+1)%ring.length],T2b=T2[n2.k],P=pts[mols.indexOf(m)],Q=pts[mols.indexOf(n2)];
+        var hb=T.hb&&T2b.acc, acc=T2b.acc?T2b.acc[0]:T2b.a.findIndex(function(a){return a[0]!=="H"&&a[0]!=="C";}); if(acc<0||!T.pol||!T2b.pol) return;
+        var H=P[m.hi],A=Q[acc]; ctx.save(); ctx.strokeStyle=hb?"#ff5fd2":"rgba(255,201,74,.75)"; ctx.lineWidth=hb?4:2; ctx.setLineDash(hb?[6,4]:[3,5]); ctx.beginPath(); ctx.moveTo(H.x,H.y); ctx.lineTo(A.x,A.y); ctx.stroke(); ctx.restore(); });
+      if(R.n===1){ var B=R.B(0,-1.95), lab=o.kind==="mixO"?(lang==="en"?"Oil cannot join water's hydrogen bonds → layers separate":"น้ำมันเข้าร่วมพันธะไฮโดรเจนกับน้ำไม่ได้ → แยกชั้น"):o.kind==="mixE"?(lang==="en"?"Ethanol forms hydrogen bonds with water → they mix":"เอทานอลสร้างพันธะไฮโดรเจนกับน้ำได้ → ผสมเป็นเนื้อเดียว"):
+          (o.kind==="hb"?(lang==="en"?"Hydrogen bonds":"พันธะไฮโดรเจน"):(lang==="en"?"Dipole–dipole forces (no hydrogen bonds)":"แรงระหว่างขั้ว (ไม่มีพันธะไฮโดรเจน)"))+(o.bp!==null?" · "+t("bp")+" "+fmt(o.bp)+" °C":"");
+        tag(B.x,B.y,lab,o.kind==="hb"||o.kind==="mixE"?"#ff9fe0":"#ffe9a8",14); } }
+  },
+  caption:function(o,S){ return S.stage>=2&&o.bp!==null?[fmt(o.bp)+" °C",o.kind==="hb"?"#ff9fe0":"#ffe9a8"]:null; },
+  info0:function(o){ return "<b>"+o.f+"</b>"+(o.name?" ("+L(o.name)+")":"")+(o.den!==null?" · ΔEN H–"+(o.key.replace(/H2?|2/g,"")||"X")+" "+o.den.toFixed(2):""); },
+  info:function(o,S){ if(S.stage<2) return lang==="en"?"δ+ on H, δ− on the more electronegative atom.":"H มีประจุบวกบางส่วน (δ+) อะตอมที่มีค่า EN สูงมีประจุลบบางส่วน (δ−)";
+    if(o.kind==="mixE") return lang==="en"?"Ethanol's O–H forms hydrogen bonds with water, so ethanol and water mix completely.":"O–H ของเอทานอลสร้างพันธะไฮโดรเจนกับน้ำ เอทานอลจึงผสมกับน้ำเป็นเนื้อเดียว";
+    if(o.kind==="mixO") return lang==="en"?"Oil molecules are non-polar and cannot form hydrogen bonds, so water keeps to itself and the liquids separate into layers.":"โมเลกุลน้ำมันไม่มีขั้วและสร้างพันธะไฮโดรเจนกับน้ำไม่ได้ โมเลกุลน้ำจึงยึดกันเอง ของเหลวแยกชั้น";
+    var hb=o.kind==="hb"; return "<b>"+(hb?(lang==="en"?"Hydrogen bonds":"พันธะไฮโดรเจน"):(lang==="en"?"Dipole–dipole":"แรงระหว่างขั้ว"))+"</b> · "+(hb?(lang==="en"?"H is bonded to F, O or N and is attracted to a lone pair on the next molecule":"H ต่อกับ F O หรือ N ดึงดูดกับคู่โดดเดี่ยวของอีกโมเลกุล"):(lang==="en"?"H is not bonded to F, O or N":"H ไม่ได้ต่อกับ F O หรือ N"))+(o.bp!==null?" · "+t("bp")+" <b>"+fmt(o.bp)+" °C</b>":""); },
+  challenge:{q:M_("โมเลกุลของสารนี้เกิดพันธะไฮโดรเจนระหว่างกันได้หรือไม่","Can molecules of this substance hydrogen-bond to each other?"),stage:2,items:[]}
+};
+[["cMeOH",M_("มี O–H","has O–H")],["cMeF",M_("F ต่อกับ C ไม่ได้ต่อกับ H","F is bonded to C, not to H")],["cHCHO",M_("O ต่อกับ C ด้วยพันธะคู่ H ทั้งสองต่อกับ C","O is double-bonded to C; both H are on C")],
+ ["cHCOOH",M_("มีหมู่ O–H","has an O–H group")],["cPH3",M_("P–H มี ΔEN เพียง 0.01","P–H has ΔEN of only 0.01")],["cN2H4",M_("มี N–H","has N–H")]].forEach(function(r){ var o=GAME.objs[r[0]],y=o.kind==="hb";
+  HB.challenge.items.push({id:r[0],opts:[{k:"y",th:"เกิดได้",en:"Yes"},{k:"n",th:"เกิดไม่ได้",en:"No"}],ans:y?"y":"n",hint:r[1],
+    why:y?M_("มี H ที่ต่อกับ "+(o.key==="N2H4"?"N":"O")+" โดยตรง H นี้มีประจุบวกบางส่วนมาก ดึงดูดกับคู่โดดเดี่ยวของอีกโมเลกุลได้ จึงเกิดพันธะไฮโดรเจน","It has H bonded directly to "+(o.key==="N2H4"?"N":"O")+", strongly δ+, attracted to a lone pair on another molecule: hydrogen bonds form."):
+      M_("ไม่มี H ที่ต่อกับ F O หรือ N โดยตรง จึงไม่เกิดพันธะไฮโดรเจนระหว่างโมเลกุลของตัวเอง มีเพียงแรงระหว่างขั้วและแรงลอนดอน","No H is bonded directly to F, O or N, so no hydrogen bonds between its own molecules; only dipole–dipole and London forces.")}); });
+
+// ---------- โหมดโครงร่างตาข่าย ----------
+function diamondPts(R0,two){ var a=2.0,base=[[0,0,0],[0,.5,.5],[.5,0,.5],[.5,.5,0]],pts=[]; for(var i=-1;i<=1;i++)for(var j=-1;j<=1;j++)for(var k=-1;k<=1;k++) base.forEach(function(b){ [[0,0,0],[.25,.25,.25]].forEach(function(o,s){ var p=[(i+b[0]+o[0]-0.125)*a,(j+b[1]+o[1]-0.125)*a,(k+b[2]+o[2]-0.125)*a]; if(vlen(p)<=R0) pts.push({p:p,s:s}); }); });
+  function bd(P){ var B=[]; P.forEach(function(p,i){ P.forEach(function(q,j){ if(j>i&&Math.abs(vlen(vsub(p.p,q.p))-0.433*a)<0.05) B.push([i,j]); }); }); return B; }
+  var bonds=bd(pts); pts=pts.filter(function(p,i){ return bonds.filter(function(b){return b[0]===i||b[1]===i;}).length>=2; }); bonds=bd(pts); return {pts:pts,bonds:bonds}; }
+var DIA=diamondPts(1.95);
+function graphitePts(){ var pts=[],bonds=[],d=0.62; [-0.75,0.75].forEach(function(y,L){ for(var i=-3;i<=3;i++)for(var j=-3;j<=3;j++){ var x=(i+j*0.5)*d*Math.sqrt(3)+(L?d*Math.sqrt(3)/2:0), z=j*d*1.5;
+      [[0,d],[0,0]].forEach(function(o,s){ var p=[x+0,y,z+(s?0:d)-(L?d/2:0)]; if(Math.hypot(p[0],p[2])<1.85) pts.push({p:p,L:L}); }); } });
+  // ลบจุดซ้ำและสร้างพันธะในชั้น
+  var u=[]; pts.forEach(function(p){ if(!u.some(function(q){return vlen(vsub(p.p,q.p))<0.05;})) u.push(p); });
+  u.forEach(function(p,i){ u.forEach(function(q,j){ if(j>i&&p.L===q.L&&Math.abs(vlen(vsub(p.p,q.p))-d)<0.05) bonds.push([i,j]); }); }); return {pts:u,bonds:bonds}; }
+var GRA=graphitePts();
+function NW(id,f,kind,a1,a2,props,mp,extra){ var o={id:id,f:f,kind:kind,a1:a1,a2:a2,props:props,mp:mp}; for(var k in extra||{}) o[k]=extra[k]; return o; }
+[ NW("dia","เพชร","dia","C","C",M_("แข็งมาก ไม่นำไฟฟ้า","very hard, does not conduct"),null,{fe:"Diamond",nb:4}),
+  NW("gra","แกรไฟต์","gra","C","C",M_("นิ่ม ลื่น นำไฟฟ้า","soft, slippery, conducts"),null,{fe:"Graphite",nb:3}),
+  NW("sio2","SiO₂","sio2","Si","O",M_("แข็ง ไม่นำไฟฟ้า","hard, does not conduct"),"1,713 °C",{nb:4}),
+  NW("co2s","CO₂","mol","C","O",M_("ระเหิดที่ −78 °C","sublimes at −78 °C"),null,{mk:"CO2"}),
+  NW("sic","SiC","dia","Si","C",M_("แข็งมาก ทนความร้อน","very hard, heat resistant"),null,{nb:4,fe:"SiC"}),
+  NW("cI2","I₂","mol","I","I",null,null,{mk:"I2"}),NW("cBr2","Br₂","mol","Br","Br",null,null,{mk:"Br2"}),
+  
+].forEach(function(o){ if(o.fe&&o.id!=="sic"){ var th=o.f,en=o.fe; Object.defineProperty(o,"f",{get:function(){return lang==="en"?en:th;}}); } GAME.objs[o.id]=o; });
+var MOLT={Br2:[["Br",-.3,0,0],["Br",.3,0,0]],CO2:[["C",0,0,0,0],["O",-.42,0,0,2],["O",.42,0,0,2]],I2:[["I",-.3,0,0],["I",.3,0,0]],
+  S8:[0,1,2,3,4,5,6,7].map(function(i){var a=i*Math.PI/4;return ["S",Math.cos(a)*.38,(i%2?.12:-.12),Math.sin(a)*.38];}),
+  NAPH:[["C",-.5,0,.25],["C",-.25,0,.43],["C",0,0,.25],["C",0,0,-.25],["C",-.25,0,-.43],["C",-.5,0,-.25],["C",.25,0,.43],["C",.5,0,.25],["C",.5,0,-.25],["C",.25,0,-.43]]};
+function molBonds(key){ var a=MOLT[key],b=[]; if(key==="CO2") return [[0,1,2],[0,2,2]]; if(key==="I2"||key==="Br2") return [[0,1,1]]; if(key==="S8"){ for(var i=0;i<8;i++) b.push([i,(i+1)%8,1]); return b; }
+  return [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[2,6],[6,7],[7,8],[8,9],[9,3]].map(function(x){return [x[0],x[1],1];}); }
+var NET={
+  letter:"Z", color:"#9bf06b", hr:"h3",
+  title:M_("โหมดโครงร่างตาข่าย","Network-solid mode"), short:M_("โครงร่างตาข่าย","Network solids"),
+  desc:M_("ชั่วโมงที่ 3 · ขั้นที่ 3 และขั้นที่ 4 (งานกลุ่ม และครูฉายในข้อ 4.2) และข้อ 5.1 (งานเดี่ยว) · หมุนดูการจัดเรียงอะตอม แตะดูจำนวนพันธะต่ออะตอมและอิเล็กตรอนที่เคลื่อนที่ได้ และให้ความร้อน",
+          "Hour 3 · Steps 3–4 (group; teacher screen in 4.2) and 5.1 (individual) · rotate the structure, tap to count bonds per atom and mobile electrons, then heat"),
+  linkNote:M_("ชั่วโมงที่ 3 ขั้นที่ 3–4 และข้อ 5.1","Hour 3, Steps 3–4 and 5.1"), chWhen:M_("มอบหมายในขั้นที่ 5 ข้อ 5.2 ของชั่วโมงที่ 3","assigned in Step 5, 5.2 of hour 3"),
+  pickSub:M_("ทดสอบเพชร แกรไฟต์ SiO₂ CO₂ บันทึกว่าแข็งหรือไม่และนำไฟฟ้าหรือไม่ในใบกิจกรรมที่ 9.3 ก่อนเปิดผล","Test diamond, graphite, SiO₂, CO₂. Predict hardness and conductivity on sheet 9.3 first."),
+  hidden:M_("ทำนายก่อนเปิด: หมุนดูโครงสร้างได้ บันทึกว่าแข็งหรือไม่และนำไฟฟ้าหรือไม่ก่อนเปิดผล","Predict first: rotate the structure, then record whether it is hard and whether it conducts."),
+  stages:[M_("① แตะดูจำนวนพันธะและอิเล็กตรอนที่เคลื่อนที่ได้","① Tap to see bonds per atom and mobile electrons"),M_("② ให้ความร้อน","② Heat it")],
+  stageHint:{1:M_("แตะอะตอมใดก็ได้เพื่อนับพันธะ (อะตอมที่ขอบของแบบจำลองถูกตัดพันธะบางส่วนออก ให้นับอะตอมด้านใน)","Tap any atom to count its bonds (atoms at the cut edge of the model have lost some bonds; count an inside atom)")},
+  init:function(o,S,X){ X.sel=-1; },
+  onStage:function(o,S,X,s){ if(s>=1&&X.sel<0&&o.kind!=="mol"){ var P=(o.kind==="gra"?GRA:DIA).pts,b=0,bd=1e9; P.forEach(function(p,i){ var d=vlen(p.p)+(o.kind==="gra"&&p.L?0:0.01); if(d<bd){bd=d;b=i;} }); X.sel=b; } },
+  tap:function(o,S,X,d){ if(S.stage<1) return false; X.sel=d.i; return true; },
+  scene:function(R,o,S,X){ var u=S.stage>=2?anim(S,2500):0,tm=Date.now()/1000;
+    if(cur.ch&&S.stage===0){ R.glowQ(o.f); return; }
+    if(o.kind==="mol"){ var key=o.mk,cells=[[-.8,-.8,-.8],[.8,-.8,-.8],[-.8,.8,-.8],[.8,.8,-.8],[-.8,-.8,.8],[.8,-.8,.8],[-.8,.8,.8],[.8,.8,.8],[0,0,0]];
+      cells.forEach(function(c,ci){ var sep=1+u*0.9, cc=vmul(c,sep), rot=mmul(rotY(ci*0.9+(u>0?tm*0.5*u:0)),rotX(ci*0.6)), A=MOLT[key].map(function(a){ return vadd(cc,mv(rot,[a[1],a[2],a[3]])); });
+        molBonds(key).forEach(function(b){ R.bond(A[b[0]],A[b[1]],elc(MOLT[key][b[0]][0]),elc(MOLT[key][b[1]][0]),b[2],0.08); });
+        A.forEach(function(p,i){ var el=MOLT[key][i][0]; R.ball(p,elr(el)*0.42,elc(el),"",{hit:{i:ci*20+i}}); }); });
+      if(S.stage>=1&&R.n===1) R.over(function(){ var B=R.B(0,-2.05); tag(B.x,B.y,S.stage>=2?(lang==="en"?"Molecules separate; bonds inside stay":"โมเลกุลแยกจากกัน พันธะในโมเลกุลยังอยู่"):(lang==="en"?"Separate molecules · London forces between them":"โมเลกุลเดี่ยว · ระหว่างโมเลกุลมีแรงลอนดอน"),"#ffe9a8",14); });
+      return; }
+    var Dt=o.kind==="gra"?GRA:DIA, pts=Dt.pts, sel=X.sel, shake=u>0?0.06*u*Math.sin(tm*25):0;
+    Dt.bonds.forEach(function(b,k){ var p=pts[b[0]],q=pts[b[1]],hot=S.stage>=2&&o.kind!=="gra"?u:0; var e1=o.kind==="sio2"?"Si":(p.s?o.a2:o.a1),e2=o.kind==="sio2"?"Si":(q.s?o.a2:o.a1);
+      var pp=vadd(p.p,[shake*Math.sin(b[0]),0,0]),qq=vadd(q.p,[shake*Math.cos(b[1]),0,0]);
+      if(o.kind==="sio2"){ var m=vlerp(pp,qq,0.5); m=vadd(m,[0,0.12,0]); R.bond(pp,m,elc("Si"),elc("O"),1,0.07); R.bond(m,qq,elc("O"),elc("Si"),1,0.07); R.ball(m,0.17,elc("O"),"",{}); }
+      else R.bond(pp,qq,hot>0.5?"#ff6b5a":elc(e1),hot>0.5?"#ff6b5a":elc(e2),1,0.09); });
+    pts.forEach(function(p,i){ var el=o.kind==="sio2"?"Si":(p.s?o.a2:o.a1),isSel=i===sel; var nb=Dt.bonds.filter(function(b){return b[0]===i||b[1]===i;}).length;
+      R.ball(p.p,(o.kind==="gra"?0.15:0.2),elc(el),"",{ring:isSel?"#ffffff":null,hit:S.stage>=1?{i:i}:null});
+      if(isSel) R.label(vadd(p.p,[0,0.35,0]),(o.kind==="sio2"?"Si: O ":el+": ")+(lang==="en"?nb+" bonds":nb+" พันธะ"),"#fff",13,{dz:3}); });
+    if(o.kind==="gra"){ GRA.pts.forEach(function(p,i){ if(i%2) return; if(S.stage>=1){ var ph=fr(tm*0.4+hsh(i,1)); var q=vadd(p.p,[Math.cos(i)*ph*0.6,0,Math.sin(i)*ph*0.6]); R.ball(q,0.06,"#ffe37a","",{glow:"#ffe37a"}); } });
+      R.line([-1.6,0,0],[1.6,0,0],"rgba(255,201,74,.0)",1); for(var z=-1;z<=1;z++) R.line([z*0.8,-0.6,0],[z*0.8,0.6,0],"rgba(255,201,74,.6)",2,[4,6]); }
+    if(S.stage>=2&&R.n===1) R.over(function(){ var B=R.B(0,-2.05); tag(B.x,B.y,o.kind==="gra"?(lang==="en"?"Layers slide apart easily; strong bonds inside each layer":"ชั้นเลื่อนแยกกันง่าย แต่พันธะในชั้นแข็งแรง"):(lang==="en"?"Covalent bonds must break to melt → very high melting point":"ต้องสลายพันธะโคเวเลนต์จึงจะหลอม → หลอมเหลวสูงมาก"),"#ffb38a",14); });
+  },
+  caption:function(o,S){ return S.stage>=2&&o.props?[L(o.props),"#ffe9a8"]:null; },
+  info0:function(o){ return "<b>"+o.f+"</b>"; },
+  info:function(o,S,X){ if(o.kind==="mol"&&!o.props) return ""; var h="";
+    if(o.kind==="dia") h=lang==="en"?"Each atom has <b>4 covalent bonds</b> continuing in three dimensions · no mobile electrons":"แต่ละอะตอมมี<b>พันธะโคเวเลนต์ 4 พันธะ</b> ต่อเนื่องสามมิติ · ไม่มีอิเล็กตรอนที่เคลื่อนที่ได้";
+    if(o.kind==="gra") h=lang==="en"?"Each C has <b>3 bonds</b> in a hexagonal layer · <b>mobile electrons</b> move along the layers · layers are held by London forces":"C แต่ละอะตอมมี<b> 3 พันธะ</b> เป็นชั้นหกเหลี่ยม · มี<b>อิเล็กตรอนเคลื่อนที่ได้</b>ตามชั้น · ชั้นยึดกันด้วยแรงลอนดอน";
+    if(o.kind==="sio2") h=lang==="en"?"Each Si bonds to <b>4 O</b>, each O to <b>2 Si</b>, continuing in 3D · SiO₂ gives the ratio, not a molecule":"Si ต่อกับ O <b>4 อะตอม</b> O ต่อกับ Si <b>2 อะตอม</b> ต่อเนื่องสามมิติ · สูตร SiO₂ บอกอัตราส่วน ไม่ใช่โมเลกุล";
+    if(o.kind==="mol") h=lang==="en"?"Separate O=C=O molecules held by weak London forces":"โมเลกุล O=C=O แยกกัน ยึดกันด้วยแรงลอนดอนซึ่งอ่อน";
+    if(S.stage>=2&&o.props) h+="<br>"+(lang==="en"?"Properties: ":"สมบัติ: ")+"<b>"+L(o.props)+"</b>"+(o.mp?" · "+(lang==="en"?"m.p. ":"หลอม ")+o.mp:"");
+    return h; },
+  challenge:{q:M_("สารนี้เป็นของแข็งประเภทใด","What kind of solid is this?"),stage:2,items:[]}
+};
+// ด่านท้าทาย: ใช้ข้อมูลตาราง ก.1 และตาราง ก.2 ของแผนที่ 9 เท่านั้น
+[["cI2",M_("I₂ เดือดที่ 184 °C (ตาราง ก.1)","I₂ boils at 184 °C (table A.1)")],["cBr2",M_("Br₂ เดือดที่ 59 °C (ใบความรู้ที่ 9.1)","Br₂ boils at 59 °C (sheet 9.1)")]].forEach(function(r){ var o=GAME.objs[r[0]];
+  NET.challenge.items.push({id:r[0],opts:[{k:"net",th:"โครงร่างตาข่าย หลอมเหลวสูงมาก",en:"Network solid, very high m.p."},{k:"mol",th:"โมเลกุลเดี่ยว ยึดด้วยแรงระหว่างโมเลกุล หลอมเหลวต่ำ",en:"Molecular solid, low m.p."}],ans:"mol",hint:r[1],q:r[0]==="cBr2"?M_("ถ้าทำให้ Br₂ แข็งตัว จะได้ของแข็งประเภทใด","If Br₂ is frozen, what kind of solid forms?"):undefined,stage0:0,
+    why:M_("เป็นโมเลกุลอะตอมคู่ พันธะโคเวเลนต์อยู่ภายในโมเลกุล ระหว่างโมเลกุลมีเพียงแรงลอนดอน การหลอมหรือเดือดแค่แยกโมเลกุลออกจากกัน จึงเกิดที่อุณหภูมิต่ำกว่าสารโครงร่างตาข่ายมาก","A two-atom molecule: the covalent bond is inside it and only London forces act between molecules, so melting or boiling just separates molecules at far lower temperatures than a network solid.")}); });
+[["cDiaB","dia",M_("ในเพชร C แต่ละอะตอมสร้างพันธะโคเวเลนต์กี่พันธะ","In diamond, how many covalent bonds does each C form?"),["2","3","4","6"],"4",M_("ตาราง ก.2: C 4 พันธะ ต่อเนื่องสามมิติ (ทรงสี่หน้า) จึงแข็งมาก หลอมสูง และไม่มีอิเล็กตรอนเคลื่อนที่ได้","Table A.2: C has 4 bonds continuing in 3D (tetrahedral), so it is very hard, high-melting and has no mobile electrons.")],
+ ["cGraB","gra",M_("ในแกรไฟต์ C แต่ละอะตอมสร้างพันธะโคเวเลนต์กี่พันธะ","In graphite, how many covalent bonds does each C form?"),["2","3","4","6"],"3",M_("ตาราง ก.2: C 3 พันธะ เป็นชั้นหกเหลี่ยม เหลืออิเล็กตรอนที่เคลื่อนที่ได้ตามชั้น แกรไฟต์จึงนำไฟฟ้า","Table A.2: C forms 3 bonds in hexagonal layers, leaving electrons that move along the layers, so graphite conducts.")],
+ ["cSiO2O","sio2",M_("ใน SiO₂ อะตอม O แต่ละอะตอมต่อกับ Si กี่อะตอม","In SiO₂, how many Si atoms is each O bonded to?"),["1","2","3","4"],"2",M_("ตาราง ก.2: Si ต่อ O 4 อะตอม และ O ต่อ Si 2 อะตอม ต่อเนื่องสามมิติ อัตราส่วนทั้งก้อนจึงเป็น Si : O = 1 : 2","Table A.2: Si bonds to 4 O and each O to 2 Si in 3D, so the whole-piece ratio is Si : O = 1 : 2.")],
+ ["cGraL","gra",M_("ชั้นของแกรไฟต์ยึดกันด้วยแรงใด","What holds the layers of graphite together?"),[M_("พันธะโคเวเลนต์","covalent bonds"),M_("แรงลอนดอน","London forces"),M_("พันธะไอออนิก","ionic bonds"),M_("พันธะโลหะ","metallic bonds")],"1",M_("ตาราง ก.2: ชั้นของแกรไฟต์ยึดด้วยแรงลอนดอน ซึ่งอ่อน ชั้นจึงเลื่อนผ่านกันได้ แกรไฟต์จึงนิ่มและลื่น","Table A.2: graphite layers are held by weak London forces, so they slide and graphite is soft and slippery.")]].forEach(function(r){
+  var b=GAME.objs[r[1]],o={}; for(var k in b) o[k]=b[k]; o.id=r[0]; GAME.objs[r[0]]=o;
+  var opts=r[3].map(function(x,i){ return typeof x==="string"?{k:x,th:x,en:x}:{k:String(i),th:x.th,en:x.en}; });
+  NET.challenge.items.push({id:r[0],q:r[2],opts:opts,ans:r[4],stage0:0,hint:M_("ใช้ตาราง ก.2 โครงสร้างและสมบัติ","Use table A.2, structure and properties"),why:r[5]}); });
+GAME.modes={imf:IMF,hb:HB,net:NET};
+var NOG=function(n,th,en){return {n:n,lab:M_(th,en),work:"nogame"};};
+GAME.plan={
+ imf:[
+  {cyc:M_("วงรอบที่ 1","Cycle 1"),title:M_("แรงลอนดอนและแรงระหว่างขั้ว","London and dipole–dipole forces"),isCycle:true},
+  {step:3,work:"group",items:[
+    {n:"",lab:M_("ทดสอบ F₂ Cl₂ Br₂ I₂","Test F₂, Cl₂, Br₂, I₂"),ids:["F2","Cl2","Br2","I2"]},
+    {n:"",lab:M_("บัตรข้อมูลท้าทายกฎที่ 1: CH₃CHO กับ C₃H₈ มวล 44 เท่ากัน","Rule-challenge card 1: CH₃CHO and C₃H₈ both have mass 44"),cmp:true,ids:["CH3CHO","C3H8"]}]},
+  {step:4,work:"group",reveal:true,items:[
+    NOG("4.1","ปรับปรุงแบบจำลองด้วยปากกาสีแดง","Revise the model in red pen"), NOG("4.2","สร้างกฎของกลุ่ม รอบที่ 1","Write group rule 1"),
+    {n:"4.3",lab:M_("ตรวจกฎรอบที่ 1 · เปิดเป็นหลักฐานเมื่อถูกถามท้าทาย","Check rule 1 · open as evidence"),ids:["F2","Cl2","Br2","I2","CH3CHO","C3H8"]},
+    {n:"4.3",lab:M_("ครูฉายโมเลกุล Br₂ ที่แยกจากกันขณะเดือด (ครูเปิดจากหน้าครู)","Teacher projects Br₂ separating while boiling (Teacher page)"),work:"teacher"}]},
+  {cyc:M_("ท้ายคาบ","End of lesson"),title:M_("ประยุกต์ใช้กฎของกลุ่ม","Apply the group rule")},
+  {step:5,work:"ind",items:[
+    {n:"5.1",lab:M_("ภารกิจ \"ไฟแช็กและน้ำยาล้างเล็บ\" บิวเทนกับแอซีโทน · เขียนใบกิจกรรมที่ 9.2 ให้ครบก่อนเปิด","Task \"Lighter and nail-polish remover\" · finish sheet 9.2 first"),ids:["C4H10","ACE"]},
+    NOG("5.2","ภารกิจในใบกิจกรรมที่ 9.2 ตอนที่ 2","Task on sheet 9.2, part 2"), NOG("5.3","สะท้อนคิดและบัตรท้ายคาบ","Reflection and exit card"),
+    {n:"5.4",lab:M_("เชื่อมสู่ชั่วโมงที่ 3 · มอบหมายด่านท้าทายโหมดแรงระหว่างโมเลกุล","Link to hour 3 · assign the intermolecular-forces challenge"),work:"home",challenge:"imf"}]}
+ ],
+ hb:[
+  {cyc:M_("วงรอบที่ 2","Cycle 2"),title:M_("พันธะไฮโดรเจนและการละลาย","Hydrogen bonds and mixing"),isCycle:true},
+  {step:3,work:"group",items:[
+    NOG("3.1","ข้อมูลใหม่ท้าทายกฎ (กราฟจุดเดือดของ H₂O H₂S H₂Se H₂Te) · เขียนคำทำนายก่อนเปิดเกม","New data (boiling points of group 16 hydrides) · predict first"),
+    {n:"3.2",lab:M_("ทดสอบ H₂O H₂S HF HCl","Test H₂O, H₂S, HF, HCl"),ids:["hH2O","hH2S","hHF","hHCl"]},
+    {n:"",lab:M_("ลองผสมเอทานอลหรือน้ำมันกับน้ำ","Mix ethanol or oil with water"),ids:["hEtW","hOilW"]},
+    {n:"",lab:M_("บัตรข้อมูลท้าทายกฎที่ 2: เอทานอลกับไดเมทิลอีเทอร์ มวล 46 เท่ากัน","Rule-challenge card 2: ethanol and dimethyl ether, both mass 46"),cmp:true,ids:["hEtOH","hDME"]}]},
+  {step:4,work:"group",reveal:true,items:[
+    NOG("4.1","ปรับปรุงแบบจำลองและขยายกฎ","Revise the model and extend the rule"),
+    {n:"4.2",lab:M_("อธิบายแบบ CER และตรวจข้ามกลุ่ม · เปิดเป็นหลักฐานเมื่อถูกถามท้าทาย","CER and cross-check · open as evidence"),ids:["hH2O","hH2S","hHF","hHCl","hEtW","hOilW"]},
+    {n:"4.3",lab:M_("ครูฉายพันธะไฮโดรเจนในน้ำ (ครูเปิดจากหน้าครู)","Teacher projects hydrogen bonds in water (Teacher page)"),work:"teacher"}]},
+  {cyc:M_("ท้ายคาบ","End of lesson"),title:M_("ประยุกต์ใช้กฎของกลุ่ม","Apply the group rule")},
+  {step:5,work:"ind",items:[
+    NOG("5.1","ภารกิจ \"ไฟแช็กและน้ำยาล้างเล็บ\" ตรวจด้วยโหมดแรงระหว่างโมเลกุล","The lighter task is checked in the intermolecular-forces mode"), NOG("5.3","สะท้อนคิดและบัตรท้ายคาบ","Reflection and exit card"),
+    {n:"5.4",lab:M_("มอบหมายด่านท้าทายโหมดพันธะไฮโดรเจน","Assign the hydrogen-bond challenge"),work:"home",challenge:"hb"}]}
+ ],
+ net:[
+  {cyc:M_("ชั่วโมงที่ 3","Hour 3"),title:M_("สารโคเวเลนต์โครงร่างตาข่าย","Network covalent substances")},
+  {step:3,work:"group",items:[
+    {n:"",lab:M_("ทดสอบเพชร แกรไฟต์ SiO₂ CO₂","Test diamond, graphite, SiO₂, CO₂"),ids:["dia","gra","sio2","co2s"]},
+    {n:"",lab:M_("บัตรข้อมูลท้าทายกฎ: SiO₂ กับ CO₂ สูตรคล้ายกัน","Rule-challenge card: SiO₂ and CO₂ have similar formulas"),cmp:true,ids:["sio2","co2s"]}]},
+  {step:4,work:"group",reveal:true,items:[
+    NOG("4.1","ปรับปรุงแบบจำลองและสร้างกฎของกลุ่ม","Revise the model and write the group rule"),
+    {n:"4.2",lab:M_("อธิบาย CER · ผู้ควบคุม AR เปิดแบบจำลองประกอบคำอธิบาย","CER · open the model as evidence"),ids:["dia","gra","sio2","co2s"]},
+    {n:"4.2",lab:M_("ครูฉายเพชรและแกรไฟต์คู่กัน (ครูเปิดจากหน้าครู)","Teacher projects diamond and graphite together (Teacher page)"),work:"teacher"}]},
+  {step:5,work:"ind",items:[
+    {n:"5.1",lab:M_("ภารกิจ \"กระดาษทรายและถ่านไฟฉาย\" SiC และแกรไฟต์ · เขียนใบกิจกรรมที่ 9.4 ให้เสร็จก่อนเปิด","Task \"Sandpaper and battery rod\" SiC and graphite · finish sheet 9.4 first"),ids:["sic","gra"]},
+    {n:"5.2",lab:M_("บัตรท้ายคาบและเชื่อมสู่ครั้งถัดไป · มอบหมายด่านท้าทายโหมดโครงร่างตาข่าย","Exit card and link · assign the network-solid challenge"),work:"home",challenge:"net"}]}
+ ]
+};
+GAME.views={
+  br2:{mode:"imf",ids:["Br2"],label:M_("Br₂ แยกจากกันขณะเดือด (ชั่วโมงที่ 1–2 ขั้นที่ 4 ข้อ 4.3 วงรอบที่ 1)","Br₂ separating while boiling (hours 1–2, Step 4, 4.3, cycle 1)"),ctx:{hr:"h12",step:4,sub:M_("วงรอบที่ 1 ข้อ 4.3","Cycle 1, 4.3"),work:"teacher",stage:1}},
+  water:{mode:"hb",ids:["hH2O"],label:M_("พันธะไฮโดรเจนในน้ำ (ชั่วโมงที่ 1–2 ขั้นที่ 4 ข้อ 4.3 วงรอบที่ 2)","Hydrogen bonds in water (hours 1–2, Step 4, 4.3, cycle 2)"),ctx:{hr:"h12",step:4,sub:M_("วงรอบที่ 2 ข้อ 4.3","Cycle 2, 4.3"),work:"teacher",reveal:true}},
+  mixes:{mode:"hb",ids:["hEtW","hOilW"],label:M_("น้ำผสมเอทานอลและน้ำผสมน้ำมัน (ข้อ 4.3 วงรอบที่ 2)","Water with ethanol and with oil (4.3, cycle 2)"),ctx:{hr:"h12",step:4,sub:M_("วงรอบที่ 2 ข้อ 4.3","Cycle 2, 4.3"),work:"teacher",reveal:true}},
+  cgra:{mode:"net",ids:["dia","gra"],label:M_("เพชรและแกรไฟต์คู่กัน (ชั่วโมงที่ 3 ขั้นที่ 4 ข้อ 4.2)","Diamond and graphite together (hour 3, Step 4, 4.2)"),ctx:{hr:"h3",step:4,sub:M_("ข้อ 4.2","4.2"),work:"teacher",stage:1}}
+};
+GAME.guide={
+th:["<h2>ก่อนสอน</h2><ol><li>ฝากไฟล์เกมไว้บนเว็บ https ของครู ทำ QR code จากแท็บลิงก์ และใส่ลิงก์แบบฟอร์มในบรรทัด FORM_URL</li><li>วางอุปกรณ์ AR ให้ห่างจากหลอดน้ำผสมเอทานอลและน้ำมัน</li></ol>",
+"<h2>วงรอบที่ 1 (โหมดแรงระหว่างโมเลกุล)</h2><ol><li><b>ขั้นที่ 3:</b> F₂ Cl₂ Br₂ I₂ กด ① ให้ความร้อน โมเลกุลหลุดออกจากของเหลวทั้งโมเลกุล แตะโมเลกุลใดก็ได้เพื่อดูกลุ่มหมอกอิเล็กตรอนที่เลื่อนไปมาพร้อม δ+ δ− ชั่วขณะ กด ② ดูเส้นแรงระหว่างโมเลกุลและจุดเดือดตามตาราง ก.1</li>",
+"<li><b>บัตรที่ 1:</b> ใช้ปุ่ม \"วางเรียงกัน\" CH₃CHO (มีขั้ว เดือด 20 °C) กับ C₃H₈ (ไม่มีขั้ว −42 °C)</li><li><b>ข้อ 4.3 ครูฉาย:</b> เปิดลิงก์ Br₂ (เริ่มที่การให้ความร้อน) คู่กับภาพขวด Br₂</li><li><b>ข้อ 5.1:</b> บิวเทน (−1 °C) และแอซีโทน (56 °C)</li></ol>",
+"<h2>วงรอบที่ 2 (โหมดพันธะไฮโดรเจน)</h2><ol><li><b>ข้อ 3.2:</b> H₂O H₂S HF HCl กด ① ดู δ+ δ− และ ② ไฮไลต์แรง เส้นประสีชมพูหนาคือพันธะไฮโดรเจน เส้นประสีเหลืองบางคือแรงระหว่างขั้ว จากนั้นเปิดการผสมเอทานอลกับน้ำ และน้ำมันกับน้ำ</li>",
+"<li><b>บัตรที่ 2:</b> ใช้ปุ่ม \"วางเรียงกัน\" เอทานอล (78 °C) กับไดเมทิลอีเทอร์ (−24 °C)</li><li><b>ข้อ 4.3 ครูฉาย:</b> เปิดลิงก์พันธะไฮโดรเจนในน้ำ และลิงก์น้ำผสมเอทานอลกับน้ำผสมน้ำมัน วางคู่กับหลอดจริง อภิปรายว่าพันธะไฮโดรเจนเป็นแรงระหว่างโมเลกุล ไม่ใช่พันธะโคเวเลนต์</li></ol>",
+"<h2>ชั่วโมงที่ 3 (โหมดโครงร่างตาข่าย)</h2><ol><li><b>ขั้นที่ 3:</b> เพชร แกรไฟต์ SiO₂ CO₂ กด ① แล้วแตะอะตอมเพื่อนับพันธะ แกรไฟต์มีจุดสีเหลืองแทนอิเล็กตรอนที่เคลื่อนที่ได้ตามชั้น กด ② ให้ความร้อน โครงร่างตาข่ายพันธะเปลี่ยนเป็นสีแดง (ต้องสลายพันธะ) ส่วน CO₂ โมเลกุลแยกจากกันโดยพันธะยังอยู่</li>",
+"<li><b>บัตรข้อมูล:</b> ใช้ปุ่ม \"วางเรียงกัน\" SiO₂ กับ CO₂</li><li><b>ข้อ 4.2 ครูฉาย:</b> เปิดลิงก์เพชรและแกรไฟต์คู่กัน วางคู่กับไส้ดินสอที่ทำให้หลอด LED ติด</li><li><b>ข้อ 5.1:</b> SiC และแกรไฟต์</li></ol>",
+"<h2>ด่านท้าทายและรหัสผล</h2><p>อักษรนำ X = แรงระหว่างโมเลกุล Y = พันธะไฮโดรเจน Z = โครงร่างตาข่าย ด่านท้าทายใช้จุดเดือดและโครงสร้างจากใบความรู้ที่ 9.1–9.3 ตาราง ก.1 ก.2 และบัตรที่ 2 ของแผนที่ 9 เท่านั้น จุดเดือดของบิวเทนและแอซีโทนในข้อ 5.1 แสดงเป็นข้อความตามเฉลย (เดือดต่ำกว่า/สูงกว่า) เพราะแผนไม่ได้ให้ตัวเลข</p>",
+"<table><tr><th>ด่าน</th><th>ข้อ</th></tr><tr><td>แรงระหว่างโมเลกุล</td><td>H₂S–H₂Se, H₂Se–H₂Te, F₂–C₃H₈, Cl₂–C₃H₈, C₃H₈–CH₃OCH₃, Br₂–CH₃CHO</td></tr><tr><td>พันธะไฮโดรเจน</td><td>CH₃OH CH₃F CH₂O HCOOH PH₃ N₂H₄</td></tr><tr><td>โครงร่างตาข่าย</td><td>I₂ Br₂ (ประเภทของแข็ง), พันธะของ C ในเพชรและแกรไฟต์, O ใน SiO₂ ต่อกับ Si กี่อะตอม, แรงระหว่างชั้นแกรไฟต์</td></tr></table>"].join(""),
+en:["<h2>Overview</h2><p>Cycle 1: F₂, Cl₂, Br₂, I₂; ① heat (molecules leave whole; tap to see instantaneous dipoles), ② forces and boiling points. Card 1: CH₃CHO vs C₃H₈. 5.1: butane and acetone.</p>",
+"<p>Cycle 2: H₂O, H₂S, HF, HCl and two mixtures; pink dashes are hydrogen bonds, yellow dashes dipole–dipole. Card 2: ethanol vs dimethyl ether.</p><p>Hour 3: diamond, graphite, SiO₂, CO₂; tap atoms to count bonds; ② heats. 5.1: SiC and graphite.</p>",
+"<h2>Challenges</h2><p>Code letters: X = intermolecular forces, Y = hydrogen bonds, Z = network solids.</p>"].join("")
+};
+
+// =====================================================================
+// เอนจินกลางของชุดเกม AR พันธะเคมี (ต้นแบบจากเกมแผนที่ 8)
+// =====================================================================
+var G = GAME;
+var BASE_STR = {
+ th:{
+  creditLabel:"ผู้สร้างและพัฒนาเกม:", creditName:"นางมัณฑนา ไชยสงค์ ครูโรงเรียนธาตุพนม",
+  home:"← หน้าแรก", compare:"วางเรียงกัน", teacherTitle:"สำหรับครู", teacherDesc:"คู่มือครู ลิงก์ทำ QR code และถอดรหัสผล",
+  chPrefix:"ด่านท้าทาย", chDesc:"ภารกิจต่อที่บ้าน 6 ข้อ · ได้รหัสผลส่งครู",
+  hideAgain:"ซ่อนอีกครั้ง", restart:"เริ่มใหม่", spin:"หมุนอัตโนมัติ",
+  dragHint:"ลากนิ้วเพื่อหมุน · ใช้สองนิ้วย่อขยาย · แตะสองครั้งเพื่อกลับมุมเดิม",
+  camFail:"เปิดกล้องไม่ได้ในหน้านี้ ให้เปิดเกมจากลิงก์เว็บที่ครูฝากไว้ (https) แล้วอนุญาตให้ใช้กล้อง",
+  camOn:"กล้องเปิดแล้ว แตะพื้นที่ว่างเพื่อวางแบบจำลองบนโต๊ะ ลากนิ้วเพื่อหมุน ใช้สองนิ้วเพื่อย่อขยาย",
+  q:"ข้อ", of:"จาก", helper:"ข้อมูลช่วย", right:"ถูกต้อง", wrong:"ยังไม่ถูก", answerIs:"คำตอบคือ", next:"ข้อถัดไป →", finish:"ดูผลและรหัส →",
+  sumTitle:"สรุปผลด่านท้าทาย", score:"คะแนน", wrongList:"ข้อที่ตอบผิด (เขียนเหตุผลของข้อนี้ลงในแบบฟอร์ม)", allRight:"ตอบถูกทุกข้อ",
+  yourCode:"รหัสผลของคุณ", copy:"คัดลอกรหัส", copied:"คัดลอกแล้ว", copyFail:"คัดลอกไม่ได้ ให้จดรหัสนี้แทน",
+  openForm:"เปิดแบบฟอร์มส่งรหัสผล", noForm:"ส่งรหัสผลและเหตุผลของข้อที่ผิดทางแบบฟอร์มออนไลน์ของห้องตามที่ครูกำหนด",
+  certName:"ชื่อ–สกุล สำหรับเกียรติบัตร", makeCert:"สร้างเกียรติบัตร", saveCert:"บันทึกภาพเกียรติบัตร",
+  saveHint:"ถ้าปุ่มบันทึกใช้ไม่ได้ ให้กดค้างที่ภาพแล้วเลือกบันทึกภาพ", retry:"เล่นอีกครั้ง",
+  certTitle:"เกียรติบัตร", certFor:"ผ่าน", certScore:"ตอบถูก", certGive:"ขอมอบให้ไว้เพื่อแสดงว่า",
+  tabGuide:"คู่มือครู", tabLinks:"ลิงก์สำหรับ QR code", tabDecode:"ถอดรหัสผล", tabForm:"แบบฟอร์มและไฟล์เกม",
+  decodeHint:"วางรหัสผลจากคอลัมน์ในชีตของแบบฟอร์ม (บรรทัดละ 1 รหัส หรือคั่นด้วยช่องว่าง)", decodeBtn:"สรุปผล",
+  item:"ข้อ/สาร", nWrong:"จำนวนผู้ตอบผิด", pct:"ร้อยละ", valid:"รหัสที่อ่านได้", invalid:"รหัสที่อ่านไม่ได้", otherGame:"รหัสของเกมอื่น",
+  hot:"เกินร้อยละ 30 · ใช้เป็นคำถามข้อสุดท้ายของกิจวัตรที่ 1",
+  formLabel:"ลิงก์แบบฟอร์มรับรหัสผล (บันทึกไว้ในเครื่องนี้เท่านั้น)", saveForm:"บันทึก",
+  formNote:"เครื่องของนักเรียนไม่ได้รับค่านี้ ให้ครูใส่ลิงก์แบบฟอร์มในบรรทัด var FORM_URL = \"\" ที่ต้นสคริปต์ของไฟล์เกมก่อนฝากเว็บ หรือต่อท้ายลิงก์เกมด้วย ?form=ลิงก์แบบฟอร์ม",
+  dlGame:"ดาวน์โหลดไฟล์เกม (HTML) สำหรับฝากเว็บ", dlNote:"กล้อง AR ทำงานเมื่อเปิดเกมจากเว็บ https ของครูเอง เช่น Netlify Drop หน้านี้ใน Claude เปิดกล้องไม่ได้",
+  copyLink:"คัดลอก", openNow:"เปิด", revealShort:"แสดงผลทันที ไม่ต้องทำนายซ้ำ",
+  noGame12:"ขั้นที่ 1 และขั้นที่ 2 ไม่ใช้เกม ตามแผน รายการด้านล่างเริ่มจากขั้นที่ 3 และแสดงทุกข้อตามลำดับในแผน ข้อที่ไม่ใช้เกมแสดงเป็นตัวอักษรสีจาง",
+  startCh:"เริ่มด่านท้าทาย", lkStudents:"ลิงก์สำหรับนักเรียน (นำไปทำ QR code)",
+  lkTeacherScreen:"ภาพสำหรับครูฉายขึ้นจอ (กด เปิด บนเครื่องที่ต่อจอ แล้วกด Aa ขยายตัวอักษร)", lkOther:"อื่น ๆ", lkTeacher:"หน้าครู",
+  linksNote:"ลิงก์ทั้งหมดใช้ส่วนท้าย # เพื่อเปิดเข้าโหมดนั้นทันที นำลิงก์ไปสร้าง QR code กลุ่มละ 1 ชุดสำหรับงานกลุ่ม และฉาย QR code ขึ้นจอสำหรับงานเดี่ยว ใช้ได้เมื่อเปิดจากเว็บที่ครูฝากไว้",
+  predictFirst:"ทำนายก่อนเปิด: เขียนคำทำนายลงในใบกิจกรรมก่อน แล้วจึงแตะเปิดดูผล", waitNext:"ทำขั้นนี้ให้เสร็จก่อน แล้วจึงเปิดชั้นถัดไป",
+  ctxStep3:"ขั้นที่ 3", ctxStep4:"ขั้นที่ 4", ctxStep5:"ขั้นที่ 5", itemPfx:"ข้อ ", chCtx:"ด่านท้าทาย", chCtxLong:"ด่านท้าทาย (ภารกิจต่อที่บ้าน)"
+ },
+ en:{
+  creditLabel:"Created and developed by:", creditName:"Mrs. Mantana Chaiyasong, Thatphanom School",
+  home:"← Home", compare:"Side by side", teacherTitle:"For teachers", teacherDesc:"Teacher guide, links for QR codes, result-code decoder",
+  chPrefix:"Challenge", chDesc:"6 items for home · get a result code for your teacher",
+  hideAgain:"Hide again", restart:"Start over", spin:"Auto-rotate",
+  dragHint:"Drag to rotate · pinch to zoom · double-tap to reset",
+  camFail:"The camera cannot open on this page. Open the game from the teacher's web link (https) and allow the camera.",
+  camOn:"Camera on. Tap an empty spot to place the model on the table; drag to rotate; pinch to zoom.",
+  q:"Item", of:"of", helper:"Hint", right:"Correct", wrong:"Not yet", answerIs:"Answer:", next:"Next →", finish:"See result and code →",
+  sumTitle:"Challenge summary", score:"Score", wrongList:"Items answered wrongly (write your reason for these in the form)", allRight:"All answers correct",
+  yourCode:"Your result code", copy:"Copy code", copied:"Copied", copyFail:"Could not copy; write the code down instead",
+  openForm:"Open the result form", noForm:"Send your code and reasons for wrong items through your class's online form as your teacher instructs",
+  certName:"Name for the certificate", makeCert:"Make certificate", saveCert:"Save certificate image",
+  saveHint:"If saving does not work, long-press the image and choose Save image", retry:"Play again",
+  certTitle:"Certificate", certFor:"Completed the", certScore:"Correct answers", certGive:"This certifies that",
+  tabGuide:"Teacher guide", tabLinks:"Links for QR codes", tabDecode:"Decode results", tabForm:"Form and game file",
+  decodeHint:"Paste result codes from the form's sheet (one per line or separated by spaces)", decodeBtn:"Summarise",
+  item:"Item", nWrong:"Students wrong", pct:"Percent", valid:"Codes read", invalid:"Unreadable codes", otherGame:"Codes from other games",
+  hot:"Over 30% · use as the last question of Routine 1",
+  formLabel:"Result form link (saved on this device only)", saveForm:"Save",
+  formNote:"Students' devices do not receive this. Put the form link in the line var FORM_URL = \"\" at the top of the game's script before hosting, or add ?form=<link> to the game link.",
+  dlGame:"Download the game file (HTML) for hosting", dlNote:"The AR camera works when the game is opened from your own https site, e.g. Netlify Drop. This page inside Claude cannot open the camera.",
+  copyLink:"Copy", openNow:"Open", revealShort:"Results show at once",
+  noGame12:"Steps 1 and 2 do not use the game. The list starts at Step 3 and shows every item in plan order; items without the game appear in grey.",
+  startCh:"Start challenge", lkStudents:"Links for students (make QR codes)",
+  lkTeacherScreen:"Teacher screen views (press Open on the projected device, then Aa for large text)", lkOther:"Other", lkTeacher:"Teacher page",
+  linksNote:"Each link ends with # to open that mode directly. Turn the links into QR codes: one set per group for group work, and project them for individual work. They work when opened from your hosted site.",
+  predictFirst:"Predict first: write your prediction on the sheet, then reveal.", waitNext:"Finish this step before opening the next layer.",
+  ctxStep3:"Step 3", ctxStep4:"Step 4", ctxStep5:"Step 5", itemPfx:"item ", chCtx:"Challenge", chCtxLong:"Challenge (home task)"
+ }
+};
+var STEP_NAME = {3:{th:"ทดสอบแบบจำลอง",en:"Test the model"},4:{th:"ปรับปรุงและเชื่อมโยง",en:"Modify and connect"},5:{th:"ประยุกต์ใช้",en:"Apply"}};
+var STEP_LONG = {3:{th:"ขั้นที่ 3 ทดสอบแบบจำลองด้วยเกม AR",en:"Step 3 · Test the model with AR"},4:{th:"ขั้นที่ 4 ปรับปรุงแบบจำลองและเชื่อมโยงสามระดับ",en:"Step 4 · Modify and connect"},5:{th:"ขั้นที่ 5 ประยุกต์ใช้แบบจำลองและสะท้อนคิด",en:"Step 5 · Apply and reflect"}};
+var WORK_SHORT = {nogame:{th:"ไม่ใช้เกม",en:"No game"},group:{th:"งานกลุ่ม",en:"Group work"},ind:{th:"งานเดี่ยว",en:"Individual"},teacher:{th:"ครูฉายขึ้นจอ",en:"Teacher screen"},home:{th:"ภารกิจที่บ้าน",en:"Home task"}};
+var WORK = {group:{th:"งานกลุ่ม (เครื่องกลุ่ม)",en:"Group work (group device)"},ind:{th:"งานเดี่ยว (เครื่องของตนเอง)",en:"Individual work (own device)"},teacher:{th:"ครูฉายขึ้นจอ",en:"Teacher screen"},home:{th:"ภารกิจต่อที่บ้าน (เครื่องของตนเอง)",en:"Home task (own device)"}};
+var HOURS = G.hours || {h12:{th:"ชั่วโมงที่ 1–2",en:"Hours 1–2"},h3:{th:"ชั่วโมงที่ 3",en:"Hour 3"}};
+
+var lang="th";
+try{ if(localStorage.getItem("chemar_lang")==="en") lang="en"; }catch(e){}
+function t(k){ var s=G.str&&G.str[lang]&&G.str[lang][k]; if(s!==undefined) return s; s=BASE_STR[lang][k]; if(s!==undefined) return s; s=G.str&&G.str.th&&G.str.th[k]; return s!==undefined?s:(BASE_STR.th[k]||k); }
+function L(o){ if(o===undefined||o===null) return ""; if(typeof o==="string") return o; return lang==="en"?(o.en!==undefined?o.en:o.th):o.th; }
+function M_(th,en){return {th:th,en:en};}
+function O(id){ return G.objs[id]; }
+function F(id){ var o=G.objs[id]; return o?(o.f||id):id; }
+function modeTitle(m){ return L(G.modes[m].title); }
+function chTitle(m){ if(G.modes[m].chName) return L(G.modes[m].chName); return t("chPrefix")+(lang==="en"?" · ":"")+L(G.modes[m].short||G.modes[m].title); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+function fmt(n){ var s=Math.abs(n)>=1000?Math.abs(n).toLocaleString("en-US"):String(Math.abs(n)); return (n<0?"−":"")+s; }
+function sgn(n){ return (n>0?"+":"")+fmt(n); }
+
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-t]").forEach(function(el){el.textContent=t(el.getAttribute("data-t"));});
+  ["langBtn1","langBtn2","langBtn3","langBtn4"].forEach(function(id){var b=document.getElementById(id);if(b)b.textContent=lang==="th"?"EN":"ไทย";});
+  document.title=t("title");
+  renderHome();
+}
+function toggleLang(){ lang=lang==="th"?"en":"th"; try{localStorage.setItem("chemar_lang",lang);}catch(e){} applyLang(); rerender(); }
+function rerender(){
+  if(cur.screen==="picker") showPicker(cur.mode);
+  else if(cur.screen==="viewer") renderSheet();
+  else if(cur.screen==="summary") showSummary();
+  else if(cur.screen==="teacher") tTab(cur.ttab||"guide");
+}
+function renderHome(){
+  var h="";
+  G.order.forEach(function(m){var M=G.modes[m]; if(M.noPicker) return;
+    h+="<button class='card mode' style='--mc:"+M.color+"' onclick=\"go('m-"+m+"')\"><b>"+L(M.title)+"</b><span>"+L(M.desc)+"</span></button>";});
+  G.order.forEach(function(m){var M=G.modes[m];if(!M.challenge)return;
+    h+="<button class='card ch' onclick=\"go('ch-"+m+"')\"><b>"+chTitle(m)+"</b><span>"+t("chDesc").replace("6",M.challenge.items.length)+(M.chWhen?" · "+L(M.chWhen):"")+"</span></button>";});
+  h+="<button class='card tc' onclick=\"go('teacher')\"><b>"+t("teacherTitle")+"</b><span>"+t("teacherDesc")+"</span></button>";
+  var el=document.getElementById("homeCards"); if(el) el.innerHTML=h;
+}
+
+// ---------- สถานะ ----------
+var cur={screen:"home",mode:G.order[0],list:[],idx:0,compare:null,ctx:null,ch:null,ttab:"guide",S:null};
+function show(id){ document.querySelectorAll(".screen").forEach(function(s){s.classList.toggle("show",s.id===id);}); cur.screen=id; }
+function go(h){ if(location.hash==="#"+h) route(); else location.hash=h; }
+function route(){
+  var h=decodeURIComponent((location.hash||"").replace("#",""));
+  stopCam();
+  var m;
+  if((m=/^m-(\w+)$/.exec(h))&&G.modes[m[1]]&&!G.modes[m[1]].noPicker){showPicker(m[1]);return;}
+  if((m=/^ch-(\w+)$/.exec(h))&&G.modes[m[1]]&&G.modes[m[1]].challenge){startChallenge(m[1]);return;}
+  if(h==="teacher"){show("teacher");tTab(cur.ttab||"guide");return;}
+  if((m=/^t-(\w+)$/.exec(h))&&G.views&&G.views[m[1]]){var V=G.views[m[1]];
+    if(V.ids.length>1) openCompare(V.mode,V.ids,V.ctx); else openViewer(V.mode,V.ids,0,V.ctx); return;}
+  if((m=/^v-(\w+)-([\w,]+)$/.exec(h))&&G.modes[m[1]]){var ids=m[2].split(",").filter(function(x){return G.objs[x];});
+    if(ids.length>1){openCompare(m[1],ids,null);return;} if(ids.length===1){openViewer(m[1],ids,0,null);return;}}
+  show("home");
+}
+window.addEventListener("hashchange",route);
+
+// ---------- บริบทในแผน ----------
+function ctxText(c,short){
+  if(!c) return "";
+  var parts=short?[t("ctxStep"+c.step),L(c.ss||c.sub),L(WORK_SHORT[c.work])]:[L(HOURS[c.hr]),L(STEP_LONG[c.step]),L(c.sub),L(WORK[c.work])];
+  if(c.ch) parts=[t(short?"chCtx":"chCtxLong")];
+  return parts.filter(Boolean).join(" · ");
+}
+function itemCtx(mode,bi,ii){
+  var B=G.plan[mode],blk=B[bi],it=blk.items[ii],cyc=null;
+  for(var k=bi;k>=0;k--){if(B[k].cyc){cyc=B[k];break;}}
+  var showCyc=cyc&&cyc.isCycle&&blk.step!==5;
+  var n=it.n||"";
+  var ssTh=(showCyc?cyc.cyc.th+" ":"")+(n?"ข้อ "+n:L2(it.lab,"th")), ssEn=(showCyc?cyc.cyc.en+", ":"")+(n?"item "+n:L2(it.lab,"en"));
+  return {hr:blk.hr||G.modes[mode].hr,step:blk.step,ss:{th:ssTh,en:ssEn},sub:it.lab,work:it.work||blk.work,reveal:!!(it.reveal||blk.reveal)};
+}
+function L2(o,l){return o?(l==="en"?o.en:o.th):"";}
+
+// ---------- หน้าเลือก ----------
+function showPicker(mode){
+  cur.mode=mode; show("picker"); var M=G.modes[mode];
+  var chip=document.getElementById("pickChip"); chip.style.setProperty("--mc",M.color); chip.textContent=L(HOURS[M.hr]);
+  document.getElementById("pickTitle").textContent=L(M.title);
+  document.getElementById("pickSub").textContent=L(M.pickSub);
+  var html="<p class='note'>"+(M.noGameNote?L(M.noGameNote):t("noGame12"))+"</p>";
+  G.plan[mode].forEach(function(blk,bi){
+    if(blk.cyc){html+="<h2 class='cyc'>"+L(blk.cyc)+" <span>"+L(blk.title)+"</span></h2>";return;}
+    html+="<div class='stepblk s"+blk.step+"'><div class='stephead'><span class='stepchip'>"+(lang==="en"?"Step ":"ขั้นที่ ")+blk.step+" · "+L(STEP_NAME[blk.step])+"</span><span class='workchip'>"+L(WORK_SHORT[blk.work])+"</span>"+(blk.reveal?"<span class='hint'>"+t("revealShort")+"</span>":"")+"</div>";
+    blk.items.forEach(function(it,ii){
+      var w=it.work&&it.work!==blk.work?" <span class='workchip'>"+L(WORK_SHORT[it.work])+"</span>":"";
+      html+="<div class='item"+(it.work==="nogame"?" nogame":"")+"'><div class='itlab'><b>"+(it.n?(lang==="en"?"":"ข้อ ")+it.n:"")+"</b> "+L(it.lab)+w+"</div><div class='grid'>";
+      if(it.cmp) html+="<button class='cmpbtn' onclick=\"openCompare('"+mode+"',G.plan['"+mode+"']["+bi+"].items["+ii+"].ids,itemCtx('"+mode+"',"+bi+","+ii+"))\">"+t("compare")+"</button>";
+      if(it.ids) it.ids.forEach(function(id,k){html+="<button onclick=\"openViewer('"+mode+"',G.plan['"+mode+"']["+bi+"].items["+ii+"].ids,"+k+",itemCtx('"+mode+"',"+bi+","+ii+"))\">"+F(id)+"</button>";});
+      if(it.challenge) html+="<button class='primary' onclick=\"go('ch-"+it.challenge+"')\">"+t("startCh")+"</button>";
+      html+="</div></div>";
+    });
+    html+="</div>";
+  });
+  document.getElementById("pickGroups").innerHTML=html;
+}
+
+// ---------- ตัวแสดง ----------
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),DPR=1,W=0,H=0;
+var view={R:null,zoom:1,ax:0.5,ay:0.42};
+function MODE(){ return G.modes[cur.mode]; }
+function nStages(){ return (MODE().stages||[]).length; }
+function resetView(){ var M=MODE(); view.R=M.view0?M.view0():mmul(rotX(-0.32),rotY(0.55)); view.zoom=1; view.ax=0.5; view.ay=cur.ch?0.34:(M.ay||0.4); }
+function openViewer(mode,list,idx,c){ cur.mode=mode;cur.list=list.slice();cur.idx=idx;cur.compare=null;cur.ch=null;cur.ctx=c||null; resetState(); show("viewer"); resize(); renderSheet(); }
+function openCompare(mode,ids,c){ cur.mode=mode;cur.compare=ids.slice();cur.list=[];cur.ch=null;cur.ctx=c||null; resetState(); show("viewer"); resize(); renderSheet(); }
+function curIds(){ return cur.compare?cur.compare:[cur.list[cur.idx]]; }
+function curObjs(){ return curIds().map(function(id){return G.objs[id];}); }
+function resetState(keepView){
+  var M=MODE(); cur.S={stage:0,t0:now(),sel:[],tog:{},x:{},hits:[],msg:""};
+  var td=M.tog||{}; for(var k in td) cur.S.tog[k]=(typeof td[k]==='object')?!!td[k].on:!!td[k];
+  curIds().forEach(function(id){cur.S.x[id]={}; if(M.init) M.init(G.objs[id],cur.S,cur.S.x[id]);});
+  if(cur.ctx&&cur.ctx.tog) for(var k2 in cur.ctx.tog) cur.S.tog[k2]=cur.ctx.tog[k2];
+  if(!keepView) resetView();
+  if(cur.ctx&&!cur.ch){ if(cur.ctx.reveal) setStageRaw(nStages()); else if(cur.ctx.stage!==undefined) setStageRaw(cur.ctx.stage); }
+}
+function now(){ return (window.performance&&performance.now)?performance.now():Date.now(); }
+function setStageRaw(s){ var M=MODE(); cur.S.stage=s; cur.S.t0=now(); curIds().forEach(function(id){ if(M.onStage) M.onStage(G.objs[id],cur.S,cur.S.x[id],s); }); }
+function setStage(s){
+  var M=MODE();
+  if(s>cur.S.stage&&M.canNext&&!cur.compare){ var o=curObjs()[0],r=M.canNext(o,cur.S,cur.S.x[o.id],s); if(r!==true){ toast(r||t("waitNext"),3500); return; } }
+  setStageRaw(s); renderSheet();
+}
+function viewerBack(){ stopCam(); if(cur.ch){go("home");return;} go("m-"+cur.mode); }
+function navMol(d){ cur.idx=(cur.idx+d+cur.list.length)%cur.list.length; resetState(); renderSheet(); }
+function act(name,arg){ var M=MODE(),o=curObjs()[0]; if(M.act) M.act(name,arg,o,cur.S,cur.S.x[o.id]); renderSheet(); }
+function flip(k){ cur.S.tog[k]=!cur.S.tog[k]; var M=MODE(); if(M.onTog) curObjs().forEach(function(o){M.onTog(k,o,cur.S,cur.S.x[o.id]);}); renderSheet(); }
+function tog(k,label){ return "<button class='"+(cur.S.tog[k]?"on":"")+"' onclick=\"flip('"+k+"')\">"+label+"</button>"; }
+function stageBtn(i){ var M=MODE(); return "<button class='mbtn' style='--mc:"+M.color+"' onclick='setStage("+i+")'>"+L(M.stages[i-1])+"</button>"; }
+
+function renderSheet(){
+  var M=MODE(),os=curObjs(),o=os[0],S=cur.S,h="";
+  var title=os.map(function(x){return x.f||x.id;}).join(" · ");
+  document.getElementById("vTitle").innerHTML="<span class='chip mode' style='--mc:"+M.color+"'>"+L(M.short||M.title)+"</span> "+title;
+  var vs=document.getElementById("vStep"); vs.textContent=ctxText(cur.ctx,true); vs.style.setProperty("--mc",M.color);
+  document.getElementById("viewer").style.setProperty("--mc",M.color);
+  if(cur.ch){renderChallengeSheet();return;}
+  var nav=(!cur.compare&&cur.list.length>1)?"<button onclick='navMol(-1)'>‹</button><button onclick='navMol(1)'>›</button>":"";
+  var n=nStages(),single=!cur.compare;
+  if(S.stage===0){
+    h+="<div class='hint'>"+L(M.hidden||{th:t("predictFirst"),en:t("predictFirst")})+"</div>";
+    if(M.info0) os.forEach(function(x){var s=M.info0(x,S,S.x[x.id]);if(s)h+="<div class='info'>"+s+"</div>";});
+  }else{
+    os.forEach(function(x){var s=M.info?M.info(x,S,S.x[x.id]):"";if(s)h+="<div class='info'>"+s+"</div>";});
+  }
+  if(single&&M.ctrl){var c=M.ctrl(o,S,S.x[o.id]);if(c)h+=c;}
+  if(M.stageHint&&M.stageHint[S.stage]) h+="<div class='hint'>"+L(M.stageHint[S.stage])+"</div>";
+  var row="";
+  if(S.stage<n) row+=stageBtn(S.stage+1);
+  if(S.stage>0){
+    if(M.tog) for(var k in M.tog){ var td=M.tog[k]; if(td.minStage&&S.stage<td.minStage) continue; if(td.single&&!single) continue; row+=tog(k,L(td.label)); }
+    row+=tog("spin",t("spin"));
+    row+="<button onclick='resetObj()'>"+(M.restartLabel?L(M.restartLabel):t("restart"))+"</button>";
+  }
+  row+=nav;
+  h+="<div class='row'>"+row+"</div>";
+  if(M.extra) os.forEach(function(x){var s=M.extra(x,S,S.x[x.id]);if(s)h+=s;});
+  h+="<div class='hint'>"+(M.dragHint?L(M.dragHint):t("dragHint"))+"</div>";
+  document.getElementById("sheet").innerHTML=h;
+}
+function resetObj(){ var c=cur.ctx; cur.ctx=null; resetState(true); cur.ctx=c; if(c&&c.tog) for(var k in c.tog) cur.S.tog[k]=c.tog[k]; renderSheet(); }
+
+// ---------- คณิตศาสตร์ 3 มิติและตัววาด ----------
+var D2R=Math.PI/180;
+function rotX(a){var c=Math.cos(a),s=Math.sin(a);return [[1,0,0],[0,c,-s],[0,s,c]];}
+function rotY(a){var c=Math.cos(a),s=Math.sin(a);return [[c,0,s],[0,1,0],[-s,0,c]];}
+function rotZ(a){var c=Math.cos(a),s=Math.sin(a);return [[c,-s,0],[s,c,0],[0,0,1]];}
+function mmul(A,B){var C=[[0,0,0],[0,0,0],[0,0,0]];for(var i=0;i<3;i++)for(var j=0;j<3;j++)for(var k=0;k<3;k++)C[i][j]+=A[i][k]*B[k][j];return C;}
+function mv(Mx,v){return [Mx[0][0]*v[0]+Mx[0][1]*v[1]+Mx[0][2]*v[2],Mx[1][0]*v[0]+Mx[1][1]*v[1]+Mx[1][2]*v[2],Mx[2][0]*v[0]+Mx[2][1]*v[1]+Mx[2][2]*v[2]];}
+function vadd(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+function vsub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+function vmul(a,k){return [a[0]*k,a[1]*k,a[2]*k];}
+function vlen(a){return Math.hypot(a[0],a[1],a[2]);}
+function vnorm(a){var l=vlen(a)||1;return [a[0]/l,a[1]/l,a[2]/l];}
+function vlerp(a,b,u){return [a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u,a[2]+(b[2]-a[2])*u];}
+function ease(u){u=Math.max(0,Math.min(1,u));return u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+var CAMD=9;
+function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener("resize",function(){if(cur.screen==="viewer")resize();});
+function FONT(){ return getComputedStyle(document.body).fontFamily; }
+function bigK(){return document.body.classList.contains("bigtext")?1.35:1;}
+function shade(hex,amt){
+  var n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;
+  var f=function(c){return Math.round(amt>0?c+(255-c)*amt:c*(1+amt));};
+  return "rgb("+f(r)+","+f(g)+","+f(b)+")";
+}
+function hexA(hex,a){var n=parseInt(hex.slice(1),16);return "rgba("+(n>>16)+","+(n>>8&255)+","+(n&255)+","+a+")";}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+// ตัววาด R: พิกัดแบบจำลอง → จอ, คิวเรียงความลึก, ป้าย และป้ายลอย (billboard)
+var R={
+  q:[],ov:[],off:0,sc:40,n:1,k:0,
+  begin:function(n){ var M=MODE(); this.n=n; var u=M.unit||1, gap=(M.gap||4.4);
+    var s=n>1?Math.min(0.95*W/(gap*n),H*0.62*0.13):Math.min(W,H*0.62)*0.22; this.sc=s*view.zoom*u; this.gap=gap/u; },
+  slot:function(k){ this.k=k; this.off=(k-(this.n-1)/2)*this.gap; this.q=[]; this.ov=[]; },
+  P:function(p){ var r=mv(view.R,p),f=CAMD/(CAMD-r[2]); return {x:W*view.ax+(r[0]*f+this.off)*this.sc,y:H*view.ay-r[1]*f*this.sc,z:r[2],f:f}; },
+  B:function(u,v){ return {x:W*view.ax+(this.off+u)*this.sc,y:H*view.ay-v*this.sc}; }, // ป้ายลอยไม่หมุนตามมุมมอง
+  push:function(z,fn){ this.q.push({z:z,f:fn}); },
+  over:function(fn){ this.ov.push(fn); },
+  flush:function(){ this.q.sort(function(a,b){return a.z-b.z;}); this.q.forEach(function(i){i.f();}); this.q=[]; this.ov.forEach(function(f){f();}); this.ov=[]; },
+  ball:function(p,rad,col,label,o){ o=o||{}; var P=this.P(p),r=rad*this.sc*P.f,self=this;
+    this.push(P.z+(o.dz||0),function(){
+      ctx.save(); if(o.alpha!==undefined) ctx.globalAlpha=o.alpha;
+      if(o.glow){ctx.shadowColor=o.glow;ctx.shadowBlur=r*0.9;}
+      var g=ctx.createRadialGradient(P.x-r*0.35,P.y-r*0.4,r*0.1,P.x,P.y,r);
+      g.addColorStop(0,shade(col,0.55));g.addColorStop(0.55,col);g.addColorStop(1,shade(col,-0.45));
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(P.x,P.y,Math.max(1,r),0,7);ctx.fill(); ctx.shadowBlur=0;
+      if(o.ring){ctx.strokeStyle=o.ring;ctx.lineWidth=o.ringW||4;ctx.stroke();}
+      if(label&&r>7){ctx.fillStyle=o.tc||"#fff";ctx.textAlign="center";ctx.textBaseline="middle";
+        ctx.font="700 "+Math.max(10,Math.round(r*(o.ts||0.8)*bigK()))+"px "+FONT();ctx.fillText(label,P.x,P.y+1);}
+      ctx.restore();});
+    if(o.hit) self.hit(P.x,P.y,Math.max(r,20),o.hit);
+    return P; },
+  stick:function(p,q,col,w,o){ o=o||{}; var A=this.P(p),B=this.P(q),self=this;
+    this.push((A.z+B.z)/2-0.02,function(){ var ww=Math.max(2,(w||0.12)*self.sc*(A.f+B.f)/2);
+      ctx.save(); if(o.alpha!==undefined) ctx.globalAlpha=o.alpha; ctx.lineCap="round"; if(o.dash) ctx.setLineDash(o.dash);
+      ctx.strokeStyle=o.edge||shade(col,-0.35);ctx.lineWidth=ww+2;ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();
+      ctx.strokeStyle=col;ctx.lineWidth=ww;ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke(); ctx.restore();}); },
+  bond:function(p,q,c1,c2,ord,w){ // พันธะแบ่งครึ่งตามสีอะตอม รองรับพันธะคู่/สาม
+    ord=ord||1; var self=this,A=this.P(p),B=this.P(q),dx=B.x-A.x,dy=B.y-A.y,l=Math.hypot(dx,dy)||1,nx=-dy/l,ny=dx/l;
+    var ww=Math.max(3,(w||0.17)*this.sc*(A.f+B.f)/2),offs=ord===1?[0]:ord===2?[-0.6,0.6]:ord===1.5?[0,0.9]:[-1,0,1];
+    var mid={x:(A.x+B.x)/2,y:(A.y+B.y)/2};
+    this.push((A.z+B.z)/2-0.02,function(){ ctx.save(); ctx.lineCap="round";
+      offs.forEach(function(o,i){ var dashed=(ord===1.5&&i===1), wv=ord===1?ww:ww*0.55, ox=nx*o*ww*0.95, oy=ny*o*ww*0.95;
+        [[A,mid,c1],[mid,B,c2]].forEach(function(s){ if(dashed) ctx.setLineDash([wv*1.2,wv*1.1]); else ctx.setLineDash([]);
+          ctx.strokeStyle=shade(s[2],-0.35);ctx.lineWidth=wv+2;ctx.beginPath();ctx.moveTo(s[0].x+ox,s[0].y+oy);ctx.lineTo(s[1].x+ox,s[1].y+oy);ctx.stroke();
+          ctx.strokeStyle=s[2];ctx.lineWidth=wv;ctx.beginPath();ctx.moveTo(s[0].x+ox,s[0].y+oy);ctx.lineTo(s[1].x+ox,s[1].y+oy);ctx.stroke();});
+      }); ctx.restore();}); },
+  line:function(p,q,col,w,dash,alpha){ var A=this.P(p),B=this.P(q);
+    this.push((A.z+B.z)/2+0.01,function(){ctx.save();if(alpha!==undefined)ctx.globalAlpha=alpha;ctx.strokeStyle=col;ctx.lineWidth=w||2;if(dash)ctx.setLineDash(dash);ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();ctx.restore();}); },
+  label:function(p,s,col,size,o){ o=o||{}; var P=this.P(p); this.push(P.z+(o.dz!==undefined?o.dz:0.5),function(){tag(P.x+(o.dx||0),P.y+(o.dy||0),s,col||"#fff",size||14,o.bg);}); return P; },
+  hit:function(x,y,r,data){ cur.S.hits.push({x:x,y:y,r:r,d:data}); },
+  glowQ:function(txt){ var P=this.P([0,0,0]),r=this.sc*1.1,tm=Date.now()/600,col=MODE().color;
+    ctx.save(); var g=ctx.createRadialGradient(P.x,P.y,r*0.2,P.x,P.y,r*(1.25+0.08*Math.sin(tm)));
+    g.addColorStop(0,hexA(col,.55));g.addColorStop(1,hexA(col,0)); ctx.fillStyle=g;ctx.beginPath();ctx.arc(P.x,P.y,r*1.4,0,7);ctx.fill();
+    ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="800 "+Math.round(r*0.9)+"px "+FONT();ctx.fillText("?",P.x,P.y);
+    if(txt){var fs=Math.round(this.sc*0.45);ctx.font="700 "+fs+"px "+FONT();var tw=ctx.measureText(txt).width,mw=W/Math.max(1,this.n)*0.9;if(tw>mw){fs=Math.max(12,Math.floor(fs*mw/tw));ctx.font="700 "+fs+"px "+FONT();}ctx.fillText(txt,P.x,P.y+r*1.2);} ctx.restore(); }
+};
+function tag(x,y,s,col,size,bg){
+  var fs=Math.round(size*bigK());
+  ctx.save();ctx.font="700 "+fs+"px "+FONT();ctx.textAlign="center";ctx.textBaseline="middle";
+  var w=ctx.measureText(s).width+10;
+  ctx.fillStyle=bg||"rgba(8,12,30,.78)";roundRect(x-w/2,y-fs*0.75,w,fs*1.5,6);ctx.fill();
+  ctx.fillStyle=col;ctx.fillText(s,x,y+1);ctx.restore();
+  return w;
+}
+function txt(x,y,s,col,size,align,weight){ var fs=Math.round(size*bigK()); ctx.save();ctx.font=(weight||700)+" "+fs+"px "+FONT();ctx.textAlign=align||"center";ctx.textBaseline="middle";ctx.fillStyle=col;ctx.fillText(s,x,y);ctx.restore(); }
+function arrow2(ax,ay,bx,by,col,w,head){
+  var dx=bx-ax,dy=by-ay,l=Math.hypot(dx,dy);if(l<2)return; var ux=dx/l,uy=dy/l,nx=-uy,ny=ux,hl=head||Math.min(l*0.45,w*3.2);
+  ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx-ux*hl*0.8,by-uy*hl*0.8);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx-ux*hl+nx*hl*0.55,by-uy*hl+ny*hl*0.55);ctx.lineTo(bx-ux*hl-nx*hl*0.55,by-uy*hl-ny*hl*0.55);ctx.closePath();ctx.fill();ctx.restore();
+}
+function panel(x,y,w,h,col){ ctx.save(); ctx.fillStyle=col||"rgba(10,16,40,.72)"; roundRect(x,y,w,h,10); ctx.fill(); ctx.strokeStyle="rgba(140,160,230,.35)"; ctx.lineWidth=1; ctx.stroke(); ctx.restore(); }
+function dot(x,y,r,col){ ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=col;ctx.fill(); }
+
+function draw(){
+  if(cur.screen!=="viewer") return;
+  ctx.clearRect(0,0,W,H); cur.S.hits=[];
+  var M=MODE(),os=curObjs(),n=os.length; R.begin(n);
+  os.forEach(function(o,k){
+    R.slot(k);
+    if(camOn&&!M.noShadow){ var p=R.P([0,M.shadowY||-1.9,0]); ctx.save();ctx.fillStyle="rgba(0,0,0,.28)";ctx.beginPath();ctx.ellipse(p.x,p.y+R.sc*0.3,R.sc*1.9,R.sc*0.45,0,0,7);ctx.fill();ctx.restore(); }
+    M.scene(R,o,cur.S,cur.S.x[o.id],k);
+    R.flush();
+    if(n>1&&!M.noCaption){ var p2=R.B(0,M.capY!==undefined?M.capY:-2.6),s=Math.round(15*bigK()),y=Math.min(p2.y,H*0.62);
+      txt(p2.x,y,o.f||o.id,"#fff",s+3); if(M.caption){var c=M.caption(o,cur.S,cur.S.x[o.id]); if(c) txt(p2.x,y+s+6,c[0],c[1]||"#cfe0ff",s);} }
+  });
+}
+
+// ---------- การสัมผัส ----------
+var ptrs={},pinch0=null,tap0=null,lastTap=0;
+cv.addEventListener("pointerdown",function(e){
+  cv.setPointerCapture(e.pointerId);ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+  var ids=Object.keys(ptrs);
+  if(ids.length===2){var a=ptrs[ids[0]],b=ptrs[ids[1]];pinch0={d:Math.hypot(a.x-b.x,a.y-b.y),z:view.zoom};tap0=null;}
+  else tap0={x:e.clientX,y:e.clientY,t:Date.now()};
+});
+cv.addEventListener("pointermove",function(e){
+  var p=ptrs[e.pointerId];if(!p)return; var ids=Object.keys(ptrs);
+  if(ids.length===2&&pinch0){ptrs[e.pointerId]={x:e.clientX,y:e.clientY};var a=ptrs[ids[0]],b=ptrs[ids[1]];
+    view.zoom=Math.max(0.4,Math.min(3,pinch0.z*Math.hypot(a.x-b.x,a.y-b.y)/pinch0.d));return;}
+  var dx=e.clientX-p.x,dy=e.clientY-p.y;ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+  if(tap0&&Math.hypot(e.clientX-tap0.x,e.clientY-tap0.y)>8) tap0=null;
+  if(!tap0&&!MODE().noRotate){view.R=mmul(mmul(rotY(dx*0.01),rotX(dy*0.01)),view.R);}
+});
+function endPtr(e){
+  delete ptrs[e.pointerId];if(Object.keys(ptrs).length<2)pinch0=null;
+  if(tap0&&Date.now()-tap0.t<350){var r=cv.getBoundingClientRect();handleTap(e.clientX-r.left,e.clientY-r.top);}
+  tap0=null;
+}
+cv.addEventListener("pointerup",endPtr);cv.addEventListener("pointercancel",function(e){delete ptrs[e.pointerId];pinch0=null;tap0=null;});
+cv.addEventListener("wheel",function(e){e.preventDefault();view.zoom=Math.max(0.4,Math.min(3,view.zoom*(e.deltaY<0?1.08:0.93)));},{passive:false});
+function handleTap(x,y){
+  var nowT=Date.now();
+  if(nowT-lastTap<300){var a=view.ax,b=view.ay;resetView();if(camOn){view.ax=a;view.ay=b;}lastTap=0;return;}
+  lastTap=nowT;
+  var M=MODE();
+  if(M.tap&&cur.S.hits.length){
+    var best=null,bd=1e9; cur.S.hits.forEach(function(h){var d=Math.hypot(h.x-x,h.y-y);if(d<h.r&&d<bd){bd=d;best=h;}});
+    if(best){ var o=curObjs()[0]; if(M.tap(o,cur.S,cur.S.x[o.id],best.d)!==false){ renderSheet(); return; } }
+  }
+  if(camOn){view.ax=x/W;view.ay=y/H;}
+}
+
+// ---------- กล้อง AR ----------
+var camOn=false,stream=null;
+function toast(s,ms){var el=document.getElementById("toast");el.textContent=s;el.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display="none";},ms||3500);}
+function toggleCam(){ if(camOn){stopCam();return;} startCam(); }
+function startCam(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast(t("camFail"),6000);return;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false}).then(function(s){
+    stream=s;var v=document.getElementById("cam");v.srcObject=s;v.style.display="block";v.play().catch(function(){});
+    camOn=true;document.getElementById("viewer").classList.add("cam");document.getElementById("arBtn").classList.add("on");
+    toast(t("camOn"),4500);
+  }).catch(function(){toast(t("camFail"),6000);});
+}
+function stopCam(){
+  if(stream){stream.getTracks().forEach(function(tr){tr.stop();});stream=null;}
+  camOn=false;var v=document.getElementById("cam");if(v){v.style.display="none";v.srcObject=null;}
+  var vw=document.getElementById("viewer");if(vw)vw.classList.remove("cam");
+  var b=document.getElementById("arBtn");if(b)b.classList.remove("on");
+}
+function toggleBig(){document.body.classList.toggle("bigtext");document.getElementById("bigBtn").classList.toggle("on");if(cur.screen==="viewer")renderSheet();}
+
+// ---------- ด่านท้าทาย ----------
+var CODE_ALPHA="0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+function codeLen(n){ return Math.max(2,Math.ceil((n||6)/5)); }
+function letterOff(l){ var s=0; for(var i=0;i<l.length;i++) s+=l.charCodeAt(i)*5; return s%32; }
+function makeCode(letter,mask,n){
+  var k=codeLen(n),body=""; for(var i=k-1;i>=0;i--) body+=CODE_ALPHA[Math.floor(mask/Math.pow(32,i))%32];
+  return letter+"-"+body+CODE_ALPHA[(mask*7+letterOff(letter))%32];
+}
+function readCodeFor(m,s){
+  var M=G.modes[m],n=M.challenge.items.length,k=codeLen(n),re=new RegExp("^"+M.letter+"\\s*-?\\s*([0-9A-Z]{"+(k+1)+"})$"),r=re.exec((s||"").toUpperCase().trim()); if(!r) return null;
+  var mask=0; for(var i=0;i<k;i++){ var v=CODE_ALPHA.indexOf(r[1][i]); if(v<0) return null; mask=mask*32+v; }
+  if(mask>=Math.pow(2,n)) return null;
+  if(makeCode(M.letter,mask,n)!==M.letter+"-"+r[1]) return null;
+  return {letter:M.letter,mask:mask,mode:m};
+}
+function readCode(s){ for(var i=0;i<G.order.length;i++){ var m=G.order[i]; if(!G.modes[m].challenge) continue; var r=readCodeFor(m,s); if(r) return r; } return null; }
+function modeOfLetter(l){ for(var i=0;i<G.order.length;i++){ if(G.modes[G.order[i]].letter===l) return G.order[i]; } return null; }
+function startChallenge(mode){
+  var C=G.modes[mode].challenge;
+  cur.mode=mode;cur.compare=null;cur.list=C.items.map(function(it){return it.id;});cur.idx=0;
+  cur.ch={mode:mode,answers:[],picked:null};cur.ctx={ch:true};
+  chPrepare(); show("viewer");resize();renderSheet();
+}
+function chItem(){ return G.modes[cur.ch.mode].challenge.items[cur.idx]; }
+function chPrepare(){ var C=G.modes[cur.ch.mode].challenge,it=chItem(); resetState(); if(it.x){ for(var k in it.x) cur.S.x[it.id][k]=it.x[k]; } setStageRaw(it.stage0!==undefined?it.stage0:(C.stage0||0)); }
+function chOpts(it){ var C=G.modes[cur.ch.mode].challenge; return it.opts||C.opts; }
+function optLabel(op){ return L(op); }
+function renderChallengeSheet(){
+  var C=G.modes[cur.ch.mode].challenge,it=chItem(),o=G.objs[it.id],h="";
+  h+="<div class='row'><span class='progress'>"+t("q")+" "+(cur.idx+1)+" "+t("of")+" "+C.items.length+"</span> · <b style='font-size:20px'>"+(it.title?L(it.title):(o.f||o.id))+"</b></div>";
+  h+="<div class='info'>"+L(it.q||C.q)+"</div>";
+  if(it.hint) h+="<div class='hint'>"+t("helper")+": "+L(it.hint)+"</div>";
+  h+="<div class='opts'>";
+  chOpts(it).forEach(function(op){
+    var cls=""; if(cur.ch.picked!==null){ if(op.k===it.ans) cls="right"; else if(op.k===cur.ch.picked) cls="wrongpick"; }
+    h+="<button class='"+cls+"' "+(cur.ch.picked!==null?"disabled":"")+" onclick=\"chPick('"+op.k+"')\">"+optLabel(op)+"</button>";
+  });
+  h+="</div>";
+  if(cur.ch.picked!==null){
+    var ok=cur.ch.picked===it.ans,ansOp=chOpts(it).filter(function(op){return op.k===it.ans;})[0];
+    h+="<div class='fb "+(ok?"ok":"no")+"'><b>"+(ok?t("right"):t("wrong"))+"</b> · "+t("answerIs")+" "+optLabel(ansOp)+"<br>"+L(it.why)+"</div>";
+    h+="<div class='row'>"+tog("spin",t("spin"))+"<button class='primary' onclick='chNext()'>"+(cur.idx<C.items.length-1?t("next"):t("finish"))+"</button></div>";
+  }
+  document.getElementById("sheet").innerHTML=h;
+}
+function chPick(k){
+  var C=G.modes[cur.ch.mode].challenge,it=chItem();
+  cur.ch.picked=k;cur.ch.answers[cur.idx]=(k===it.ans);
+  setStageRaw(it.stage!==undefined?it.stage:(C.stage!==undefined?C.stage:nStages()));
+  renderSheet();
+}
+function chNext(){
+  var C=G.modes[cur.ch.mode].challenge;
+  if(cur.idx<C.items.length-1){cur.idx++;cur.ch.picked=null;chPrepare();renderSheet();}
+  else{stopCam();showSummary();}
+}
+function chResult(){
+  var M=G.modes[cur.ch.mode],C=M.challenge,mask=0,score=0,wrong=[];
+  C.items.forEach(function(it,i){if(cur.ch.answers[i])score++;else{mask+=Math.pow(2,i);wrong.push(it.title?L(it.title):F(it.id));}});
+  return {score:score,total:C.items.length,wrong:wrong,code:makeCode(M.letter,mask,C.items.length)};
+}
+function formUrl(){
+  var u=FORM_URL;
+  try{var q=new URLSearchParams(location.search).get("form");if(q)u=q;}catch(e){}
+  if(!u){try{u=localStorage.getItem("chemar_form")||"";}catch(e){}}
+  return /^https:\/\//.test(u)?u:"";
+}
+function showSummary(){
+  show("summary");
+  var r=chResult(),fu=formUrl(),title=chTitle(cur.ch.mode);
+  var h="<div class='topbar'><button onclick=\"go('home')\">"+t("home")+"</button><button class='ghost' onclick='toggleLang()'>"+(lang==="th"?"EN":"ไทย")+"</button></div>";
+  h+="<h1>"+t("sumTitle")+"</h1><p class='sub'>"+t("title")+" · "+title+"</p>";
+  h+="<h2>"+t("score")+": "+r.score+"/"+r.total+"</h2>";
+  h+="<h3>"+t("wrongList")+"</h3><p>"+(r.wrong.length?r.wrong.join(" · "):t("allRight"))+"</p>";
+  h+="<h3>"+t("yourCode")+"</h3><div class='code' id='codeBox'>"+r.code+"</div><div class='row' style='display:flex;gap:8px;flex-wrap:wrap'><button onclick='copyCode()'>"+t("copy")+"</button>"+
+     (fu?"<a href='"+fu.replace(/'/g,"%27")+"' target='_blank' rel='noopener'><button class='primary'>"+t("openForm")+"</button></a>":"")+"</div>";
+  if(!fu) h+="<p class='note'>"+t("noForm")+"</p>";
+  h+="<h3>"+t("certName")+"</h3><input id='certName' maxlength='60'><div style='margin-top:8px;display:flex;gap:8px;flex-wrap:wrap'><button class='primary' onclick='makeCert()'>"+t("makeCert")+"</button><button id='saveBtn' style='display:none' onclick='saveCert()'>"+t("saveCert")+"</button></div>";
+  h+="<img id='certImg' alt=''><p class='note' id='saveNote' style='display:none'>"+t("saveHint")+"</p>";
+  h+="<div style='margin-top:16px'><button onclick=\"startChallenge('"+cur.ch.mode+"')\">"+t("retry")+"</button></div>";
+  h+="<div class='credit'>"+t("creditLabel")+" <b>"+t("creditName")+"</b></div>";
+  document.getElementById("sumWrap").innerHTML=h;
+}
+function copyCode(){ var c=chResult().code; try{navigator.clipboard.writeText(c).then(function(){toastS(t("copied"));},function(){toastS(t("copyFail"));});}catch(e){toastS(t("copyFail"));} }
+function toastS(s){var b=document.getElementById("codeBox");if(!b)return;var n=document.createElement("div");n.className="note";n.textContent=s;b.parentNode.insertBefore(n,b.nextSibling);setTimeout(function(){n.remove();},2500);}
+var certURL=null,certBlob=null;
+function makeCert(){
+  var r=chResult(),M=G.modes[cur.ch.mode],name=(document.getElementById("certName").value||"").trim()||"…………………………";
+  var c=document.createElement("canvas");c.width=1400;c.height=990;var g=c.getContext("2d"),Fn=FONT();
+  var bg=g.createLinearGradient(0,0,1400,990);bg.addColorStop(0,"#fffaf0");bg.addColorStop(1,"#f3ecff");g.fillStyle=bg;g.fillRect(0,0,1400,990);
+  g.strokeStyle=M.color;g.lineWidth=22;g.strokeRect(30,30,1340,930);
+  g.strokeStyle="#c9a227";g.lineWidth=4;g.strokeRect(62,62,1276,866);
+  g.fillStyle="#1d2550";g.textAlign="center";
+  g.font="800 78px "+Fn;g.fillText(t("certTitle"),700,190);
+  g.font="500 34px "+Fn;g.fillText(t("certGive"),700,270);
+  g.font="800 64px "+Fn;g.fillStyle="#3a2a9a";g.fillText(name,700,370);
+  g.fillStyle="#1d2550";g.font="500 36px "+Fn;g.fillText(t("certFor")+" "+chTitle(cur.ch.mode),700,460);
+  g.font="700 40px "+Fn;g.fillText(t("title"),700,525);
+  g.font="700 46px "+Fn;g.fillStyle=shade(M.color,-0.35);g.fillText(t("certScore")+" "+r.score+"/"+r.total,700,610);
+  g.fillStyle="#555";g.font="500 28px "+Fn;
+  var d=new Date();g.fillText((lang==="en"?d.toLocaleDateString("en-GB"):d.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})),700,680);
+  g.font="500 26px "+Fn;g.fillText(t("creditLabel")+" "+t("creditName"),700,860);
+  certURL=c.toDataURL("image/png");
+  var img=document.getElementById("certImg");img.src=certURL;img.style.display="block";
+  document.getElementById("saveBtn").style.display="inline-block";document.getElementById("saveNote").style.display="block";
+  c.toBlob(function(b){certBlob=b;},"image/png");
+}
+var dlNS=null;
+try{ if(window.claude&&window.claude.use){ window.claude.use("downloads").then(function(ns){dlNS=ns;}).catch(function(){}); } }catch(e){}
+function saveFile(name,blob,fallbackUrl){
+  if(dlNS){dlNS.save({filename:name,data:blob}).catch(function(){});return;}
+  try{var a=document.createElement("a");a.href=fallbackUrl||URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();}catch(e){}
+}
+function saveCert(){ if(certBlob) saveFile("certificate-"+G.id+"-"+cur.ch.mode+".png",certBlob,certURL); }
+
+// ---------- หน้าครู ----------
+function tTab(k){
+  cur.ttab=k;["guide","links","decode","form"].forEach(function(x){var b=document.getElementById("tb-"+x);if(b)b.classList.toggle("on",x===k);});
+  var el=document.getElementById("tBody");
+  if(k==="guide") el.innerHTML="<div class='guide'>"+L(G.guide)+"</div>";
+  if(k==="links"){
+    var base=location.href.split("#")[0];
+    var stu=[]; G.order.forEach(function(m){if(G.modes[m].noPicker)return;stu.push(["m-"+m,L(G.modes[m].title)+" · "+L(G.modes[m].linkNote||"")]);});
+    G.order.forEach(function(m){if(G.modes[m].challenge) stu.push(["ch-"+m,chTitle(m)+(G.modes[m].chWhen?" · "+L(G.modes[m].chWhen):"")]);});
+    var tv=[]; for(var key in (G.views||{})) tv.push(["t-"+key,L(G.views[key].label)]);
+    var groups=[[t("lkStudents"),stu]]; if(tv.length) groups.push([t("lkTeacherScreen"),tv]); groups.push([t("lkOther"),[["teacher",t("lkTeacher")]]]);
+    var h="<p class='note'>"+t("linksNote")+"</p>",n=0;
+    groups.forEach(function(g){ h+="<h2>"+g[0]+"</h2>";
+      g[1].forEach(function(r){var i=n++,u=base+"#"+r[0];
+        h+="<div><b>"+r[1]+"</b></div><div class='linkrow'><code id='lk"+i+"'>"+u+"</code><button class='primary' onclick=\"go('"+r[0]+"')\">"+t("openNow")+"</button><button onclick=\"copyTxt('lk"+i+"')\">"+t("copyLink")+"</button></div>";});});
+    el.innerHTML=h;
+  }
+  if(k==="decode"){
+    var ex=G.order.filter(function(m){return G.modes[m].challenge;}).map(function(m){return makeCode(G.modes[m].letter,5,G.modes[m].challenge.items.length);}).join("  ");
+    el.innerHTML="<p class='note'>"+t("decodeHint")+"</p><textarea id='codesIn' rows='7' placeholder='"+ex+" …'></textarea><div style='margin:8px 0'><button class='primary' onclick='decodeAll()'>"+t("decodeBtn")+"</button></div><div id='decOut'></div>";
+  }
+  if(k==="form"){
+    var cu="";try{cu=localStorage.getItem("chemar_form")||"";}catch(e){}
+    el.innerHTML="<h3>"+t("formLabel")+"</h3><input id='formIn' placeholder='https://forms.gle/…' value='"+cu.replace(/'/g,"&#39;")+"'><div style='margin:8px 0'><button onclick='saveFormUrl()'>"+t("saveForm")+"</button></div><p class='note'>"+t("formNote")+"</p>"+
+      "<h3>"+t("dlGame")+"</h3><button class='primary' onclick='dlGame()'>"+t("dlGame")+"</button><p class='note'>"+t("dlNote")+"</p>";
+  }
+}
+function copyTxt(id){var s=document.getElementById(id).textContent;try{navigator.clipboard.writeText(s).catch(function(){});}catch(e){}
+  var r=document.createRange();r.selectNodeContents(document.getElementById(id));var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);}
+function saveFormUrl(){try{localStorage.setItem("chemar_form",document.getElementById("formIn").value.trim());}catch(e){}}
+function dlGame(){
+  var html="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+  html=html.replace(/<div id="tBody">[\s\S]*?<\/div>\s*<div class="credit">/,'<div id="tBody"></div>\n  <div class="credit">');
+  html=html.replace(/<div class="screen show"/g,'<div class="screen"').replace(/ class="([^"]*)\bshow\b/g,' class="$1');
+  saveFile(G.file,new Blob([html],{type:"text/html"}));
+}
+function decodeAll(){
+  var toks=(document.getElementById("codesIn").value||"").toUpperCase().match(/[A-Z]{1,2}\s*-?\s*[0-9A-Z]{3,6}/g)||[];
+  var tally={},bad=0,other=0;
+  toks.forEach(function(s){var r=readCode(s);if(!r){bad++;return;}var m=r.mode,n=G.modes[m].challenge.items.length;
+    var T=tally[m]||(tally[m]={n:0,w:new Array(n).fill(0)});T.n++;for(var i=0;i<n;i++)if(Math.floor(r.mask/Math.pow(2,i))%2)T.w[i]++;});
+  var tot=0;for(var m in tally)tot+=tally[m].n;
+  var h="<p>"+t("valid")+": <b>"+tot+"</b> · "+t("invalid")+": <b>"+bad+"</b>"+(other?" · "+t("otherGame")+": <b>"+other+"</b>":"")+"</p>";
+  G.order.forEach(function(m){var T=tally[m];if(!T)return;var C=G.modes[m].challenge;
+    h+="<h3>"+chTitle(m)+" (n = "+T.n+")</h3><table><tr><th>"+t("item")+"</th><th>"+t("nWrong")+"</th><th>"+t("pct")+"</th></tr>";
+    var order=C.items.map(function(x,i){return i;}).sort(function(a,b){return T.w[b]-T.w[a];});
+    order.forEach(function(i){var pc=Math.round(T.w[i]/T.n*1000)/10,it=C.items[i];
+      h+="<tr class='"+(pc>30?"hot":"")+"'><td>"+(i+1)+". "+(it.title?L(it.title):F(it.id))+"</td><td>"+T.w[i]+"</td><td>"+pc+"%"+(pc>30?" · "+t("hot"):"")+"</td></tr>";});
+    h+="</table>";});
+  document.getElementById("decOut").innerHTML=h;
+}
+
+// ---------- เริ่มต้น ----------
+(function loop(){
+  if(cur.screen==="viewer"&&cur.S){
+    if(cur.S.tog.spin) view.R=mmul(rotY(0.008),view.R);
+    try{ draw(); }catch(e){ if(!loop.err){loop.err=1;console.error(e);} }
+  }
+  requestAnimationFrame(loop);
+})();
+applyLang();route();
+
+</script>
+</body>
+</html>
