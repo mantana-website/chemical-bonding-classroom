@@ -107,6 +107,9 @@ button.mbtn{background:var(--mc,#3a63ff);border:none;color:#10132a;font-weight:7
 .guide a{color:#9cc2ff}
 
 </style>
+<script>/* camfix: เปิดนอกแอป LINE อัตโนมัติ */
+(function(){try{var u=navigator.userAgent||"";if(/\bLine\//i.test(u)&&!/[?&]openExternalBrowser=1/.test(location.search)){var q=location.search?location.search+"&":"?";location.replace(location.pathname+q+"openExternalBrowser=1"+location.hash);}}catch(e){}})();
+</script>
 </head>
 <body>
 <div id="home" class="screen"><div class="wrap">
@@ -869,12 +872,12 @@ var camOn=false,stream=null;
 function toast(s,ms){var el=document.getElementById("toast");el.textContent=s;el.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display="none";},ms||3500);}
 function toggleCam(){ if(camOn){stopCam();return;} startCam(); }
 function startCam(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast(t("camFail"),6000);return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){camErr(null);return;}
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false}).then(function(s){
     stream=s;var v=document.getElementById("cam");v.srcObject=s;v.style.display="block";v.play().catch(function(){});
     camOn=true;document.getElementById("viewer").classList.add("cam");document.getElementById("arBtn").classList.add("on");
     toast(t("camOn"),4500);
-  }).catch(function(){toast(t("camFail"),6000);});
+  }).catch(function(e){camErr(e);});
 }
 function stopCam(){
   if(stream){stream.getTracks().forEach(function(tr){tr.stop();});stream=null;}
@@ -1061,6 +1064,48 @@ function decodeAll(){
 })();
 applyLang();route();
 
+</script>
+<div id="camHelp" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,15,30,.72);align-items:center;justify-content:center;padding:18px;font-family:inherit">
+<div style="background:#fff;color:#1d2433;max-width:420px;width:100%;border-radius:16px;padding:20px 18px;box-shadow:0 10px 40px rgba(0,0,0,.35);line-height:1.6">
+<div id="camHelpTitle" style="font-weight:700;font-size:1.1em;margin-bottom:8px"></div>
+<div id="camHelpBody" style="font-size:.95em"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+<button id="camHelpOpen" type="button" style="display:none;flex:1;min-width:140px;padding:10px;border:0;border-radius:10px;background:#1a73e8;color:#fff;font:inherit;font-weight:700"></button>
+<button id="camHelpCopy" type="button" style="flex:1;min-width:140px;padding:10px;border:1px solid #c5cbd8;border-radius:10px;background:#f4f6fa;color:#1d2433;font:inherit;font-weight:700"></button>
+<button id="camHelpClose" type="button" style="flex:1;min-width:90px;padding:10px;border:1px solid #c5cbd8;border-radius:10px;background:#fff;color:#1d2433;font:inherit"></button>
+</div></div></div>
+<script>/* camfix: บอกสาเหตุที่กล้องไม่เปิดให้ชัด */
+var CAMFIX={
+th:{t_inapp:"เปิดกล้องในแอปนี้ไม่ได้",b_inapp:"ลิงก์ถูกเปิดในเบราว์เซอร์ของแอป (เช่น LINE, Facebook, Messenger) ซึ่งไม่อนุญาตให้ใช้กล้อง<br>ให้เปิดลิงก์นี้ใน <b>Chrome</b> (Android) หรือ <b>Safari</b> (iPhone/iPad):<br>• แตะเมนู ⋮ หรือ ⋯ มุมจอ → <b>เปิดในเบราว์เซอร์</b><br>• หรือกด “คัดลอกลิงก์” แล้ววางใน Chrome/Safari",
+t_denied:"กล้องถูกปิดสิทธิ์ไว้",b_denied:"เบราว์เซอร์จำไว้ว่า <b>ไม่อนุญาต</b> ให้หน้านี้ใช้กล้อง<br><b>Android (Chrome):</b> แตะไอคอนข้างช่องที่อยู่เว็บ → สิทธิ์ (Permissions) → กล้อง → อนุญาต แล้วโหลดหน้าใหม่<br><b>iPhone (Safari):</b> แตะ <b>aA</b> ข้างช่องที่อยู่เว็บ → การตั้งค่าเว็บไซต์ → กล้อง → อนุญาต<br>หรือ การตั้งค่า → Safari → กล้อง → ถาม/อนุญาต<br><b>iPhone (Chrome):</b> การตั้งค่า → Chrome → เปิดสวิตช์กล้อง",
+t_busy:"กล้องถูกแอปอื่นใช้อยู่",b_busy:"ปิดแอปกล้อง แอปสแกน QR หรือแท็บเกมอื่นที่เปิดกล้องค้างไว้ แล้วกดปุ่ม AR อีกครั้ง",
+t_none:"ไม่พบกล้องในเครื่องนี้",b_none:"เครื่องนี้ไม่มีกล้องที่เบราว์เซอร์ใช้ได้ ยังเล่นเกมได้ตามปกติโดยไม่เปิด AR",
+t_other:"เปิดกล้องไม่ได้",b_other:"ลองโหลดหน้าใหม่ หรือเปิดลิงก์ใน Chrome (Android) / Safari (iPhone) แล้วกดปุ่ม AR และกด “อนุญาต” เมื่อเครื่องถามสิทธิ์กล้อง",
+open:"เปิดใน Chrome",copy:"คัดลอกลิงก์",copied:"คัดลอกแล้ว",close:"ปิด"},
+en:{t_inapp:"Camera is blocked in this app",b_inapp:"This link opened inside an app browser (LINE, Facebook, Messenger…), which does not allow the camera.<br>Open it in <b>Chrome</b> (Android) or <b>Safari</b> (iPhone/iPad):<br>• tap the ⋮ or ⋯ menu → <b>Open in browser</b><br>• or tap “Copy link” and paste it into Chrome/Safari",
+t_denied:"Camera permission is blocked",b_denied:"The browser remembers that camera access was <b>denied</b> for this page.<br><b>Android (Chrome):</b> tap the icon beside the address bar → Permissions → Camera → Allow, then reload.<br><b>iPhone (Safari):</b> tap <b>aA</b> → Website Settings → Camera → Allow, or Settings → Safari → Camera.<br><b>iPhone (Chrome):</b> Settings → Chrome → turn Camera on.",
+t_busy:"Camera is in use by another app",b_busy:"Close the camera app, QR scanner or any other game tab using the camera, then tap AR again.",
+t_none:"No camera found",b_none:"This device has no camera the browser can use. You can still play without AR.",
+t_other:"Camera could not start",b_other:"Reload the page, or open the link in Chrome (Android) / Safari (iPhone), tap AR and choose “Allow”.",
+open:"Open in Chrome",copy:"Copy link",copied:"Copied",close:"Close"}};
+function camInApp(){var u=navigator.userAgent||"";return /\bLine\/|FBAN|FBAV|FB_IAB|Instagram|Messenger|musical_ly|TikTok|KAKAOTALK|MicroMessenger|; wv\)/i.test(u);}
+function camErr(e){
+  var L=CAMFIX[(typeof lang!=="undefined"&&CAMFIX[lang])?lang:"th"],n=e&&e.name||"",k;
+  if(!e||camInApp())k=camInApp()||!window.isSecureContext||!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)?"inapp":"other";
+  if(!k){if(/NotAllowed|Security|PermissionDenied/.test(n))k=camInApp()?"inapp":"denied";else if(/NotReadable|TrackStart|Abort/.test(n))k="busy";else if(/NotFound|DevicesNotFound|Overconstrained/.test(n))k="none";else k="other";}
+  var url=location.href.replace(/([?&])openExternalBrowser=1&?/,"$1").replace(/[?&]$/,"");
+  document.getElementById("camHelpTitle").textContent=L["t_"+k];
+  document.getElementById("camHelpBody").innerHTML=L["b_"+k]+(n?'<div style="margin-top:8px;font-size:.8em;color:#7a8396">('+n+')</div>':"");
+  var ob=document.getElementById("camHelpOpen"),cb=document.getElementById("camHelpCopy"),xb=document.getElementById("camHelpClose");
+  var android=/Android/i.test(navigator.userAgent||"");
+  ob.style.display=(k==="inapp"&&android)?"block":"none";ob.textContent=L.open;
+  ob.onclick=function(){location.href="intent://"+url.replace(/^https?:\/\//,"")+"#Intent;scheme=https;package=com.android.chrome;end";};
+  cb.style.display=(k==="inapp"||k==="other")?"block":"none";cb.textContent=L.copy;
+  cb.onclick=function(){function ok(){cb.textContent=L.copied;}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(ok,function(){window.prompt(L.copy,url);});}else{window.prompt(L.copy,url);}};
+  xb.textContent=L.close;xb.onclick=function(){document.getElementById("camHelp").style.display="none";};
+  document.getElementById("camHelp").style.display="flex";
+}
 </script>
 </body>
 </html>
