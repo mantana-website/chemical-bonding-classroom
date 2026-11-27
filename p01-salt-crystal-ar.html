@@ -492,10 +492,11 @@ function fOpts(list){ return list.map(function(f){return {k:f,th:f,en:f};}); }
 
 // ---------- โหมดโครงผลึก ----------
 var latCache={};
-function latList(o,big){
-  var key=o.id+(big?"B":""); if(latCache[key]) return latCache[key];
+function latList(o,big,par){ // par=1 (เฉพาะแบบ NaCl) ให้ไอออนลบอยู่ตรงกลางก้อน
+  par=o.type==="rs"&&par?1:0;
+  var key=o.id+(big?"B":"")+(par?"P":""); if(latCache[key]) return latCache[key];
   var a=[],L=big?2:1;
-  if(o.type==="rs"){ for(var i=-L;i<=L;i++)for(var j=-L;j<=L;j++)for(var k=-L;k<=L;k++) a.push({p:[i,j,k],t:((i+j+k)%2+2)%2}); }
+  if(o.type==="rs"){ for(var i=-L;i<=L;i++)for(var j=-L;j<=L;j++)for(var k=-L;k<=L;k++) a.push({p:[i,j,k],t:((i+j+k+par)%2+2)%2}); }
   if(o.type==="cscl"){ for(var i=-L;i<=L;i++)for(var j=-L;j<=L;j++)for(var k=-L;k<=L;k++){ a.push({p:[i,j,k],t:1}); if(i<L&&j<L&&k<L) a.push({p:[i+.5,j+.5,k+.5],t:0}); } }
   if(o.type==="fl"||o.type==="afl"){ var c=o.type==="fl"?0:1,an=1-c;
     for(var i=-L;i<=L;i++)for(var j=-L;j<=L;j++)for(var k=-L;k<=L;k++){ if(((i+j+k)%2+2)%2===0) a.push({p:[i,j,k],t:c}); }
@@ -504,6 +505,8 @@ function latList(o,big){
   latCache[key]=a; return a;
 }
 function dnn(o){ return o.type==="rs"?1:0.866; }
+function latL(o,S){ return latList(o,S.tog.big,S.par); }
+function isSurf(o,l,i){ return neighbors(l,i).length<o.cn[l[i].t]; }
 function centerIdx(list,ty){ var b=-1,bd=1e9; list.forEach(function(x,i){ if(x.t!==ty) return; var d=vlen(x.p); if(d<bd-1e-6){bd=d;b=i;} }); return b; }
 var LATT = {
   letter:"C", color:"#5ad1ff", hr:"h3", unit:0.78, ay:0.38,
@@ -519,15 +522,24 @@ var LATT = {
   stages:[M_("① เปิดการแตะไฮไลต์ไอออนที่อยู่ติดกัน","① Turn on tap-to-highlight neighbours"),M_("② นับอัตราส่วนทั้งผลึก","② Count the ratio for the whole crystal")],
   stageHint:{1:M_("แตะไอออนใดก็ได้เพื่อไฮไลต์ไอออนที่อยู่ติดกัน ลองแตะทั้งไอออนบวกและไอออนลบ","Tap any ion to highlight its nearest neighbours; try both a cation and an anion.")},
   tog:{big:{label:M_("ขยายเป็นก้อนใหญ่","Grow into a larger block"),on:false},real:{label:M_("ขนาดใกล้จริง (ชิดกัน)","Near-real size (packed)"),on:false}},
-  init:function(o,S,X){ S.sel=[]; },
-  onStage:function(o,S,X,s){ if(s>=1&&!S.sel.length){ var l=latList(o,S.tog.big); S.sel=[centerIdx(l,X.selType||0)]; } },
-  onTog:function(k,o,S,X){ if(k==="big"){ var l=latList(o,S.tog.big); S.sel=S.stage>=1?[centerIdx(l,X.selType||0)]:[]; } },
-  tap:function(o,S,X,d){ if(S.stage<1){ toast(L(LATT.hidden),2500); return true; } S.sel=[d.i]; return true; },
+  init:function(o,S,X){ S.sel=[]; S.par=0; },
+  onStage:function(o,S,X,s){ if(s>=1&&!S.sel.length){ var ty=X.selType||0; S.par=o.type==="rs"?ty:0; S.sel=[centerIdx(latL(o,S),ty)]; } },
+  onTog:function(k,o,S,X){ if(k==="big"){ var old=latList(o,!S.tog.big,S.par)[S.sel[0]],ty=old?old.t:(X.selType||0);
+    S.par=o.type==="rs"?ty:0; S.sel=S.stage>=1?[centerIdx(latL(o,S),ty)]:[]; } },
+  tap:function(o,S,X,d){ if(S.stage<1){ toast(L(LATT.hidden),2500); return true; }
+    var l=latL(o,S),t=l[d.i].t;
+    if(o.type==="rs"&&!S.tog.big&&t!==S.par){ // ก้อนเล็กแบบ NaCl: จัดใหม่ให้ไอออนชนิดที่แตะอยู่ตรงกลาง
+      S.par=t; l=latL(o,S); S.sel=[centerIdx(l,t)];
+      var nm=t===0?ionTxt(o.cat,o.qc):ionTxt(o.an,o.qa);
+      toast(lang==="en"?"Block re-arranged so a "+nm+" ion sits in the centre, so all its neighbours can be counted":"จัดแบบจำลองใหม่ให้ "+nm+" อยู่ตรงกลาง เพื่อให้นับไอออนที่ล้อมรอบได้ครบ",2600);
+      return true; }
+    S.sel=[d.i]; return true; },
   info0:function(o){ return "<b>"+o.f+"</b> · "+(lang==="en"?"ions ":"ไอออน ")+ionTxt(o.cat,o.qc)+" "+(lang==="en"?"and ":"และ ")+ionTxt(o.an,o.qa); },
   info:function(o,S){
-    var l=latList(o,S.tog.big),i=S.sel[0],h="";
+    var l=latL(o,S),i=S.sel[0],h="";
     if(i!==undefined&&l[i]){ var me=l[i],nb=neighbors(l,i).length,mt=me.t===0?ionTxt(o.cat,o.qc):ionTxt(o.an,o.qa),ot=me.t===0?ionTxt(o.an,o.qa):ionTxt(o.cat,o.qc);
-      h+=(lang==="en"?"Selected ":"")+"<b>"+mt+"</b>"+(lang==="en"?" touches ":" ที่เลือกอยู่ติดกับ ")+"<b>"+ot+" "+nb+"</b>"+(lang==="en"?" ions":" ไอออน"); }
+      h+=(lang==="en"?"Selected ":"")+"<b>"+mt+"</b>"+(lang==="en"?" touches ":" ที่เลือกอยู่ติดกับ ")+"<b>"+ot+" "+nb+"</b>"+(lang==="en"?" ions":" ไอออน");
+      if(isSurf(o,l,i)) h+="<br><span style='color:#ff9b7a'>"+(lang==="en"?"This ion is on the surface of the model; some of its neighbours are outside the picture. Count an ion deepest inside.":"ไอออนนี้อยู่ที่ผิวของแบบจำลอง ไอออนข้างเคียงบางส่วนอยู่นอกภาพ ให้นับไอออนที่อยู่ด้านในสุด")+"</span>"; }
     if(S.stage>=2){
       h+=(h?"<br>":"")+ionTxt(o.cat,o.qc)+(lang==="en"?" is surrounded by ":" ถูกล้อมรอบด้วย ")+ionTxt(o.an,o.qa)+" "+o.cn[0]+(lang==="en"?"; ":" ไอออน · ")+ionTxt(o.an,o.qa)+(lang==="en"?" by ":" ถูกล้อมรอบด้วย ")+ionTxt(o.cat,o.qc)+" "+o.cn[1]+(lang==="en"?"":" ไอออน")+
         "<br>"+(lang==="en"?"Ratio in the whole crystal ":"อัตราส่วนทั้งผลึก ")+"<b>"+o.ratio+"</b> → "+(lang==="en"?"empirical formula ":"สูตรเอมพิริคัล ")+"<b>"+o.f+"</b> · "+(lang==="en"?"no ion has one special partner, so there are no molecules":"ไม่มีไอออนคู่ใดเป็นคู่พิเศษ จึงไม่มีโมเลกุล");
@@ -535,7 +547,7 @@ var LATT = {
     return h;
   },
   scene:function(R,o,S,X){
-    var l=latList(o,S.tog.big),sel=S.sel[0],nb=sel!==undefined&&S.stage>=1?neighbors(l,sel):[],kk=S.tog.big?0.62:1;
+    var l=latL(o,S),sel=S.sel[0],nb=sel!==undefined&&S.stage>=1?neighbors(l,sel):[],kk=S.tog.big?0.62:1;
     var d=dnn(o),real=S.tog.real,f=real?d/(o.rc+o.ra):0.5*d/(o.rc+o.ra)*1.25;
     var rc=o.rc*f*kk,ra=o.ra*f*kk;
     l.forEach(function(x,i){
@@ -544,7 +556,7 @@ var LATT = {
       R.ball(p,x.t===0?rc:ra,elc(el),(real?"":ionTxt(el,q)),{tc:eltc(el),alpha:dim?0.2:1,ring:isSel?"#ffffff":(isNb?"#ffc94a":null),ringW:3,hit:S.stage>=1?{i:i}:null,ts:0.55});
       if(isNb) R.line(vmul(l[sel].p,kk*1.15),p,"#ffc94a",3,null,0.9);
     });
-    if(S.stage>=1&&sel!==undefined){ var B=R.B(0,-2.05); tag(B.x,B.y,(l[sel].t===0?ionTxt(o.cat,o.qc):ionTxt(o.an,o.qa))+" : "+(lang==="en"?"neighbours ":"ไอออนที่อยู่ติดกัน ")+nb.length,"#ffc94a",16); }
+    if(S.stage>=1&&sel!==undefined){ var B=R.B(0,-2.05); var sf=isSurf(o,l,sel); tag(B.x,B.y,(l[sel].t===0?ionTxt(o.cat,o.qc):ionTxt(o.an,o.qa))+" : "+(lang==="en"?"neighbours ":"ไอออนที่อยู่ติดกัน ")+nb.length+(sf?(lang==="en"?" (surface ion)":" (ไอออนที่ผิว)"):""),sf?"#ff9b7a":"#ffc94a",16); }
     if(S.stage>=2){ var B2=R.B(0,2.15); tag(B2.x,B2.y,o.cat+chg(o.qc)+" : "+o.an+chg(o.qa)+" = "+o.ratio+" → "+o.f,"#fff",16); }
   },
   challenge:{ q:M_("",""), stage0:0, stage:2, items:[] }
@@ -635,7 +647,7 @@ th:["<h2>ก่อนสอน</h2><ol>",
 "<li><b>ข้อ 5.4:</b> มอบหมายด่านท้าทายโหมดการเกิดไอออน และโหมดการเกิดพันธะไอออนิก</li></ol>",
 "<h2>ชั่วโมงที่ 3 (โหมดโครงผลึก)</h2><ol>",
 "<li><b>ขั้นที่ 3:</b> NaCl MgO CsCl CaF₂ ก่อนกด ① หมุนดูผลึกได้แต่แตะไฮไลต์ไม่ได้ หลังกด ① แตะไอออนใดก็ได้เพื่อไฮไลต์ไอออนที่อยู่ติดกันพร้อมจำนวน กด ② ดูอัตราส่วนทั้งผลึกและสูตรเอมพิริคัล</li>",
-"<li><b>ข้อ 4.2 ครูฉาย:</b> เปิดลิงก์ \"ผลึก NaCl ขยายเป็นก้อนใหญ่\" สลับปุ่ม \"ขยายเป็นก้อนใหญ่\" เพื่อขยายจากหน่วยเล็กไปเป็นก้อนใหญ่ และปุ่ม \"ขนาดใกล้จริง\" เพื่ออภิปรายว่าในผลึกจริงไอออนอยู่ชิดกันและ Cl⁻ ใหญ่กว่า Na⁺</li>",
+"<li><b>ข้อ 4.2 ครูฉาย:</b> เปิดลิงก์ \"ผลึก NaCl ขยายเป็นก้อนใหญ่\" สลับปุ่ม \"ขยายเป็นก้อนใหญ่\" เพื่อขยายจากหน่วยเล็กไปเป็นก้อนใหญ่ และปุ่ม \"ขนาดใกล้จริง\" เพื่ออภิปรายว่าในผลึกจริงไอออนอยู่ชิดกันและ Cl⁻ ใหญ่กว่า Na⁺ · ใช้ไอออนที่ผิวของแบบจำลองเป็นประเด็นอภิปรายขอบเขตของแบบจำลอง: แตะไอออนที่ผิวจะนับได้น้อยกว่าตาราง ก.3 (เกมขึ้นป้าย \"ไอออนที่ผิว\") เพราะไอออนข้างเคียงบางส่วนอยู่นอกภาพ ส่วนผลึกจริงมีไอออนจำนวนมหาศาล ไอออนชนิดเดียวกันจึงนับได้เท่ากันทุกไอออน ไอออนบวกกับไอออนลบนับได้ไม่เท่ากันได้ เช่น CaF₂ 8 กับ 4 · ในก้อนเล็กแบบ NaCl เมื่อแตะไอออนชนิดที่ไม่ได้อยู่ตรงกลาง เกมจะจัดแบบจำลองใหม่ให้ไอออนชนิดนั้นอยู่ตรงกลาง</li>",
 "<li><b>ข้อ 5.1:</b> KCl และ MgO นักเรียนเปิดตรวจภาพจุลภาคด้วยเครื่องของตนเองหลังเขียนใบกิจกรรมที่ 1.4 เสร็จ</li>",
 "<li><b>ข้อ 5.2:</b> มอบหมายด่านท้าทายโหมดโครงผลึก</li></ol>",
 "<h2>ด่านท้าทายและรหัสผล</h2><p>แต่ละโหมดมี 6 ข้อ ไม่ซ้ำกับที่ใช้ในห้อง จบแล้วเกมแสดงคะแนน รายชื่อข้อที่ผิด และรหัสผล อักษรนำของรหัส A = การเกิดไอออน B = การเกิดพันธะไอออนิก C = โครงผลึก ก่อนสอนครูวางรหัสทั้งหมดในแท็บ \"ถอดรหัสผล\" ข้อที่เกินร้อยละ 30 ใช้เป็นคำถามข้อสุดท้ายของกิจวัตรที่ 1</p>",
@@ -647,7 +659,7 @@ en:["<h2>Before class</h2><ol>"+HOST_EN+"",
 "<h2>Hours 1–2</h2><ol><li>Cycle 1 (ion formation): Na Cl Mg O. ① shows electrons lost or gained; ② shows the ion beside the noble gas.</li>",
 "<li>Cycle 2 (ionic bonding): Na + Cl, Mg + O, Ca + Cl, Mg + N. After ①, use + and − until balanced, then ② transfer and ③ ions, attraction and formula.</li>",
 "<li>4.3 teacher screen: \"Ca with two Cl atoms\" starts at the transfer.</li><li>5.1: check X and Y with Ca, F and Ca + F. 5.4: assign the first two challenges.</li></ol>",
-"<h2>Hour 3 (lattice)</h2><ol><li>Step 3: NaCl MgO CsCl CaF₂. Tapping is locked until ①; ② shows the whole-crystal ratio.</li><li>4.2 teacher screen: \"NaCl grown into a large block\" with the Grow and Near-real size buttons.</li><li>5.1: KCl and MgO. 5.2: assign the lattice challenge.</li></ol>",
+"<h2>Hour 3 (lattice)</h2><ol><li>Step 3: NaCl MgO CsCl CaF₂. Tapping is locked until ①; ② shows the whole-crystal ratio.</li><li>4.2 teacher screen: \"NaCl grown into a large block\" with the Grow and Near-real size buttons. Use surface ions to discuss the model's limits: they count fewer neighbours than table A.3 (tagged \"surface ion\") because some neighbours are outside the picture; in a real crystal every ion of one kind counts the same, though cations and anions can differ (CaF₂ 8 and 4). In the small NaCl-type block, tapping the ion type that is not in the centre re-arranges the block so that type sits in the centre.</li><li>5.1: KCl and MgO. 5.2: assign the lattice challenge.</li></ol>",
 "<h2>Challenges</h2><p>Six items per mode. Code letters: A = ions, B = ionic bonding, C = lattices. Paste codes in the Decode tab; items over 30% wrong become the last question of Routine 1.</p>"].join("")
 };
 
