@@ -110,6 +110,7 @@ button.mbtn{background:var(--mc,#3a63ff);border:none;color:#10132a;font-weight:7
 <script>/* camfix: เปิดนอกแอป LINE อัตโนมัติ */
 (function(){try{var u=navigator.userAgent||"";if(/\bLine\//i.test(u)&&!/[?&]openExternalBrowser=1/.test(location.search)){var q=location.search?location.search+"&":"?";location.replace(location.pathname+q+"openExternalBrowser=1"+location.hash);}}catch(e){}})();
 </script>
+<style>/* ซ่อนปุ่มสลับภาษา: เปิดได้ด้วย ?lang=en */html:not(.lang-switch-on) [onclick*="toggleLang"]{display:none!important}</style>
 </head>
 <body>
 <div id="home" class="screen"><div class="wrap">
@@ -560,7 +561,7 @@ var WORK = {group:{th:"งานกลุ่ม (เครื่องกลุ�
 var HOURS = G.hours || {h12:{th:"ชั่วโมงที่ 1–2",en:"Hours 1–2"},h3:{th:"ชั่วโมงที่ 3",en:"Hour 3"}};
 
 var lang="th";
-try{ if(localStorage.getItem("chemar_lang")==="en") lang="en"; }catch(e){}
+var LANG_SWITCH=/[?&]lang=en(&|$)/.test(location.search); lang=LANG_SWITCH?"en":"th"; if(LANG_SWITCH) document.documentElement.classList.add("lang-switch-on"); try{ localStorage.setItem("chemar_lang",lang); }catch(e){}
 function t(k){ var s=G.str&&G.str[lang]&&G.str[lang][k]; if(s!==undefined) return s; s=BASE_STR[lang][k]; if(s!==undefined) return s; s=G.str&&G.str.th&&G.str.th[k]; return s!==undefined?s:(BASE_STR.th[k]||k); }
 function L(o){ if(o===undefined||o===null) return ""; if(typeof o==="string") return o; return lang==="en"?(o.en!==undefined?o.en:o.th):o.th; }
 function M_(th,en){return {th:th,en:en};}

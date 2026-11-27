@@ -94,6 +94,7 @@ tr.hot td{background:#4a1d26}
 <script>/* camfix: เปิดนอกแอป LINE อัตโนมัติ */
 (function(){try{var u=navigator.userAgent||"";if(/\bLine\//i.test(u)&&!/[?&]openExternalBrowser=1/.test(location.search)){var q=location.search?location.search+"&":"?";location.replace(location.pathname+q+"openExternalBrowser=1"+location.hash);}}catch(e){}})();
 </script>
+<style>/* ซ่อนปุ่มสลับภาษา: เปิดได้ด้วย ?lang=en */html:not(.lang-switch-on) [onclick*="toggleLang"]{display:none!important}</style>
 </head>
 <body>
 
@@ -502,7 +503,7 @@ var STR = {
  }
 };
 var lang="th";
-try{ if(localStorage.getItem("pd_lang")==="en") lang="en"; }catch(e){}
+var LANG_SWITCH=/[?&]lang=en(&|$)/.test(location.search); lang=LANG_SWITCH?"en":"th"; if(LANG_SWITCH) document.documentElement.classList.add("lang-switch-on"); try{ localStorage.setItem("pd_lang",lang); }catch(e){}
 function t(k){return (STR[lang]&&STR[lang][k])||STR.th[k]||k;}
 function L(o){return o?(lang==="en"?o.en:o.th):"";}
 function shapeName(k){var s=SHAPES[k];return (s.code?s.code+" ":"")+(lang==="en"?s.en:s.th);}
